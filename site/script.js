@@ -213,3 +213,26 @@ if (systemDiagram) {
     if (event.matches) finishSystemCheck();
   });
 }
+
+// Fade in resource cards, workflow items, and questions as they scroll into view.
+const revealTargets = [...document.querySelectorAll('.resource-grid .resource-card, .ecosystem-grid article, .questions>div')];
+revealTargets.forEach(el => el.classList.add('reveal'));
+if (motionPreference.matches) {
+  revealTargets.forEach(el => el.classList.add('is-visible'));
+} else {
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  revealTargets.forEach(el => revealObserver.observe(el));
+  motionPreference.addEventListener('change', event => {
+    if (event.matches) {
+      revealObserver.disconnect();
+      revealTargets.forEach(el => el.classList.add('is-visible'));
+    }
+  });
+}
