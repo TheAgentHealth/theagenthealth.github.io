@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://theagenthealth.github.io/sitemap.xml
