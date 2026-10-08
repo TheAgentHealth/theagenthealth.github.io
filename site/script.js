@@ -70,3 +70,29 @@ if (terminal && !motionPreference.matches) {
     }
   });
 }
+
+// Capability tabs support pointer input and the standard tab keyboard pattern.
+const capabilityTabs = [...document.querySelectorAll('.capability-tabs [role="tab"]')];
+function selectCapability(selected, moveFocus = false) {
+  capabilityTabs.forEach(tab => {
+    const active = tab === selected;
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
+    document.getElementById(tab.getAttribute('aria-controls')).hidden = !active;
+  });
+  if (moveFocus) selected.focus();
+}
+capabilityTabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => selectCapability(tab));
+  tab.addEventListener('keydown', event => {
+    let next;
+    if (event.key === 'ArrowRight') next = (index + 1) % capabilityTabs.length;
+    if (event.key === 'ArrowLeft') next = (index + capabilityTabs.length - 1) % capabilityTabs.length;
+    if (event.key === 'Home') next = 0;
+    if (event.key === 'End') next = capabilityTabs.length - 1;
+    if (next !== undefined) {
+      event.preventDefault();
+      selectCapability(capabilityTabs[next], true);
+    }
+  });
+});
