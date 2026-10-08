@@ -96,3 +96,120 @@ capabilityTabs.forEach((tab, index) => {
     }
   });
 });
+
+// AgentHealth is a health observer; these animated paths represent probes,
+// rather than routing the application's prompts through the health engine.
+const systemDiagram = document.querySelector('.system-diagram');
+if (systemDiagram) {
+  const map = systemDiagram.querySelector('.system-map');
+  const hub = systemDiagram.querySelector('.health-hub');
+  const targets = [...systemDiagram.querySelectorAll('[data-health-target]')];
+  const svg = systemDiagram.querySelector('.ping-connections');
+  const paths = svg.querySelector('.ping-paths');
+  const replay = systemDiagram.querySelector('.replay-pings');
+  const message = systemDiagram.querySelector('.hub-message');
+  const count = systemDiagram.querySelector('.hub-count');
+  const timers = [];
+  const svgNS = 'http://www.w3.org/2000/svg';
+  let started = false;
+  let scanning = false;
+  const groups = targets.map(() => {
+    const group = document.createElementNS(svgNS, 'g');
+    group.classList.add('ping-group');
+    for (const className of ['ping-track', 'ping-pulse']) {
+      const path = document.createElementNS(svgNS, 'path');
+      path.classList.add(className);
+      group.append(path);
+    }
+    paths.append(group);
+    return group;
+  });
+  function drawConnections() {
+    const bounds = map.getBoundingClientRect();
+    const center = hub.getBoundingClientRect();
+    const mobile = window.matchMedia('(max-width: 700px)').matches;
+    svg.setAttribute('viewBox', `0 0 ${bounds.width} ${bounds.height}`);
+    targets.forEach((target, index) => {
+      const box = target.getBoundingClientRect();
+      const left = box.left < center.left;
+      const x1 = (mobile ? center.left + center.width / 2 : left ? center.left : center.right) - bounds.left;
+      const y1 = (mobile ? center.bottom : center.top + center.height / 2) - bounds.top;
+      const x2 = (mobile ? box.left + box.width / 2 : left ? box.right : box.left) - bounds.left;
+      const y2 = (mobile ? box.top : box.top + box.height / 2) - bounds.top;
+      const d = mobile
+        ? `M ${x1} ${y1} C ${x1} ${y1 + 25}, ${x2} ${y2 - 25}, ${x2} ${y2}`
+        : `M ${x1} ${y1} C ${(x1 + x2) / 2} ${y1}, ${(x1 + x2) / 2} ${y2}, ${x2} ${y2}`;
+      [...groups[index].children].forEach(path => path.setAttribute('d', d));
+      groups[index].style.setProperty('--path-length', groups[index].firstChild.getTotalLength());
+    });
+  }
+  function finishSystemCheck() {
+    timers.splice(0).forEach(clearTimeout);
+    scanning = false;
+    systemDiagram.classList.remove('is-scanning');
+    targets.forEach((target, index) => {
+      target.classList.remove('is-pending', 'is-pinging');
+      target.classList.add('is-healthy');
+      const status = target.querySelector('.node-status');
+      status.textContent = '✓';
+      status.setAttribute('aria-label', 'Healthy');
+      groups[index].classList.remove('is-pinging');
+      groups[index].classList.add('is-healthy');
+    });
+    message.textContent = 'System ready';
+    count.textContent = `${targets.length} / ${targets.length} checks healthy`;
+    replay.disabled = false;
+  }
+  function runSystemCheck() {
+    if (scanning) return;
+    started = true;
+    if (motionPreference.matches) {
+      finishSystemCheck();
+      return;
+    }
+    scanning = true;
+    drawConnections();
+    replay.disabled = true;
+    systemDiagram.classList.add('is-scanning');
+    message.textContent = 'Pinging the system…';
+    count.textContent = `0 / ${targets.length} checks healthy`;
+    let completed = 0;
+    targets.forEach((target, index) => {
+      target.classList.remove('is-healthy');
+      target.classList.add('is-pending');
+      const status = target.querySelector('.node-status');
+      status.textContent = '·';
+      status.setAttribute('aria-label', 'Queued');
+      groups[index].classList.remove('is-healthy');
+      timers.push(setTimeout(() => {
+        target.classList.remove('is-pending');
+        target.classList.add('is-pinging');
+        status.setAttribute('aria-label', 'Checking');
+        groups[index].classList.add('is-pinging');
+      }, index * 350));
+      timers.push(setTimeout(() => {
+        target.classList.remove('is-pinging');
+        target.classList.add('is-healthy');
+        status.textContent = '✓';
+        status.setAttribute('aria-label', 'Healthy');
+        groups[index].classList.remove('is-pinging');
+        groups[index].classList.add('is-healthy');
+        completed += 1;
+        count.textContent = `${completed} / ${targets.length} checks healthy`;
+        if (completed === targets.length) finishSystemCheck();
+      }, index * 350 + 1200));
+    });
+  }
+  new ResizeObserver(drawConnections).observe(map);
+  const systemObserver = new IntersectionObserver(entries => {
+    if (!started && entries.some(entry => entry.isIntersecting)) {
+      systemObserver.disconnect();
+      runSystemCheck();
+    }
+  }, {threshold: 0.2});
+  systemObserver.observe(map);
+  replay.addEventListener('click', runSystemCheck);
+  motionPreference.addEventListener('change', event => {
+    if (event.matches) finishSystemCheck();
+  });
+}
