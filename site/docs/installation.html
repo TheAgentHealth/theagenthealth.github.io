@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install AgentHealth — TheAgentHealth docs</title>
+<meta name="description" content="Download, verify, and run AgentHealth across distribution channels.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/installation.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html" class="current">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Install AgentHealth</h1>
+<p>The commands below install the published v0.12.0 release. See <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/releases/verification-v0.12.0.md">publication verification</a>.</p>
+<p>Choose a distribution:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Instructions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Standalone binary (Linux, macOS, Windows)</td>
+<td>Platform downloads and commands below</td>
+</tr>
+<tr>
+<td>Docker Hub or GHCR</td>
+<td><a href="#container-image">Run the container</a></td>
+</tr>
+<tr>
+<td>Kubernetes / Helm</td>
+<td><a href="#kubernetes-and-helm-source-installation">Chart and manifests</a>, <a href="kubernetes.html">Kubernetes guide</a></td>
+</tr>
+<tr>
+<td>Linux DEB/RPM, Homebrew/Scoop manifests</td>
+<td><a href="#package-channels-phase-13-v0110">Package channels</a></td>
+</tr>
+<tr>
+<td>OCI release-file bundle</td>
+<td><a href="distribution.html#installation-examples">ORAS download</a></td>
+</tr>
+</tbody>
+</table>
+<p>Python/PyPI and JavaScript/npm SDKs are planned and not published.</p>
+<p>Download the archive for your operating system and CPU from <a href="https://github.com/TheAgentHealth/agenthealth/releases">GitHub Releases</a>. Go is not required for downloaded binaries.</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Archive suffix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linux x86-64</td>
+<td><code>linux_amd64.tar.gz</code></td>
+</tr>
+<tr>
+<td>Linux ARM64</td>
+<td><code>linux_arm64.tar.gz</code></td>
+</tr>
+<tr>
+<td>macOS Intel</td>
+<td><code>darwin_amd64.tar.gz</code></td>
+</tr>
+<tr>
+<td>macOS Apple Silicon</td>
+<td><code>darwin_arm64.tar.gz</code></td>
+</tr>
+<tr>
+<td>Windows x86-64</td>
+<td><code>windows_amd64.zip</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="linux-x86-64-example">Linux x86-64 example</h2>
+<pre><code class="language-bash">curl -fLO https://github.com/TheAgentHealth/agenthealth/releases/download/v0.12.0/agenthealth_v0.12.0_linux_amd64.tar.gz
+curl -fLO https://github.com/TheAgentHealth/agenthealth/releases/download/v0.12.0/checksums.txt
+sha256sum --check --ignore-missing checksums.txt
+tar -xzf agenthealth_v0.12.0_linux_amd64.tar.gz
+./agenthealth version
+./agenthealth ping http https://example.com
+</code></pre>
+<p>To run from any directory, place the binary in a directory on your PATH. For example:</p>
+<pre><code class="language-bash">mkdir -p &quot;$HOME/.local/bin&quot;
+install -m 755 agenthealth &quot;$HOME/.local/bin/agenthealth&quot;
+export PATH=&quot;$HOME/.local/bin:$PATH&quot;
+agenthealth version
+</code></pre>
+<p>Persist the PATH addition in your shell configuration if needed.</p>
+<p>On macOS, use the appropriate tar archive and <code>shasum -a 256</code> to compare its hash with <code>checksums.txt</code>. On Windows, extract the ZIP and run <code>./agenthealth.exe version</code> in PowerShell; use <code>Get-FileHash -Algorithm SHA256</code> to compare the archive hash. Release artifacts carry GitHub keyless signed provenance and per-platform SBOM attestations. OS-native executable signing and macOS notarization remain future distribution work.</p>
+<h2 id="build-from-source">Build from source</h2>
+<p>With Go 1.23 or newer:</p>
+<pre><code class="language-bash">git clone https://github.com/TheAgentHealth/agenthealth.git
+cd agenthealth
+git checkout v0.12.0
+go build -ldflags '-X main.version=v0.12.0' -o agenthealth ./cmd/agenthealth
+./agenthealth version
+</code></pre>
+<p>See <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/cli.md">CLI usage</a> and <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/http-adapter.md">HTTP configuration</a>. The v0.12.0 security release rebuilds existing package-channel assets and includes the official container image, experimental AHP HTTP serving, shared dependency graphs, and supports agent/multi-agent, gateway/router HTTP signals, HTTP/API, MCP HTTP/stdio with OAuth, and A2A 1.0 JSON-RPC targets with explicit 0.3.0 compatibility. See <a href="agent-adapter.html">agent setup and runtime prerequisites</a>, <a href="mcp-adapter.html">MCP configuration</a> and <a href="a2a-adapter.html">A2A configuration</a>.</p>
+<p>Phase 10 graph fields require v0.8.0 or newer. Existing nested configurations remain valid.
+The <a href="examples/graph-check.html">graph example</a> requires configured services
+and a safe runtime handler.</p>
+<h2 id="verify-provenance-and-sboms">Verify provenance and SBOMs</h2>
+<p>Each archive has a matching <code>agenthealth_v0.12.0_&lt;os&gt;_&lt;arch&gt;.cdx.json</code> CycloneDX
+1.6 SBOM describing linked Go modules, the standard-library version and the
+executable SHA-256. <code>checksums.txt</code> covers both archives and SBOMs.</p>
+<p>With a current GitHub CLI supporting <code>gh attestation</code>:</p>
+<pre><code class="language-bash">gh attestation verify agenthealth_v0.12.0_linux_amd64.tar.gz --repo TheAgentHealth/agenthealth
+gh attestation verify agenthealth_v0.12.0_linux_amd64.tar.gz --repo TheAgentHealth/agenthealth --predicate-type https://cyclonedx.org/bom
+</code></pre>
+<p>Attestations bind artifacts to this repository’s release workflow through a
+GitHub OIDC identity. Checksums alone do not authenticate the publisher.
+Archives normalize owner IDs, names, modes, timestamps and gzip/ZIP metadata.
+Reproduction requires the same source commit, Go toolchain and build environment;
+archive timestamp defaults to the commit time and can use <code>SOURCE_DATE_EPOCH</code>.</p>
+<p>Phase 8 <a href="agentgateway.html">Agentgateway checks</a> are included starting in v0.6.0.</p>
+<p>Phase 9 <a href="agent-router.html">Agent Router checks</a> are included starting in v0.7.0.
+Phase 10 <a href="dependency-graph.html">dependency graphs</a> are included starting in v0.8.0.</p>
+<p>Phase 11 experimental <a href="ahp.html">AHP serving</a> is included starting in v0.9.0.</p>
+<p>Phase 12 <a href="docker.html">container image</a> publishing is included starting in v0.10.0.</p>
+<h2 id="container-image">Container image</h2>
+<p>Starting in v0.10.0, each CLI release tag publishes a
+multi-platform image (<code>linux/amd64</code>, <code>linux/arm64</code>) to
+<code>ghcr.io/theagenthealth/agenthealth</code>, tagged <code>vX.Y.Z</code> with floating <code>vX</code> and
+<code>latest</code> for plain version tags; suffixed pre-release tags publish only their
+exact <code>vX.Y.Z-suffix</code>. Docker Hub at <code>theagenthealth/agenthealth</code> uses the same
+tags when mirror credentials are configured; v0.12.0 is available from both registries:</p>
+<pre><code class="language-bash"># GitHub Container Registry
+docker run --rm ghcr.io/theagenthealth/agenthealth:v0.12.0 version
+
+# Docker Hub
+docker run --rm theagenthealth/agenthealth:v0.12.0 version
+</code></pre>
+<p>To build the image locally:</p>
+<pre><code class="language-bash">docker build --build-arg VERSION=dev -t agenthealth .
+docker run --rm agenthealth version
+</code></pre>
+<p>The image uses a digest-pinned distroless static base with CA certificates,
+runs as the non-root user <code>65532</code>, and contains no shell. Its entrypoint is
+<code>agenthealth</code>, so arguments are CLI arguments. The binaries inside are
+byte-identical to the binaries in the matching Linux release archives.</p>
+<pre><code class="language-bash">docker run --rm ghcr.io/theagenthealth/agenthealth ping http https://example.com
+
+# Mount configuration read-only and pass referenced credentials by name.
+docker run --rm \
+  -v &quot;$PWD/agenthealth.yaml:/config/agenthealth.yaml:ro&quot; \
+  -e AGENT_API_TOKEN \
+  ghcr.io/theagenthealth/agenthealth check /config/agenthealth.yaml --format json
+</code></pre>
+<p>Exit codes are the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/spec/exit-codes.md">CLI exit codes</a>, so the container
+can gate CI jobs and Kubernetes probes directly. Use <code>host.docker.internal</code>
+(Docker Desktop) or a container network to reach services on the host. See
+<a href="docker.html">Docker distribution</a> for a full guide, including multi-platform
+local builds with Buildx and AHP serve-mode usage.</p>
+<p>Limitations: MCP stdio targets run their configured executable inside the
+container, so build a derived image that adds that server. <code>agenthealth login</code>
+needs a browser callback and is intended for a workstation binary. Token files
+require owner-only permissions and may be rewritten on refresh, so a container
+reusing one needs a writable volume owned by UID 65532.</p>
+<p>Verify a published image's signed attestation with the GitHub CLI:</p>
+<pre><code class="language-bash">gh attestation verify oci://ghcr.io/theagenthealth/agenthealth:&lt;version&gt; --repo TheAgentHealth/agenthealth
+</code></pre>
+<h2 id="package-channels-phase-13-v0110">Package channels (Phase 13, v0.11.0)</h2>
+<p>Starting in v0.11.0, releases built with Phase 13 tooling add <code>agenthealth.rb</code> (Homebrew),
+<code>agenthealth.json</code> (Scoop), and <code>agenthealth_&lt;tag&gt;_linux_&lt;arch&gt;.deb</code> / <code>.rpm</code>
+for AMD64 and ARM64. These assets are not present in v0.10.0. No official
+Homebrew tap, Scoop bucket, APT or YUM repository is published yet.</p>
+<p>Download the assets and <code>checksums.txt</code> from the
+same immutable tag and verify their hashes and GitHub provenance before use.
+Homebrew formula generation follows the <a href="https://docs.brew.sh/Formula-Cookbook.html">Formula Cookbook</a>;
+Scoop uses the <a href="https://github.com/ScoopInstaller/Scoop/wiki/App-Manifests">app manifest format</a>.
+Maintainers can place the generated formula in a tap's <code>Formula/agenthealth.rb</code>;
+users can install a downloaded Scoop manifest with <code>scoop install ./agenthealth.json</code>.
+Both manifests download the exact tagged archive and verify its SHA-256.</p>
+<p>On Debian/Ubuntu use <code>sudo apt install ./agenthealth_&lt;tag&gt;_linux_&lt;arch&gt;.deb</code>;
+on RPM distributions use <code>sudo dnf install ./agenthealth_&lt;tag&gt;_linux_&lt;arch&gt;.rpm</code>.
+Packages install <code>/usr/bin/agenthealth</code> and license/install documentation under
+<code>/usr/share/doc/agenthealth</code>, depend on <code>ca-certificates</code>, and create no service,
+configuration, credentials or install hooks. Remove with the normal package
+manager. Do not install multiple distribution methods to the same PATH location.</p>
+<p>Release CI runs native archive version/help/tool-failure checks on Linux AMD64
+and ARM64, macOS Intel and Apple Silicon, and Windows AMD64. These are smoke
+checks, not a supported-OS certification or native code signing. Package-manager
+installation across distributions and public channel hosting remain follow-up work.</p>
+<h2 id="kubernetes-and-helm-source-installation">Kubernetes and Helm source installation</h2>
+<p>Phase 14 provides <a href="https://github.com/TheAgentHealth/agenthealth/tree/main/deploy/kubernetes">manifests</a>, the
+<a href="https://github.com/TheAgentHealth/agenthealth/tree/main/deploy/helm/agenthealth">Helm chart</a> and
+<a href="examples/kubernetes.html">runnable scenarios</a>. Source chart 0.12.0
+pins CLI v0.12.0 and publishes through the shared release workflow. The
+historical chart 0.1.0 remains available as helm-v0.1.0, pinning CLI v0.11.1.
+See <a href="kubernetes.html">Kubernetes</a> and <a href="distribution.html">distribution</a> for direct
+release downloads, OCI Helm install and ORAS binary retrieval. New v0.12.0
+channels become available only after publication and verification.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

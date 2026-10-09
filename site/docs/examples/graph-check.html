@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shared dependency graph — TheAgentHealth docs</title>
+<meta name="description" content="Example configuration: Shared dependency graph.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/examples/graph-check.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="../index.html">Docs</a><a href="index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="../index.html">Overview</a><a href="../architecture.html">Architecture</a><a href="../cli.html">CLI</a><a href="../installation.html">Installation</a><a href="../docker.html">Docker</a><a href="../kubernetes.html">Kubernetes</a><a href="../distribution.html">Distribution</a><a href="../http-adapter.html">HTTP adapter</a><a href="../mcp-adapter.html">MCP adapter</a><a href="../a2a-adapter.html">A2A adapter</a><a href="../agent-adapter.html">Agent adapter</a><a href="../agent-router.html">Agent Router</a><a href="../agentgateway.html">Agentgateway</a><a href="../dependency-graph.html">Dependency graph</a><a href="../ahp.html">AHP (experimental)</a><a href="../interoperability.html">Interoperability</a><a href="../phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="index.html">Overview</a><a href="a2a-check.html">a2a check</a><a href="agent-check.html">agent check</a><a href="ahp-check.html">ahp check</a><a href="distribution.html">distribution</a><a href="gateway-check.html">gateway check</a><a href="graph-check.html" class="current">graph check</a><a href="kubernetes.html">kubernetes</a><a href="router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="../index.html">← All documentation</a></p>
+<h1>Shared dependency graph</h1>
+<p>The <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/graph-check/agenthealth.yaml">configuration</a> checks a first agent, one shared peer, a communication probe and a router.
+Run compatible handlers on localhost ports 8080–8082, then run:</p>
+<pre><code class="language-bash">agenthealth check examples/graph-check/agenthealth.yaml --format json
+</code></pre>
+<p>The first agent handler must implement the <a href="../agent-adapter.html">agent interface</a>,
+including an explicitly safe probe that contacts the selected peer.
+The router endpoint supplies a read-only HTTP health signal.
+See the <a href="../dependency-graph.html">graph guide</a> for policies, budgets and evidence semantics.</p>
+<h2 id="kubernetes-compatibility">Kubernetes compatibility</h2>
+<p>Mount this graph only after replacing localhost addresses and reviewing its active communication probe. Shared-node execution and independent edge policies remain unchanged.
+See <a href="kubernetes.html">deployment scenarios</a> and the
+<a href="../kubernetes.html">deployment guide</a>.</p>
+<div class="doc-config"><h2>Configuration files</h2>
+<h3>agenthealth.yaml</h3><pre><code>version: v1
+concurrency: 4
+targets:
+  - id: first
+    name: Research Agent
+    type: agent
+    endpoint: http://localhost:8080/health
+    budget_ms: 3000
+    dependencies:
+      - ref: peer
+        relationship: downstream
+      - ref: first-peer-path
+        relationship: path
+      - ref: router
+        relationship: router
+  - id: peer
+    name: Search Agent
+    type: agent
+    endpoint: http://localhost:8081/health
+  - id: first-peer-path
+    name: Search communication
+    type: agent
+    endpoint: http://localhost:8080/health
+    checks: [configuration, functional]
+    agent:
+      functional:
+        safe: true
+        text: Return a fixed health acknowledgement from the search peer.
+        downstream: Search Agent
+  - id: router
+    name: Router
+    type: router
+    endpoint: http://localhost:8082/health
+    dependencies:
+      - ref: peer
+        relationship: downstream
+        critical: false
+</code></pre>
+</div>
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>
