@@ -74,8 +74,7 @@ body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opa
 .resource-card{transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}
 .resource-card:hover{transform:translateY(-3px);box-shadow:0 16px 36px -22px #000c}
 
-.ecosystem-grid article{border-left:2px solid transparent;padding-left:14px;transition:border-color .2s ease}
-.ecosystem-grid article:hover{border-left-color:var(--green)}
+.ecosystem-grid article{border-left:2px solid var(--green);padding-left:14px}
 
 .stack-strip .wrap>div{transition:color .2s ease}
 .stack-strip .wrap>div:hover{color:var(--green)}
