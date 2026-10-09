@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kubernetes scenarios — TheAgentHealth docs</title>
+<meta name="description" content="Example configuration: Kubernetes scenarios.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/examples/kubernetes.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="../index.html">Docs</a><a href="index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="../index.html">Overview</a><a href="../architecture.html">Architecture</a><a href="../cli.html">CLI</a><a href="../installation.html">Installation</a><a href="../docker.html">Docker</a><a href="../kubernetes.html">Kubernetes</a><a href="../distribution.html">Distribution</a><a href="../http-adapter.html">HTTP adapter</a><a href="../mcp-adapter.html">MCP adapter</a><a href="../a2a-adapter.html">A2A adapter</a><a href="../agent-adapter.html">Agent adapter</a><a href="../agent-router.html">Agent Router</a><a href="../agentgateway.html">Agentgateway</a><a href="../dependency-graph.html">Dependency graph</a><a href="../ahp.html">AHP (experimental)</a><a href="../interoperability.html">Interoperability</a><a href="../phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="index.html">Overview</a><a href="a2a-check.html">a2a check</a><a href="agent-check.html">agent check</a><a href="ahp-check.html">ahp check</a><a href="distribution.html">distribution</a><a href="gateway-check.html">gateway check</a><a href="graph-check.html">graph check</a><a href="kubernetes.html" class="current">kubernetes</a><a href="router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="../index.html">← All documentation</a></p>
+<h1>Kubernetes scenarios</h1>
+<p>Run from the repository root with kubectl, Helm 3 and a disposable Kubernetes
+cluster. These scenarios use a deterministic nginx HTTP fixture, not a deployed
+agent framework, Agentgateway or Agent Router product. Read the
+<a href="../kubernetes.html">Kubernetes guide</a> for image references, safety,
+Secret setup and probe semantics.</p>
+<h2 id="healthy-deployment-and-validation-job">Healthy deployment and validation Job</h2>
+<pre><code class="language-bash">kubectl create namespace agenthealth-demo
+kubectl -n agenthealth-demo apply -f examples/kubernetes/demo.yaml
+kubectl -n agenthealth-demo rollout status deployment/demo --timeout=90s
+kubectl -n agenthealth-demo apply -f examples/kubernetes/configmap.yaml
+kubectl -n agenthealth-demo apply -f deploy/kubernetes/deployment.yaml
+kubectl -n agenthealth-demo rollout status deployment/agenthealth --timeout=90s
+kubectl -n agenthealth-demo apply -f deploy/kubernetes/job.yaml
+kubectl -n agenthealth-demo wait --for=condition=complete job/agenthealth-check --timeout=90s
+kubectl -n agenthealth-demo logs job/agenthealth-check
+</code></pre>
+<p>The result distinguishes direct agent, composite agent, gateway/router signals
+and a configured HTTP route. Passive routed endpoint checks establish the
+checker's path, not communication from the first agent to its peer. To test
+first-to-peer communication use your runtime's explicitly authorized safe handler
+as described in <a href="../agent-adapter.html">agent checks</a>.</p>
+<h2 id="init-sidecar-exec-probes-and-scheduled-checks">Init, sidecar, exec probes and scheduled checks</h2>
+<pre><code class="language-bash">kubectl -n agenthealth-demo apply -f examples/kubernetes/init.yaml
+kubectl -n agenthealth-demo rollout status deployment/demo-init --timeout=90s
+kubectl -n agenthealth-demo apply -f examples/kubernetes/sidecar.yaml
+kubectl -n agenthealth-demo rollout status deployment/demo-sidecar --timeout=90s
+kubectl -n agenthealth-demo apply -f examples/kubernetes/exec-probes.yaml
+kubectl -n agenthealth-demo rollout status deployment/agenthealth-exec --timeout=90s
+kubectl -n agenthealth-demo apply -f deploy/kubernetes/cronjob.yaml
+kubectl -n agenthealth-demo create job scheduled-check --from=cronjob/agenthealth-check
+kubectl -n agenthealth-demo wait --for=condition=complete job/scheduled-check --timeout=90s
+</code></pre>
+<p>Init gates against the external demo Service. The sidecar checks its application
+on localhost and gates the same Pod's readiness. The exec example runs checks
+inside the AgentHealth serving container; it does not install the executable
+into your application image.</p>
+<h2 id="helm">Helm</h2>
+<pre><code class="language-bash">helm upgrade --install monitor deploy/helm/agenthealth -n agenthealth-demo \
+  --set-file config=examples/kubernetes/agenthealth.yaml
+helm upgrade --install validation deploy/helm/agenthealth -n agenthealth-demo \
+  --set mode=job --set-file config=examples/kubernetes/agenthealth.yaml
+helm upgrade --install scheduled deploy/helm/agenthealth -n agenthealth-demo \
+  --set mode=cronjob --set-file config=examples/kubernetes/agenthealth.yaml
+</code></pre>
+<p>A completed Job is a one-shot gate; use a new release name to rerun it. Kubernetes
+Job pod templates are immutable, so updating configuration or switching between
+workload modes in an existing Helm release can require deleting the old workload.
+Use separate release names for modes. The chart intentionally creates no Helm
+hooks or automatic destructive replacement.</p>
+<h2 id="secret-injection">Secret injection</h2>
+<p>Create the existing <code>agenthealth-credentials</code> Secret with an <code>agent-token</code> key
+through your secret manager. The fixture at <code>/auth</code> accepts the synthetic test
+value <code>fixture-token</code>; other values produce MISCONFIGURED. Then run:</p>
+<pre><code class="language-bash">kubectl -n agenthealth-demo apply -f examples/kubernetes/secret-job.yaml
+kubectl -n agenthealth-demo wait --for=condition=complete job/agenthealth-auth --timeout=90s
+kubectl -n agenthealth-demo logs job/agenthealth-auth
+</code></pre>
+<p>Production endpoints must enforce their own authentication. The runtime smoke
+suite creates an ephemeral fixture Secret, checks success, replaces it with a
+rejected value, and verifies failure without credential disclosure.</p>
+<h2 id="failure-and-cleanup">Failure and cleanup</h2>
+<pre><code class="language-bash">kubectl -n agenthealth-demo scale deployment/demo --replicas=0
+kubectl -n agenthealth-demo delete job agenthealth-check
+kubectl -n agenthealth-demo apply -f deploy/kubernetes/job.yaml
+kubectl -n agenthealth-demo wait --for=condition=failed job/agenthealth-check --timeout=90s
+kubectl -n agenthealth-demo logs job/agenthealth-check
+kubectl -n agenthealth-demo delete namespace agenthealth-demo
+</code></pre>
+<p>A nonzero health exit fails the Job without retry. The monitor loses readiness
+after its next completed observation, but dependency failure does not restart
+its AHP process. The local sidecar remains healthy because its own fixture is
+still running. For automated checks, run
+<code>python3 scripts/test_kubernetes.py --context &lt;disposable-context&gt;</code>.</p>
+<h2 id="kustomize-alternative">Kustomize alternative</h2>
+<p>Use a fresh namespace for this alternative to the individual apply commands:</p>
+<pre><code class="language-bash">kubectl create namespace agenthealth-kustomize
+kubectl -n agenthealth-kustomize apply -k examples/kubernetes
+kubectl -n agenthealth-kustomize rollout status deployment/demo --timeout=90s
+kubectl -n agenthealth-kustomize rollout status deployment/agenthealth --timeout=90s
+kubectl -n agenthealth-kustomize wait --for=condition=complete job/agenthealth-check --timeout=90s
+kubectl -n agenthealth-kustomize delete namespace agenthealth-kustomize
+</code></pre>
+<p>The generated configuration is content-addressed and workload references are
+rewritten automatically. The base at <code>deploy/kubernetes</code> can also be consumed
+by your own overlay. See the <a href="../kubernetes.html#kustomize-and-application-container-exec-probes">guide</a>
+for registry selection and the optional application-image binary-copy example.
+Kustomize and these additional operational scenarios credit
+<a href="https://github.com/TheAgentHealth/agenthealth/pull/15">sharath568's PR #15</a>.</p>
+<div class="doc-config"><h2>Configuration files</h2>
+<h3>agenthealth.yaml</h3><pre><code>version: v1
+targets:
+- name: direct-agent
+  type: agent
+  endpoint: http://demo:8080/health
+  timeout_ms: 2000
+  budget_ms: 5000
+  dependencies:
+  - name: composite-agent
+    type: agent
+    endpoint: http://demo:8080/peer
+    agent:
+      required_capabilities:
+      - answer
+    timeout_ms: 2000
+    budget_ms: 5000
+    retries: 0
+  - name: gateway-readiness
+    type: gateway
+    endpoint: http://demo:8080/ready
+    timeout_ms: 2000
+    budget_ms: 5000
+    retries: 0
+  - name: router-readiness
+    type: router
+    endpoint: http://demo:8080/ready
+    timeout_ms: 2000
+    budget_ms: 5000
+    retries: 0
+  - name: configured-route
+    type: http
+    endpoint: http://demo:8080/route
+    checks:
+    - protocol
+    timeout_ms: 2000
+    budget_ms: 5000
+    retries: 0
+</code></pre>
+</div>
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

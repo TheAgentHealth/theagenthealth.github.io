@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gateway checks — TheAgentHealth docs</title>
+<meta name="description" content="Example configuration: Gateway checks.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/examples/gateway-check.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="../index.html">Docs</a><a href="index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="../index.html">Overview</a><a href="../architecture.html">Architecture</a><a href="../cli.html">CLI</a><a href="../installation.html">Installation</a><a href="../docker.html">Docker</a><a href="../kubernetes.html">Kubernetes</a><a href="../distribution.html">Distribution</a><a href="../http-adapter.html">HTTP adapter</a><a href="../mcp-adapter.html">MCP adapter</a><a href="../a2a-adapter.html">A2A adapter</a><a href="../agent-adapter.html">Agent adapter</a><a href="../agent-router.html">Agent Router</a><a href="../agentgateway.html">Agentgateway</a><a href="../dependency-graph.html">Dependency graph</a><a href="../ahp.html">AHP (experimental)</a><a href="../interoperability.html">Interoperability</a><a href="../phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="index.html">Overview</a><a href="a2a-check.html">a2a check</a><a href="agent-check.html">agent check</a><a href="ahp-check.html">ahp check</a><a href="distribution.html">distribution</a><a href="gateway-check.html" class="current">gateway check</a><a href="graph-check.html">graph check</a><a href="kubernetes.html">kubernetes</a><a href="router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="../index.html">← All documentation</a></p>
+<h1>Gateway checks</h1>
+<p>The <a href="../agentgateway.html">integration guide</a> explains the configured
+direct agent, gateway readiness signal, direct downstream and proxied A2A
+path. Replace the local endpoints with your deployment addresses. No servers
+are started by this example; functional probes require explicit safe configuration.</p>
+<h2 id="phase-10-compatibility">Phase 10 compatibility</h2>
+<p>This nested example remains valid. To share a backend across paths, give that node an explicit <code>id</code> and use <code>ref</code> edges. Each communication path keeps a distinct node and its own checks; edge policy remains independent. See the <a href="graph-check.html">graph example</a>. Graph fields require v0.8.0 or newer; v0.7.0 binaries reject them.</p>
+<h2 id="kubernetes-compatibility">Kubernetes compatibility</h2>
+<p>Replace localhost with your in-cluster addresses when mounting this configuration. Gateway and routed peer checks retain separate evidence; the Kubernetes fixture is not product certification.
+See <a href="kubernetes.html">deployment scenarios</a> and the
+<a href="../kubernetes.html">deployment guide</a>.</p>
+<div class="doc-config"><h2>Configuration files</h2>
+<h3>agenthealth.yaml</h3><pre><code>version: v1
+targets:
+  - name: direct-agent
+    type: agent
+    endpoint: http://localhost:8080/health
+    dependencies:
+      - name: agentgateway-readiness
+        type: gateway
+        endpoint: http://localhost:15021/healthz/ready
+        http:
+          expected_status: [200]
+        dependencies:
+          - name: downstream-direct
+            type: a2a
+            endpoint: http://localhost:9090
+          - name: downstream-via-gateway
+            type: a2a
+            endpoint: http://localhost:3000
+</code></pre>
+</div>
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>
