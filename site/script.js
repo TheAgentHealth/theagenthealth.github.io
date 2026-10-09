@@ -18,7 +18,7 @@ button?.addEventListener('click', async () => {
   }
 });
 
-// Play the illustrative check sequence once when the terminal enters view.
+// Replay the illustrative check sequence on a loop while the terminal is in view.
 const terminal = document.querySelector('.terminal');
 const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
 if (terminal && !motionPreference.matches) {
@@ -26,8 +26,9 @@ if (terminal && !motionPreference.matches) {
   const message = terminal.querySelector('.result-message');
   const icon = terminal.querySelector('.result-icon');
   const timers = [];
+  const loopPause = 2600;
+  let inView = false;
   const finish = () => {
-    timers.forEach(clearTimeout);
     badges.forEach(badge => {
       badge.className = 'check-complete';
       badge.textContent = '✓ HEALTHY';
@@ -36,6 +37,9 @@ if (terminal && !motionPreference.matches) {
     message.textContent = 'Ready to work.';
     icon.classList.remove('spinner');
     icon.textContent = '✓';
+    if (inView && !motionPreference.matches) {
+      timers.push(setTimeout(play, loopPause));
+    }
   };
   const play = () => {
     terminal.classList.add('is-checking');
@@ -56,16 +60,26 @@ if (terminal && !motionPreference.matches) {
     });
     timers.push(setTimeout(finish, badges.length * 650 + 400));
   };
+  const stop = () => {
+    timers.forEach(clearTimeout);
+    timers.length = 0;
+  };
   const observer = new IntersectionObserver(entries => {
-    if (entries.some(entry => entry.isIntersecting)) {
-      observer.disconnect();
-      if (!motionPreference.matches) play();
-    }
+    entries.forEach(entry => {
+      inView = entry.isIntersecting;
+      if (inView && !motionPreference.matches) {
+        stop();
+        play();
+      } else {
+        stop();
+      }
+    });
   }, { threshold: 0.35 });
   observer.observe(terminal);
   motionPreference.addEventListener('change', event => {
     if (event.matches) {
-      observer.disconnect();
+      inView = false;
+      stop();
       finish();
     }
   });
