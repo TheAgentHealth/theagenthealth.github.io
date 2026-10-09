@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A2A peer examples — TheAgentHealth docs</title>
+<meta name="description" content="Example configuration: A2A peer examples.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/examples/a2a-check.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="../index.html">Docs</a><a href="index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="../index.html">Overview</a><a href="../architecture.html">Architecture</a><a href="../cli.html">CLI</a><a href="../installation.html">Installation</a><a href="../docker.html">Docker</a><a href="../kubernetes.html">Kubernetes</a><a href="../distribution.html">Distribution</a><a href="../http-adapter.html">HTTP adapter</a><a href="../mcp-adapter.html">MCP adapter</a><a href="../a2a-adapter.html">A2A adapter</a><a href="../agent-adapter.html">Agent adapter</a><a href="../agent-router.html">Agent Router</a><a href="../agentgateway.html">Agentgateway</a><a href="../dependency-graph.html">Dependency graph</a><a href="../ahp.html">AHP (experimental)</a><a href="../interoperability.html">Interoperability</a><a href="../phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="index.html">Overview</a><a href="a2a-check.html" class="current">a2a check</a><a href="agent-check.html">agent check</a><a href="ahp-check.html">ahp check</a><a href="distribution.html">distribution</a><a href="gateway-check.html">gateway check</a><a href="graph-check.html">graph check</a><a href="kubernetes.html">kubernetes</a><a href="router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="../index.html">← All documentation</a></p>
+<h1>A2A peer examples</h1>
+<p>These configurations require your own running A2A 0.3.0 JSON-RPC peer.
+Adjust the endpoint and expected <code>health</code> skill ID to match its agent card.
+They do not start a server. Run the commands from the repository root with
+AgentHealth v0.3.0 or newer.</p>
+<table>
+<thead>
+<tr>
+<th>Configuration</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/a2a-check/agenthealth.yaml">agenthealth.yaml</a></td>
+<td>Default passive discovery, protocol/authentication checks, a required skill, and latency threshold</td>
+</tr>
+<tr>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/a2a-check/bearer.yaml">bearer.yaml</a></td>
+<td>Passive checks using the <code>AGENT_TOKEN</code> environment reference</td>
+</tr>
+<tr>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/a2a-check/custom-card.yaml">custom-card.yaml</a></td>
+<td>A card at a custom absolute URL on the configured origin</td>
+</tr>
+<tr>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/a2a-check/functional.yaml">functional.yaml</a></td>
+<td>An explicitly safe text interaction with passive checks</td>
+</tr>
+</tbody>
+</table>
+<h2 id="passive-discovery">Passive discovery</h2>
+<p>The standard card location is <code>/.well-known/agent-card.json</code> at the configured
+origin. The card's <code>url</code> must point to a JSON-RPC endpoint on that same origin.
+Authentication/protocol checks use read-only <code>tasks/get</code> lookups with fresh IDs;
+a valid task-not-found response passes without creating a task.</p>
+<pre><code class="language-bash">agenthealth ping a2a http://localhost:9000
+agenthealth doctor a2a http://localhost:9000
+agenthealth check examples/a2a-check/agenthealth.yaml --format json
+agenthealth doctor examples/a2a-check/agenthealth.yaml
+agenthealth check examples/a2a-check/custom-card.yaml --format yaml
+</code></pre>
+<p>The custom-card example expects <code>/metadata/agent-card.json</code>. Change both URLs
+when moving to a different origin. A missing required <code>health</code> skill yields
+<code>DEGRADED</code> and exit code 1. The capability check inspects metadata; it does not
+execute that skill. See <a href="../a2a-adapter.html#discovery-and-passive-checks">capability expectations</a>
+for optional boolean capability requirements.</p>
+<h2 id="bearer-credentials">Bearer credentials</h2>
+<p>Set <code>AGENT_TOKEN</code> in the process environment before running the bearer example;
+keep the credential value out of configuration files. Replace its HTTPS endpoint
+with the origin of your authenticated peer. Missing/empty references fail
+configuration before networking; HTTP 401/403 yields <code>MISCONFIGURED</code> and exit
+code 4. These checks validate acceptance for the passive lookup.</p>
+<pre><code class="language-bash">agenthealth check examples/a2a-check/bearer.yaml --format json
+</code></pre>
+<h2 id="minimal-interaction">Minimal interaction</h2>
+<p>Use the functional example with a peer supporting default <code>text/plain</code> input
+and output. Confirm its prompt is non-destructive for your agent before using
+<code>safe: true</code>; the declaration is an operator assertion. The probe sends one
+blocking <code>message/send</code> request and never retries it. Add the same <code>auth</code> block
+as the bearer example if your peer requires a token.</p>
+<pre><code class="language-bash">agenthealth check examples/a2a-check/functional.yaml --format json
+</code></pre>
+<p>Valid agent text replies or completed tasks pass. Failed/rejected/canceled tasks
+are <code>UNHEALTHY</code> (exit 2); pending tasks and input requirements are <code>UNKNOWN</code>
+(exit 5). The adapter does not poll, continue, or automatically cancel tasks,
+and does not expose the reply body. A successful interaction validates completion,
+not answer semantics. See the <a href="../a2a-adapter.html">adapter guide</a> for the
+full supported scope, limits, and classifications.</p>
+<p>For a current v1 peer, use <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/a2a-check/v1.yaml">the v1 configuration</a>. Legacy examples
+explicitly select 0.3.0. Unconfigured ping/doctor now select v1.</p>
+<h2 id="phase-10-compatibility">Phase 10 compatibility</h2>
+<p>This nested example remains valid. To share a backend across paths, give that node an explicit <code>id</code> and use <code>ref</code> edges. Each communication path keeps a distinct node and its own checks; edge policy remains independent. See the <a href="graph-check.html">graph example</a>. Graph fields require v0.8.0 or newer; v0.7.0 binaries reject them.</p>
+<div class="doc-config"><h2>Configuration files</h2>
+<h3>agenthealth.yaml</h3><pre><code>version: v1
+targets:
+  - name: peer
+    type: a2a
+    endpoint: http://localhost:9000
+    a2a:
+      protocol_version: '0.3.0'
+      required_skills: [health]
+    thresholds:
+      latency_ms: 1000
+</code></pre>
+<h3>bearer.yaml</h3><pre><code>version: v1
+targets:
+  - name: authenticated-peer
+    type: a2a
+    endpoint: https://agent.example.com
+    auth:
+      bearer_env: AGENT_TOKEN
+    a2a:
+      protocol_version: '0.3.0'
+      required_skills: [health]
+    thresholds:
+      latency_ms: 1000
+</code></pre>
+<h3>custom-card.yaml</h3><pre><code>version: v1
+targets:
+  - name: peer-with-custom-card
+    type: a2a
+    endpoint: http://localhost:9000
+    a2a:
+      card_url: http://localhost:9000/metadata/agent-card.json
+      protocol_version: '0.3.0'
+      required_skills: [health]
+</code></pre>
+<h3>functional.yaml</h3><pre><code>version: v1
+targets:
+  - name: peer-interaction
+    type: a2a
+    endpoint: http://localhost:9000
+    checks: [reachability, protocol, authentication, capability, functional, latency]
+    a2a:
+      protocol_version: '0.3.0'
+      required_skills: [health]
+      functional:
+        safe: true
+        text: 'Report your readiness as text without invoking tools or making external changes.'
+    thresholds:
+      latency_ms: 1000
+</code></pre>
+<h3>v1.yaml</h3><pre><code>version: v1
+targets:
+  - name: current-peer
+    type: a2a
+    endpoint: https://agent.example.com
+    a2a:
+      protocol_version: '1.0'
+      required_skills: [health]
+    thresholds:
+      latency_ms: 1000
+</code></pre>
+</div>
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

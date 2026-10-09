@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTTP health adapter — TheAgentHealth docs</title>
+<meta name="description" content="Status, headers, bearer auth, body checks, and transport diagnostics.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/http-adapter.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html" class="current">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>HTTP health adapter</h1>
+<p>The HTTP adapter supports <code>http</code> and <code>api</code> targets. Default checks use HEAD: connectivity, authentication, HTTP status/header expectations, configuration, and measured reachability latency. A default response must be 2xx to be healthy. A reachable 404 or 500 is <code>UNHEALTHY</code>; 401/403 is <code>MISCONFIGURED</code>. Explicit <code>checks: [reachability]</code> measures connectivity alone, independent of status.</p>
+<pre><code class="language-bash">./agenthealth ping http https://example.com
+./agenthealth doctor examples/core-check/agenthealth.yaml
+</code></pre>
+<p>The example configuration requires <code>http://localhost:8080/health</code> to return 200. To try it locally, create a temporary directory with a <code>health</code> file and serve that directory:</p>
+<pre><code class="language-bash">mkdir -p /tmp/agenthealth-demo
+echo ready &gt; /tmp/agenthealth-demo/health
+python3 -m http.server 8080 --directory /tmp/agenthealth-demo
+</code></pre>
+<p>In another terminal, run doctor. Removing the <code>health</code> file makes the protocol check fail with <code>UNHEALTHY</code> while reachability remains healthy.</p>
+<h2 id="response-expectations">Response expectations</h2>
+<p>Use <code>http.expected_status</code> to accept specific statuses and <code>http.headers</code> to require response header values. Header names are case-insensitive and values match exactly. For example:</p>
+<p>&lt;!-- spec-example: configuration --&gt;</p>
+<pre><code class="language-yaml">version: v1
+targets:
+  - name: service
+    type: http
+    endpoint: https://example.com/health
+    http:
+      expected_status: [200, 204]
+      headers:
+        X-Service-Ready: 'true'
+</code></pre>
+<p>Body inspection uses GET and requires <code>checks</code> to include <code>functional</code>. Use <code>http.body_contains</code> for literal text matching and <code>http.max_body_bytes</code> to cap the body (default 64 KiB, maximum 1 MiB). Body matching requires the complete body to fit within the limit; oversized responses are inconclusive. GET probes remain non-destructive and never retry. See the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/spec/configuration.md#http-response-expectations-phase-4-draft">configuration specification</a> for a full example.</p>
+<h2 id="transport-diagnostics">Transport diagnostics</h2>
+<p>Reachability traces the actual HTTP request using Go's <a href="https://pkg.go.dev/net/http/httptrace">HTTP tracing API</a>. It records DNS resolution, TCP connection, TLS handshake/verification, and HTTP response headers. Only observed stages appear. IP literals do not require DNS, plain HTTP has no TLS, and connection reuse can omit earlier stages. With proxy settings, these observations describe the route used by the HTTP transport, which may include a proxy rather than direct target connectivity.</p>
+<p>Transport stages appear under <code>checks.reachability.steps</code> in JSON/YAML and beneath reachability in terminal output. <code>HEALTHY</code> means a stage completed, <code>UNREACHABLE</code> means it failed, and <code>UNKNOWN</code> means it had started but had not completed at the observation boundary. Multiple connection address attempts can occur; a successful connection takes precedence over failed attempts. Retry diagnostics describe the final attempt.</p>
+<p>Connectivity latency measures the successful HEAD reachability attempt, including observed DNS/TCP/TLS work, rather than GET body reading or all checks combined. Threshold violations are <code>DEGRADED</code>. Per-check deadlines cover network work and body reading; retries apply only to passive failures before any response bytes arrive.</p>
+<h2 id="safety">Safety</h2>
+<p>TLS certificate and hostname verification remain mandatory. Redirects are never followed, and credentials use environment references (<code>auth.bearer_env</code>). Response bodies, response headers, expected values, addresses, and raw transport errors are not emitted. HEAD checks do not fall back automatically to GET. A service that rejects HEAD requires an explicit check policy.</p>
+<h2 id="dependency-graph-integration">Dependency graph integration</h2>
+<p><a href="dependency-graph.html">Phase 10</a> adds explicit node IDs and references while preserving this adapter’s checks and safety contract. HTTP nodes retain their HEAD/GET behavior, response limits and explicit functional opt-in. A referenced node uses its own credentials and expectations. Critical/optional policy belongs to each edge. The <a href="examples/graph-check.html">graph example</a> shows the configuration pattern. This extension is included in v0.8.0.</p>
+<h2 id="kubernetes-deployment">Kubernetes deployment</h2>
+<p>Passive HTTP checks retain HEAD/status/header behavior inside Kubernetes. Use in-cluster service addresses and explicit deadlines that fit the workload budget; body matching still requires functional opt-in.
+See <a href="kubernetes.html">Phase 14 deployment guidance</a> for ConfigMaps, Secrets,
+probe policy and validation limits. No adapter or configuration migration is required.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

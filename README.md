@@ -16,7 +16,19 @@ Pushing `main` validates and deploys `site/` directly to GitHub Pages using this
 
 ## Content
 
-The landing page describes the full platform scope through roadmap Phase 26, per the project owner's editorial direction. Download and documentation links point to the real project. The hero dependency view is labeled illustrative. Check the source project's release notes for version-specific implementation coverage.
+The landing page describes the full platform scope through roadmap Phase 26, per the project owner's editorial direction. The hero dependency view is labeled illustrative. Check the source project's release notes for version-specific implementation coverage.
+
+`site/docs/` is a generated wiki mirroring select guides from `agenthealth/docs/` and
+examples from `agenthealth/examples/`. Regenerate it after those change, with a sibling
+`agenthealth` checkout available:
+
+```sh
+python3 scripts/build_docs.py ../agenthealth
+```
+
+This requires `markdown-it-py` (`pip install -r scripts/requirements.txt`). The script is a
+maintenance-time tool; its output (`site/docs/`) is committed like any other static file.
+Edit `scripts/build_docs.py`'s `DOCS`/`EXAMPLES` lists to add or remove mirrored pages.
 
 ## Validation
 

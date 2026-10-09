@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCP health adapter — TheAgentHealth docs</title>
+<meta name="description" content="HTTP/stdio transport, protocol selection, OAuth, and functional probes.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/mcp-adapter.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html" class="current">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>MCP health adapter</h1>
+<p>MCP targets support Streamable HTTP (JSON and SSE responses) and explicitly
+configured stdio subprocesses. Supported revisions are <code>2025-03-26</code>,
+<code>2025-06-18</code>, <code>2025-11-25</code>, and the stateless <code>2026-07-28</code> protocol.</p>
+<pre><code class="language-bash">agenthealth ping mcp http://localhost:3000/mcp
+agenthealth doctor mcp http://localhost:3000/mcp
+agenthealth doctor examples/mcp-check/agenthealth.yaml
+</code></pre>
+<p>HTTP endpoints must be the server's MCP URL; the adapter does not append
+<code>/mcp</code>. The deprecated separate HTTP+SSE transport is not implemented.</p>
+<p>Ready-to-edit configurations and commands are collected in the
+<a href="examples/index.html">examples guide</a>.</p>
+<h2 id="protocol-selection">Protocol selection</h2>
+<p>With no version pin, checks probe <code>server/discover</code> using <code>2026-07-28</code>.
+Modern requests carry per-request version, client identity, and capabilities,
+plus matching <code>MCP-Protocol-Version</code> and <code>Mcp-Method</code> HTTP headers. Modern
+functional calls also mirror <code>Mcp-Name</code> and valid <code>x-mcp-header</code> parameters,
+encoding unsafe values with the protocol's Base64 sentinel. Invalid header
+annotations exclude a tool from the discovered inventory. Results must be
+complete; input-required results are inconclusive and never cause additional
+functional calls.</p>
+<p>A legacy HTTP rejection without a recognized modern error triggers
+initialization-based negotiation. On stdio, an unrecognized RPC error triggers
+legacy initialization. Discovery uses the configured attempt deadline, including
+cold process startup; a timeout never triggers downgrade. Pin a legacy revision
+for servers that silently ignore unknown methods. Recognized
+modern version/header errors never silently downgrade. Legacy negotiation
+offers <code>2025-11-25</code> and accepts any supported legacy revision. Set
+<code>mcp.protocol_version</code> to pin a revision and disable cross-era fallback.
+A server version mismatch is <code>UNHEALTHY</code>; invalid local version pins are <code>MISCONFIGURED</code> before probing.</p>
+<p>Modern checks do not send <code>initialize</code>, <code>notifications/initialized</code>, session
+IDs, or DELETE. Legacy checks initialize one session per target run, validate server
+identity and capabilities, send the initialized notification, and forward any
+server-assigned session ID and negotiated version. Each HTTP session receives
+best-effort DELETE cleanup within a maximum 250 ms budget under the engine’s
+bounded target cleanup context; cleanup errors do not change observations.
+Canceled attempts discard their session/process before subsequent work.</p>
+<p>These behaviors follow the upstream <a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/lifecycle">versioning contract</a>,
+<a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http">modern HTTP transport</a>,
+and <a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle">legacy lifecycle</a>.
+Only the listed revisions are supported; future revisions require explicit implementation.</p>
+<h2 id="passive-checks-and-expectations">Passive checks and expectations</h2>
+<p>Defaults include configuration, reachability, authentication, protocol,
+capability, and latency. HTTP reachability sends HEAD and accepts any HTTP
+status, including 405, as connectivity evidence. HTTP latency measures HEAD,
+excluding discovery and tool execution. DNS, TCP, TLS, and HTTP stages appear
+when observed. Stdio reachability measures subprocess startup and protocol
+establishment; it has no HTTP transport stages.</p>
+<p>Authentication and protocol establish server compatibility. Capability
+additionally lists every advertised tools, resources, and prompts inventory.
+Unadvertised inventories are skipped. Lists follow pagination, validate
+identity fields and tools' object input schemas, and reject repeated cursors
+and duplicate identities. Passive checks do not read resources, retrieve
+prompts, or invoke tools. Each target run owns one session/process and shares initialization and inventory
+evidence across dimensions; targets and dependencies never share that state.</p>
+<p>Required tool and prompt names match exactly; resources match by URI. Missing
+requirements, including an unadvertised inventory, yield <code>UNHEALTHY</code>.
+Requirements need <code>capability</code> when <code>checks</code> is explicitly specified.
+Doctor displays dimension-level evidence and canonical messages, without
+printing inventories or raw server responses.</p>
+<p>&lt;!-- spec-example: configuration --&gt;</p>
+<pre><code class="language-yaml">version: v1
+targets:
+  - name: search-mcp
+    type: mcp
+    endpoint: https://example.com/mcp
+    auth:
+      bearer_env: MCP_TOKEN
+    mcp:
+      protocol_version: '2026-07-28'
+      required_tools: [search]
+      required_resources: ['health://ready']
+      required_prompts: [summary]
+</code></pre>
+<p>Each response is capped at 1 MiB, each inventory at 100 pages and 10,000
+entries, within the engine's deadline. SSE parsing stops at the response
+instead of waiting for the stream to close. Notifications are ignored and
+unsupported server requests are rejected. Over-limit responses/discovery are
+<code>UNKNOWN</code>; malformed protocol and rejected RPCs are <code>UNHEALTHY</code>. HTTP 401/403
+is <code>MISCONFIGURED</code>; other unexpected HTTP statuses are <code>UNHEALTHY</code>.
+Connectivity failures and partial-response timeouts use the engine's normal
+classifications. Functional calls never repeat the POST request. Legacy HTTP
+SSE responses with an event ID can resume through at most three GET requests
+using <code>Last-Event-ID</code>, honoring <code>retry</code> within the original deadline and a
+shared 1 MiB response budget. Stateless streams do not resume. Tool content
+blocks must have a recognized type and the required fields for that type.</p>
+<h2 id="stdio-subprocesses">Stdio subprocesses</h2>
+<p>Set <code>mcp.transport: stdio</code> and supply a command and argument array. The
+<code>stdio://</code> endpoint identifies the local target; it is not interpreted as a
+shell command. Only explicitly configured executables run, without a shell.
+Use trusted server commands, whose startup behavior the operator has reviewed.</p>
+<p>&lt;!-- spec-example: configuration --&gt;</p>
+<pre><code class="language-yaml">version: v1
+targets:
+  - name: local-server
+    type: mcp
+    endpoint: stdio://local-server
+    mcp:
+      transport: stdio
+      stdio:
+        command: python3
+        args: [server.py]
+        directory: /path/to/server
+        env:
+          API_TOKEN: LOCAL_API_TOKEN
+</code></pre>
+<p><code>env</code> maps child environment names to host environment references. Missing
+values fail configuration. The child otherwise inherits only basic runtime
+variables (<code>PATH</code>, <code>HOME</code>, <code>USER</code>, temporary-directory variables, and Windows
+system-directory variables). Other parent environment variables are excluded.
+Stdio cannot combine with HTTP bearer or OAuth options. Stderr is discarded;
+stdout must contain bounded newline-delimited JSON-RPC messages.</p>
+<p>Input closes at cleanup, with a short grace period before forced termination.
+Cancellation closes streams and terminates the child. On POSIX platforms,
+children in the server's process group are terminated too; servers must not
+escape that group. Other platforms terminate the direct child. Linux subprocess
+behavior is tested; other release platforms are cross-compiled, not runtime-tested.</p>
+<h2 id="oauth-acquisition-and-login">OAuth acquisition and login</h2>
+<p>For HTTP targets, choose either <code>auth.bearer_env</code> for an existing token or
+<code>mcp.oauth</code> for token acquisition. OAuth requires a pre-registered <code>client_id</code>
+and an explicitly trusted <code>issuer</code>. The adapter discovers protected resource
+metadata and authorization-server/OIDC metadata, validates the issuer and
+resource binding, and requests tokens for that MCP resource. HTTPS is required
+except for explicit loopback URLs. Redirects are never followed. Challenge
+metadata must share the MCP endpoint's origin; authorization-server endpoints
+come from the pinned issuer's validated metadata.</p>
+<p>For automated checks, use the <a href="https://modelcontextprotocol.io/extensions/auth/oauth-client-credentials">client credentials extension</a>
+with a secret reference:</p>
+<p>&lt;!-- spec-example: configuration --&gt;</p>
+<pre><code class="language-yaml">version: v1
+targets:
+  - name: automated-mcp
+    type: mcp
+    endpoint: https://example.com/mcp
+    mcp:
+      oauth:
+        issuer: https://auth.example.com
+        client_id: agenthealth-service
+        grant: client_credentials
+        client_secret_env: MCP_CLIENT_SECRET
+        scopes: [read]
+</code></pre>
+<p>Client authentication uses <code>client_secret_basic</code> or <code>client_secret_post</code>,
+selected from server metadata. Access tokens are reused only within the target's
+run, with reacquisition before expiry. Optional <code>token_file</code> persists tokens.
+The client credentials extension is declared in modern request capabilities.</p>
+<p>For servers requiring user approval, configure authorization code login:</p>
+<p>&lt;!-- spec-example: configuration --&gt;</p>
+<pre><code class="language-yaml">version: v1
+targets:
+  - name: user-mcp
+    type: mcp
+    endpoint: https://example.com/mcp
+    mcp:
+      oauth:
+        issuer: https://auth.example.com
+        client_id: registered-public-client
+        grant: authorization_code
+        token_file: .credentials/user-mcp.json
+        scopes: [read]
+        redirect_port: 8765
+</code></pre>
+<pre><code class="language-bash">agenthealth login agenthealth.yaml user-mcp
+agenthealth check agenthealth.yaml
+</code></pre>
+<p>Login prints a browser URL and waits up to five minutes for approval via a
+127.0.0.1 callback. The client registration must allow that loopback callback
+(<code>http://127.0.0.1:8765/callback</code> in this example); omitting <code>redirect_port</code> selects
+an ephemeral port. Login uses PKCE S256, unpredictable state, and validates the
+callback issuer when present or advertised as required. A confidential client
+can additionally reference <code>client_secret_env</code>.</p>
+<p>Health checks never launch interactive login. They use saved access tokens and
+refresh expired tokens, persisting rotated refresh tokens. Missing login
+credentials yield <code>MISCONFIGURED</code> with login guidance. An externally supplied
+refresh token can instead use <code>grant: refresh_token</code> and <code>refresh_token_env</code>.
+Configured scopes override challenge/metadata scopes; otherwise challenged
+scopes take priority over metadata scopes. Tokens without <code>expires_in</code> receive
+a conservative five-minute lifetime. No token is refreshed by retrying a
+functional call after a server rejection.</p>
+<p>Token files bind credentials to issuer, resource, and client ID. Files use
+0600 permissions; new parent directories use 0700. Symlink token files and
+files accessible to other users are rejected on POSIX. Saving requires a
+parent directory that is not writable by other users. Keep token directories
+outside version control. Tokens, refresh tokens, environment credentials, and
+server content never appear in health output; login prints no tokens.</p>
+<p>OAuth dynamic client registration, JWT client assertions, and automatic scope
+escalation are not implemented. Existing client registration is required.
+See the upstream <a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization">authorization contract</a>.</p>
+<h2 id="functional-invocation">Functional invocation</h2>
+<p>Functional checks require explicit <code>checks: [functional]</code> opt-in, a named tool,
+and <code>safe: true</code>. The operator must verify that the tool and arguments are
+non-destructive. The discovered tool must additionally declare
+<code>readOnlyHint: true</code> and <code>destructiveHint: false</code>; annotations alone cannot
+prove safety. The adapter never chooses a tool automatically.</p>
+<p>&lt;!-- spec-example: configuration --&gt;</p>
+<pre><code class="language-yaml">version: v1
+targets:
+  - name: search-probe
+    type: mcp
+    endpoint: http://localhost:3000/mcp
+    checks: [protocol, capability, functional, latency]
+    mcp:
+      required_tools: [search]
+      functional:
+        tool: search
+        safe: true
+        arguments_json: '{&quot;query&quot;:&quot;health&quot;}'
+</code></pre>
+<p><code>arguments_json</code> is an optional JSON object encoded as a YAML string, defaulting
+to <code>{}</code>. The Go loader parses it and enforces a 64 KiB byte limit in addition to
+schema validation. Missing tools are <code>UNHEALTHY</code>, unsafe annotations are
+<code>MISCONFIGURED</code>, and <code>isError: true</code> is <code>UNHEALTHY</code>. A complete valid success is
+<code>HEALTHY</code>; the adapter does not assess content quality. Discovery and the one
+functional invocation share the same check-owned transport.</p>
+<p>Token files use owner-only POSIX permissions or, on Windows, a protected
+owner-only DACL applied before secret data is written. Reads validate the opened
+file’s permissions/owner; public or inherited Windows ACLs are rejected. Re-run
+login to recreate a Windows token file made by an older release.</p>
+<h2 id="dependency-graph-integration">Dependency graph integration</h2>
+<p><a href="dependency-graph.html">Phase 10</a> adds explicit node IDs and references while preserving this adapter’s checks and safety contract. References to one MCP node share one target lifecycle, session/process, inventory and any explicitly opted-in tool probe per run. Different IDs remain isolated, even if endpoints match; state is never shared across runs. Critical/optional policy belongs to each edge. The <a href="examples/graph-check.html">graph example</a> shows the configuration pattern. This extension is included in v0.8.0.</p>
+<h2 id="kubernetes-deployment">Kubernetes deployment</h2>
+<p>HTTP MCP services retain protocol/OAuth/inventory checks. Stdio requires a derived image containing the trusted server executable. Token refresh files need private writable storage; a read-only ConfigMap or root filesystem is not token persistence.
+See <a href="kubernetes.html">Phase 14 deployment guidance</a> for ConfigMaps, Secrets,
+probe policy and validation limits. No adapter or configuration migration is required.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

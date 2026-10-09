@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Official SDK interoperability — TheAgentHealth docs</title>
+<meta name="description" content="Standardization status and ecosystem compatibility.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/interoperability.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html" class="current">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Official SDK interoperability</h1>
+<p>The suite launches actual official SDK servers on loopback and runs the Go CLI
+against them. Fixture handlers return deterministic health text through the SDK;
+they do not handcraft protocol envelopes. Run on each PR, main push and nightly
+through <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/.github/workflows/ci.yml">the CI workflow</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Official Python SDK</th>
+<th>Protocol</th>
+<th>Verified behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCP 2.3.0</td>
+<td>2026-07-28</td>
+<td>HTTP and stdio discovery, inventory, one safe tool call, required-tool failure</td>
+</tr>
+<tr>
+<td>MCP 1.30.0</td>
+<td>2025-11-25</td>
+<td>HTTP and stdio legacy negotiation, inventory, one safe tool call, required-tool failure</td>
+</tr>
+<tr>
+<td>A2A 1.2.2</td>
+<td>1.0 JSON-RPC</td>
+<td>Default discovery, read-only task lookup, skills, safe message, required-skill failure</td>
+</tr>
+<tr>
+<td>A2A 0.3.26</td>
+<td>0.3.0 JSON-RPC</td>
+<td>Explicit legacy discovery, read-only task lookup, skills, safe message, required-skill failure</td>
+</tr>
+</tbody>
+</table>
+<p>Both pinned SDK sets pass locally on Linux AMD64. Core runtime tests also run
+on Linux, macOS and Windows in CI; official SDK integration currently runs on
+Linux. This matrix does not establish interoperability with every deployment,
+external OAuth provider, other SDK language, gRPC/REST binding, or streaming.
+The MCP OAuth fixture tests cover configured grants and token redaction separately.</p>
+<h2 id="reproduce">Reproduce</h2>
+<p>From the repository root, with Go and Python 3.12 available:</p>
+<pre><code class="language-bash">python3 -m venv /tmp/agenthealth-sdk-tests
+/tmp/agenthealth-sdk-tests/bin/pip install -r tests/interop/requirements-current.txt
+go build -o /tmp/agenthealth-sdk-tests/agenthealth ./cmd/agenthealth
+AGENTHEALTH_INTEROP=1 AGENTHEALTH_BINARY=/tmp/agenthealth-sdk-tests/agenthealth /tmp/agenthealth-sdk-tests/bin/python -m pytest tests/interop -v
+</code></pre>
+<p>Use a separate virtual environment with <code>requirements-legacy.txt</code> to test legacy
+servers. Regular tests skip this opt-in suite when the environment variable is
+absent. Required capability failures assert exit 2 and stable diagnostic codes.
+SDK versions are pinned so an upstream release cannot silently alter the matrix.</p>
+<p>Sources: <a href="https://github.com/modelcontextprotocol/python-sdk">MCP Python SDK</a>,
+<a href="https://github.com/a2aproject/a2a-python">A2A Python SDK</a>,
+<a href="https://a2a-protocol.org/v1.0.1/specification/">A2A v1 specification</a>.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

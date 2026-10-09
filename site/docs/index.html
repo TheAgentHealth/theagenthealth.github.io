@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documentation — TheAgentHealth docs</title>
+<meta name="description" content="Documentation index for AgentHealth.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/index.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html" class="current">Overview</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Documentation guide</h1>
+<p>See the <a href="phase-status.html">all-phase status index</a> for implementation, documentation,
+and example coverage across Phases 0–26.</p>
+<p>Phases 0–6 and foundation stabilization are implemented in
+<a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/releases/v0.4.0.md">v0.4.0</a>. The specification remains
+pre-1.0. Use this index to find the current contracts, behavior, and examples;
+see the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/ROADMAP.md">roadmap</a> for limitations and later phases.</p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Documentation</th>
+<th>Examples or supporting files</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0: Foundation</td>
+<td><a href="architecture.html">Architecture</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/CONTRIBUTING.md">contributing</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/GOVERNANCE.md">governance</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/SECURITY.md">security policy</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/RELEASING.md">releases</a></td>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/.github/workflows/ci.yml">CI</a>, <a href="installation.html">installation</a></td>
+</tr>
+<tr>
+<td>1: Specification</td>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/spec/README.md">Specification index</a>: health states, target model, configuration, results, exit codes, adapter contract, security</td>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/tree/main/tests/spec/fixtures">Schema fixtures</a> and marked examples in the specification</td>
+</tr>
+<tr>
+<td>2: Engine</td>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/core/README.md">Core API and execution guarantees</a></td>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/core-check/main.go">Go API example</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/core-check/agenthealth.yaml">configuration</a></td>
+</tr>
+<tr>
+<td>3: CLI</td>
+<td><a href="cli.html">Commands, formats, doctor, OAuth login, and exit codes</a>, <a href="installation.html">installation</a></td>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/README.md#run-the-cli">Run the CLI</a>, <a href="examples/index.html">example commands</a></td>
+</tr>
+<tr>
+<td>4: HTTP/API</td>
+<td><a href="http-adapter.html">Status, headers, bearer authentication, body checks, transport diagnostics, and safety</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/spec/configuration.md#http-response-expectations-phase-4-draft">HTTP configuration</a></td>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/core-check/agenthealth.yaml">HTTP readiness</a>, complete configuration examples in the specification</td>
+</tr>
+<tr>
+<td>5: MCP</td>
+<td><a href="mcp-adapter.html">HTTP/stdio, protocol selection, inventories, OAuth, functional probes, and limits</a>, <a href="cli.html#mcp-oauth-login">login</a></td>
+<td><a href="examples/index.html">Discovery, stateless, stdio, functional, and all OAuth flows</a></td>
+</tr>
+<tr>
+<td>6: A2A</td>
+<td><a href="a2a-adapter.html">A2A 1.0 JSON-RPC with explicit 0.3.0 compatibility discovery, authentication, skills, and opt-in interactions</a></td>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/a2a-check/v1.yaml">A2A v1 configuration</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/a2a-check/agenthealth.yaml">0.3.0 compatibility</a></td>
+</tr>
+<tr>
+<td>7: Agent health (v0.5.0)</td>
+<td><a href="agent-adapter.html">Health resource, capabilities, safe tasks and runtime handler prerequisites</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/rfcs/phase-7-agent-health.md">impact proposal</a></td>
+<td><a href="examples/agent-check.html">Agent, peer and path example</a></td>
+</tr>
+<tr>
+<td>8: Agentgateway (v0.6.0)</td>
+<td><a href="agentgateway.html">Gateway signals and backend/path evidence</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/rfcs/phase-8-agentgateway.md">impact proposal</a></td>
+<td><a href="examples/gateway-check.html">Gateway configuration</a></td>
+</tr>
+<tr>
+<td>9: Agent Router (v0.7.0)</td>
+<td><a href="agent-router.html">Router signals and route/backend evidence</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/rfcs/phase-9-agent-router.md">impact proposal</a></td>
+<td><a href="examples/router-check.html">Router configuration and setup</a></td>
+</tr>
+<tr>
+<td>10: Dependency graph (v0.8.0)</td>
+<td><a href="dependency-graph.html">Shared nodes, edge policies and budgets</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/rfcs/phase-10-dependency-graph.md">impact review</a></td>
+<td><a href="examples/graph-check.html">Graph configuration</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/phase-10-alignment.md">earlier-phase alignment</a></td>
+</tr>
+<tr>
+<td>11: AHP (experimental, v0.9.0)</td>
+<td><a href="ahp.html">HTTP serving</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/spec/protocol.md">wire contract</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/rfcs/phase-11-ahp.md">impact review</a></td>
+<td><a href="examples/ahp-check.html">Serving example</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/phase-11-alignment.md">coverage and alignment</a></td>
+</tr>
+<tr>
+<td>12: Docker (v0.10.0)</td>
+<td><a href="docker.html">Docker distribution</a>, <a href="installation.html#container-image">container usage</a></td>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/Dockerfile">Dockerfile</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/.github/workflows/ci.yml">CI container job</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/.github/workflows/release.yml">release publish job</a></td>
+</tr>
+<tr>
+<td>13: Standalone binaries (v0.11.0)</td>
+<td><a href="installation.html#package-channels-phase-13-v0110">Package installation</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/phase-13-alignment.md">coverage and alignment</a></td>
+<td><a href="examples/distribution.html">Distribution example</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/scripts/package_release.py">package builder</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/scripts/test_release_binary.py">native smoke checks</a></td>
+</tr>
+<tr>
+<td>14: Kubernetes (released chart 0.1.0)</td>
+<td><a href="kubernetes.html">Deployment guide</a>, <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/phase-14-alignment.md">coverage and alignment</a></td>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/tree/main/deploy/kubernetes">Manifests</a>, <a href="https://github.com/TheAgentHealth/agenthealth/tree/main/deploy/helm/agenthealth">Helm chart</a>, <a href="examples/kubernetes.html">scenarios</a>, <a href="https://github.com/TheAgentHealth/agenthealth/tree/main/tests/kubernetes">tests</a></td>
+</tr>
+</tbody>
+</table>
+<p>Phase 7 is released in <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/releases/v0.5.0.md">v0.5.0</a>: see the <a href="agent-adapter.html">agent adapter</a> and
+<a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/agent-check/agenthealth.yaml">agent/peer/path example</a>.</p>
+<p>Phase 10 is included in <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/releases/v0.8.0.md">v0.8.0</a>; older v0.7.0 binaries do not include it.
+Experimental AHP HTTP serving is included in v0.9.0; see <a href="ahp.html">AHP</a>. <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/ROADMAP.md#phase-12--docker-distribution">Phase 12 — Docker Distribution</a>
+is released in v0.10.0; see <a href="docker.html">Docker</a>.</p>
+<p>Configuration examples are templates requiring your services and credentials.
+The documentation validator checks marked configuration/result blocks and
+standalone health configuration examples and configuration embedded in
+Kubernetes resources against the AHS schema; Helm overrides use the chart schema.
+Kubernetes manifests and chart rendering also have dedicated tests. Validation
+does not establish connectivity to the placeholder servers or prove every command example works.</p>
+<p>Agent/multi-agent, gateway/router HTTP signals, HTTP/API, MCP, and A2A 1.0 JSON-RPC with explicit 0.3.0 compatibility are the available adapters. Other adapter types,
+SDKs remain planned; Kubernetes integrations and chart 0.1.0 are released (<a href="kubernetes.html">guide</a>); a <a href="installation.html#container-image">container image</a> is
+published starting in v0.10.0. Historical
+release notes describe their tagged release. Use v0.2.0 or newer for Phase 5
+MCP functionality and v0.3.0 or newer for Phase 6 A2A functionality.</p>
+<p>Foundation stabilization in v0.4.0 adds current A2A, shared probes and release
+hardening. See <a href="interoperability.html">interoperability</a> and
+<a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/releases/v0.4.0.md">v0.4.0 migration notes</a>.</p>
+<p>Phase 8 Agentgateway integration is released in <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/releases/v0.6.0.md">v0.6.0</a>. See <a href="agentgateway.html">the gateway guide</a>. Gateway checks use explicitly configured read-only HTTP signals and separate backend/path dependencies.</p>
+<p>Phase 9 Agent Router HTTP integration is released in v0.7.0.
+See <a href="agent-router.html">the router guide</a>. Named router signals, direct backends and configured paths retain separate evidence.</p>
+<p>Phase 9 release and migration details: <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/releases/v0.7.0.md">v0.7.0 notes</a>.</p>
+<p>Phase 11 release and migration details: <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/releases/v0.9.0.md">v0.9.0 notes</a>.</p>
+<ul>
+<li><a href="kubernetes.html">Kubernetes integration</a> — manifests, chart, probes, Secrets and deployment validation.</li>
+<li><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/phase-14-alignment.md">Phase 14 alignment</a> — coverage, compatibility and validation limits.</li>
+</ul>
+<h2 id="release-and-package-distribution">Release and package distribution</h2>
+<p>See the <a href="distribution.html">synchronized distribution plan</a> for the agreed
+v0.12.0 policy, Releases/Packages layout, availability and implementation
+checklist. OCI chart/binary packages are published in v0.12.0; see <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/releases/verification-v0.12.0.md">verification</a>.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

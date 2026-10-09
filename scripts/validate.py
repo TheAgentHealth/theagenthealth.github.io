@@ -18,7 +18,7 @@ class Document(HTMLParser):
         for attribute in ('href', 'src'):
             if attrs.get(attribute):
                 self.links.append(attrs[attribute])
-for path in root.glob('*.html'):
+for path in root.rglob('*.html'):
     doc = Document()
     doc.feed(path.read_text())
     for link in doc.links:
@@ -27,7 +27,8 @@ for path in root.glob('*.html'):
             assert parsed.scheme == 'https', f'Unexpected external URL: {link}'
             continue
         if parsed.path:
-            target = root / parsed.path.lstrip('/')
+            base = root if link.startswith('/') else path.parent
+            target = base / parsed.path.lstrip('/')
             assert target.exists(), f'Missing local file: {link}'
         elif parsed.fragment:
             assert parsed.fragment in doc.ids, f'Missing fragment: {link}'
