@@ -20,6 +20,9 @@ GITHUB_REPO = "https://github.com/TheAgentHealth/agenthealth"
 
 # (source .md relative to agenthealth/docs, slug, nav title, meta description)
 DOCS = [
+    ("python-sdk.md", "python-sdk", "Python SDK", "Sync and async Python health checks, typed evidence, configuration and errors."),
+    ("phase-15-alignment.md", "phase-15-alignment", "Phase 15 alignment", "Python SDK impact and earlier-phase compatibility evidence."),
+    ("releases/verification-v0.13.2.md", "verification-v0-13-2", "v0.13.2 verification", "Published signatures, hashes, packages and runtime verification."),
     ("architecture.md", "architecture", "Architecture", "Project foundation and architecture decisions."),
     ("cli.md", "cli", "CLI", "Commands, formats, doctor advice, OAuth login, and exit codes."),
     ("installation.md", "installation", "Installation", "Download, verify, and run AgentHealth across distribution channels."),
@@ -40,6 +43,7 @@ DOCS = [
 
 # (dir under agenthealth/examples, slug, config files to embed inline)
 EXAMPLES = [
+    ("python-sdk", "python-sdk", []),
     ("a2a-check", "a2a-check", ["agenthealth.yaml", "bearer.yaml", "custom-card.yaml", "functional.yaml", "v1.yaml"]),
     ("agent-check", "agent-check", ["agenthealth.yaml"]),
     ("ahp-check", "ahp-check", ["agenthealth.yaml"]),
@@ -164,7 +168,7 @@ def page_shell(site_path: str, title: str, description: str, body_html: str) -> 
 
 
 def render_markdown_file(repo: Path, repo_relative: str, path_map: dict[str, str], site_path: str) -> tuple[str, str]:
-    text = (repo / repo_relative).read_text()
+    text = re.sub(r"<!--.*?-->", "", (repo / repo_relative).read_text(), flags=re.S)
     title_match = re.match(r"#\s+(.+)", text.lstrip())
     title = title_match.group(1).strip() if title_match else repo_relative
     # Drop the leading H1; the page shell already renders one implicitly via content.
