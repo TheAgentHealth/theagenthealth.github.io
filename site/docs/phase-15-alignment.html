@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phase 15 coverage and alignment — TheAgentHealth docs</title>
+<meta name="description" content="Python SDK impact and earlier-phase compatibility evidence.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/phase-15-alignment.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="python-sdk.html">Python SDK</a><a href="phase-15-alignment.html" class="current">Phase 15 alignment</a><a href="verification-v0-13-2.html">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Phase 15 coverage and alignment</h1>
+<p>Python SDK v0.13.2 is published on PyPI and GitHub Releases; see the
+<a href="verification-v0-13-2.html">release verification record</a>. Python 3.10+ uses an explicitly installed matching CLI. No binary is
+installed or downloaded automatically.</p>
+<h2 id="coverage">Coverage</h2>
+<table>
+<thead>
+<tr>
+<th>Deliverable</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Core/adapter access</td>
+<td>Sync <code>check</code> and <code>Client.check</code> invoke the existing Go CLI</td>
+</tr>
+<tr>
+<td>Async API</td>
+<td>Native async subprocess execution with cancellation cleanup</td>
+</tr>
+<tr>
+<td>Typed results</td>
+<td>AHS statuses, checks, diagnostic codes, transport steps, roots and dependencies</td>
+</tr>
+<tr>
+<td>Configuration loader</td>
+<td>Bounded JSON/YAML, duplicate-key rejection, schema validation; Go semantic validation</td>
+</tr>
+<tr>
+<td>Agent/path and graph evidence</td>
+<td>Target IDs, incoming relationship/critical metadata, separate check evidence</td>
+</tr>
+<tr>
+<td>Error model</td>
+<td>Health exits return results; fixed exceptions for tool, compatibility, deadline and output failures</td>
+</tr>
+<tr>
+<td>Distribution</td>
+<td>Shared-version wheel/sdist, GitHub Release assets/checksums/provenance and PyPI OIDC/attestations</td>
+</tr>
+<tr>
+<td>Validation</td>
+<td>Real CLI integration, built-wheel/source-archive installation, OS/Python CI matrix</td>
+</tr>
+</tbody>
+</table>
+<h2 id="earlier-phases">Earlier phases</h2>
+<table>
+<thead>
+<tr>
+<th>Phases</th>
+<th>Impact and alignment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0: Foundation</td>
+<td>README, roadmap, status, contribution/release documentation and CI discover the SDK.</td>
+</tr>
+<tr>
+<td>1: Specification</td>
+<td>Vendored schemas are byte-identical and tested. AHS/AHP v1 remain unchanged.</td>
+</tr>
+<tr>
+<td>2: Engine</td>
+<td>Go owns health aggregation, safety, retries, budgets, graph validation and credential resolution.</td>
+</tr>
+<tr>
+<td>3: CLI</td>
+<td>Exact matching software version; JSON check results and exits 0–6 remain authoritative.</td>
+</tr>
+<tr>
+<td>4–6: HTTP/MCP/A2A</td>
+<td>Existing configuration selects adapters. No new protocol or OAuth contracts; stdio remains trusted executable input.</td>
+</tr>
+<tr>
+<td>7: Agent health</td>
+<td>Typed diagnostics and separate direct/composite/path evidence; no invented role fields.</td>
+</tr>
+<tr>
+<td>8–9: Gateway/router</td>
+<td>Configured HTTP signals remain distinct from independently verified routing behavior.</td>
+</tr>
+<tr>
+<td>10: Graph</td>
+<td>Ordered roots, node IDs, incoming relationships/critical metadata and shared projections preserved.</td>
+</tr>
+<tr>
+<td>11: AHP</td>
+<td>No endpoint or serving contract change; SDK is a CLI client, not an AHP server.</td>
+</tr>
+<tr>
+<td>12–13: Distribution</td>
+<td>No archive/install behavior changes; manual CLI installation retains exact platform/checksum/provenance verification. New Python assets join the complete release set.</td>
+</tr>
+<tr>
+<td>14: Kubernetes</td>
+<td>Probes/Jobs/Helm still consume the CLI. SDK deployment requires a matching CLI; no Operator/CRD prerequisite. Version-matrix evidence and broader authenticated graph upgrade/rollback extend validation.</td>
+</tr>
+</tbody>
+</table>
+<p>Phase 14's <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/phase-14-alignment.md">alignment audit</a> remains authoritative for
+its historical implementation and publication. No physical edit to every older
+example is needed: existing configurations and health semantics are consumed
+unchanged and are tested against released/current/released binaries.</p>
+<h2 id="later-phases">Later phases</h2>
+<p>Phase 16 should reuse the subprocess/version/error contract and synchronized
+publication model. Phases 17–19 remain Go adapter expansion; listing a target
+type in Python does not implement it. Phase 20 can consume sync/async reports;
+Python reference middleware does not require the SDK. Phase 21 can use report
+exit codes and reuse the new package/compatibility CI. Phase 22 may consume
+structured reports without introducing telemetry in this SDK. Phase 23 still
+requires third-party adapter isolation rather than loading Python plugins in
+process. Phase 24 should cover SDK round-trips and schema conformance. Phase 25
+must keep product/framework interoperability distinct from SDK fixture coverage.
+Phase 26 retains scoped authorization, external audit, native signing, broader
+fault/resource tests and Windows descendant lifecycle controls.</p>
+<h2 id="validation-and-release-acceptance">Validation and release acceptance</h2>
+<p>Run repository Go/Python/documentation checks, strict Helm lint and Kubernetes
+runtime scenarios, plus the dedicated installed-wheel CI matrix. Release builds
+must verify SDK metadata and vendored schema versions; the wheel rebuilt from
+the sdist must install independently. Post-publication acceptance includes
+GitHub signatures/checksums, archive contents and Linux behavior, PyPI hashes,
+attestations, clean-environment installation and exact-version CLI execution.
+Do not mark publication complete until those external checks pass.</p>
+<h2 id="publication-infrastructure-recovery">Publication infrastructure recovery</h2>
+<p>The PyPA v1.13.0 annotated tag object differs from its commit SHA; Docker action
+images use the commit SHA. The workflow now pins the verified commit image.
+Publication-only recovery verifies existing draft assets, their source-bound
+signatures/checksums, OCI blobs and image identities before reusing the original
+Python files. No SDK, CLI, chart or contract changes are introduced; existing
+software tags and versioned packages remain immutable. The protected <code>main</code>
+branch is allowed by the PyPI deployment environment for explicit manual
+recovery. Future distributions should reuse these verification gates.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

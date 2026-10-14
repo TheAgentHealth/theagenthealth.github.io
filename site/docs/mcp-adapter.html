@@ -12,7 +12,7 @@
 <header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
 <main id="main">
 <div class="doc-shell wrap">
-<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html" class="current">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="python-sdk.html">Python SDK</a><a href="phase-15-alignment.html">Phase 15 alignment</a><a href="verification-v0-13-2.html">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html" class="current">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
 <article class="doc-content">
 <p class="doc-back"><a href="index.html">← All documentation</a></p>
 <h1>MCP health adapter</h1>
@@ -75,7 +75,6 @@ requirements, including an unadvertised inventory, yield <code>UNHEALTHY</code>.
 Requirements need <code>capability</code> when <code>checks</code> is explicitly specified.
 Doctor displays dimension-level evidence and canonical messages, without
 printing inventories or raw server responses.</p>
-<p>&lt;!-- spec-example: configuration --&gt;</p>
 <pre><code class="language-yaml">version: v1
 targets:
   - name: search-mcp
@@ -106,7 +105,6 @@ blocks must have a recognized type and the required fields for that type.</p>
 <code>stdio://</code> endpoint identifies the local target; it is not interpreted as a
 shell command. Only explicitly configured executables run, without a shell.
 Use trusted server commands, whose startup behavior the operator has reviewed.</p>
-<p>&lt;!-- spec-example: configuration --&gt;</p>
 <pre><code class="language-yaml">version: v1
 targets:
   - name: local-server
@@ -143,7 +141,6 @@ metadata must share the MCP endpoint's origin; authorization-server endpoints
 come from the pinned issuer's validated metadata.</p>
 <p>For automated checks, use the <a href="https://modelcontextprotocol.io/extensions/auth/oauth-client-credentials">client credentials extension</a>
 with a secret reference:</p>
-<p>&lt;!-- spec-example: configuration --&gt;</p>
 <pre><code class="language-yaml">version: v1
 targets:
   - name: automated-mcp
@@ -162,7 +159,6 @@ selected from server metadata. Access tokens are reused only within the target's
 run, with reacquisition before expiry. Optional <code>token_file</code> persists tokens.
 The client credentials extension is declared in modern request capabilities.</p>
 <p>For servers requiring user approval, configure authorization code login:</p>
-<p>&lt;!-- spec-example: configuration --&gt;</p>
 <pre><code class="language-yaml">version: v1
 targets:
   - name: user-mcp
@@ -209,7 +205,6 @@ and <code>safe: true</code>. The operator must verify that the tool and argument
 non-destructive. The discovered tool must additionally declare
 <code>readOnlyHint: true</code> and <code>destructiveHint: false</code>; annotations alone cannot
 prove safety. The adapter never chooses a tool automatically.</p>
-<p>&lt;!-- spec-example: configuration --&gt;</p>
 <pre><code class="language-yaml">version: v1
 targets:
   - name: search-probe

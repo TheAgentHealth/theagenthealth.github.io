@@ -12,24 +12,24 @@
 <header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
 <main id="main">
 <div class="doc-shell wrap">
-<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html" class="current">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="python-sdk.html">Python SDK</a><a href="phase-15-alignment.html">Phase 15 alignment</a><a href="verification-v0-13-2.html">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html" class="current">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
 <article class="doc-content">
 <p class="doc-back"><a href="index.html">← All documentation</a></p>
 <h1>Releases, Packages and synchronized versions</h1>
-<p>The synchronized release is <strong>v0.12.0</strong>. All implemented artifacts use that
+<p>The synchronized release is <strong>v0.13.2</strong>. All implemented artifacts use that
 software version and the same immutable source commit. This replaces the earlier
 independent chart/SDK version policy. CLI v0.11.1 and chart 0.1.0 remain published
 and immutable; historical release notes and verification records remain valid.</p>
-<p>v0.12.0 and all three GHCR packages are published and verified. See
-<a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/releases/verification-v0.12.0.md">publication verification</a>. The shared release
+<p>v0.13.2 and all three GHCR packages are published and verified. See
+<a href="verification-v0-13-2.html">publication verification</a>. The shared release
 workflow builds new assets from one source tag and coordinates all publication
 jobs; it does not rename old downloads.</p>
 <h2 id="one-complete-github-release">One complete GitHub Release</h2>
-<p>Use one v0.12.0 release page containing:</p>
+<p>Use one v0.13.2 release page containing:</p>
 <ul>
 <li>Five standalone archives: Linux AMD64/ARM64, macOS AMD64/ARM64 and Windows AMD64.</li>
 <li>Five matching CycloneDX SBOMs, four Linux DEB/RPM packages and Homebrew/Scoop manifests.</li>
-<li>Helm chart <code>agenthealth-0.12.0.tgz</code> and one complete asset checksum manifest.</li>
+<li>Helm chart <code>agenthealth-0.13.2.tgz</code>, Python wheel/source archive and one complete asset checksum manifest.</li>
 <li>Package links for Docker, Helm and the binary OCI bundle, with exact published digests.</li>
 <li>Both configured container registry references, installation commands, verification instructions, source links and actual validation limits.</li>
 </ul>
@@ -51,21 +51,21 @@ is present.</p>
 <tbody>
 <tr>
 <td>Docker</td>
-<td><code>ghcr.io/theagenthealth/agenthealth:v0.12.0</code></td>
+<td><code>ghcr.io/theagenthealth/agenthealth:v0.13.2</code></td>
 <td>Docker-compatible container client</td>
-<td>v0.12.0 public and verified</td>
+<td>v0.13.2 public and verified</td>
 </tr>
 <tr>
 <td>Helm</td>
-<td><code>oci://ghcr.io/theagenthealth/charts/agenthealth</code>, version <code>0.12.0</code></td>
+<td><code>oci://ghcr.io/theagenthealth/charts/agenthealth</code>, version <code>0.13.2</code></td>
 <td>Helm</td>
-<td>v0.12.0 public and verified</td>
+<td>v0.13.2 public and verified</td>
 </tr>
 <tr>
 <td>Binaries</td>
-<td><code>ghcr.io/theagenthealth/agenthealth-binaries:v0.12.0</code></td>
+<td><code>ghcr.io/theagenthealth/agenthealth-binaries:v0.13.2</code></td>
 <td>ORAS or a compatible OCI artifact client</td>
-<td>v0.12.0 public and verified</td>
+<td>v0.13.2 public and verified</td>
 </tr>
 </tbody>
 </table>
@@ -88,33 +88,33 @@ bucket. Those hosting channels remain separate work.</p>
 <thead>
 <tr>
 <th>Field</th>
-<th>v0.12.0 value</th>
+<th>v0.13.2 value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Git tag and GitHub Release</td>
-<td><code>v0.12.0</code></td>
+<td><code>v0.13.2</code></td>
 </tr>
 <tr>
 <td>CLI version and container tag</td>
-<td><code>v0.12.0</code></td>
+<td><code>v0.13.2</code></td>
 </tr>
 <tr>
 <td>Chart version and Helm OCI tag</td>
-<td><code>0.12.0</code></td>
+<td><code>0.13.2</code></td>
 </tr>
 <tr>
 <td>Chart appVersion and default image</td>
-<td><code>v0.12.0</code></td>
+<td><code>v0.13.2</code></td>
 </tr>
 <tr>
-<td>DEB/RPM, Homebrew/Scoop and future SDK version metadata</td>
-<td><code>0.12.0</code></td>
+<td>DEB/RPM, Homebrew/Scoop and Python SDK version metadata</td>
+<td><code>0.13.2</code></td>
 </tr>
 <tr>
 <td>OCI binary bundle tag</td>
-<td><code>v0.12.0</code></td>
+<td><code>v0.13.2</code></td>
 </tr>
 </tbody>
 </table>
@@ -123,18 +123,18 @@ bucket. Those hosting channels remain separate work.</p>
 AHS/AHP and configuration/result contract versions remain separate; synchronized
 software releases do not rename <code>spec_version: v1</code>.</p>
 <h2 id="installation-examples">Installation examples</h2>
-<p>The following commands use the published and verified v0.12.0 channels.
+<p>The following commands use the published and verified v0.13.2 channels.
 Historical v0.11.1 and chart 0.1.0 releases remain available.</p>
 <p>Direct installation from the unified Release download:</p>
 <pre><code class="language-bash">helm upgrade --install agenthealth \
-  https://github.com/TheAgentHealth/agenthealth/releases/download/v0.12.0/agenthealth-0.12.0.tgz \
+  https://github.com/TheAgentHealth/agenthealth/releases/download/v0.13.2/agenthealth-0.13.2.tgz \
   --namespace agenthealth --create-namespace \
   --set-file config=./agenthealth.yaml
 </code></pre>
 <p>Installation from the OCI chart package:</p>
 <pre><code class="language-bash">helm upgrade --install agenthealth \
   oci://ghcr.io/theagenthealth/charts/agenthealth \
-  --version 0.12.0 \
+  --version 0.13.2 \
   --namespace agenthealth --create-namespace \
   --set-file config=./agenthealth.yaml
 </code></pre>
@@ -144,8 +144,8 @@ chart before installation, download it, verify its GitHub signed provenance and
 checksum, then install the verified local package. Helm GPG <code>.prov</code> verification
 is not currently provided.</p>
 <p>Retrieve the additional binary OCI bundle:</p>
-<pre><code class="language-bash">oras pull ghcr.io/theagenthealth/agenthealth-binaries:v0.12.0 \
-  --output ./agenthealth-v0.12.0
+<pre><code class="language-bash">oras pull ghcr.io/theagenthealth/agenthealth-binaries:v0.13.2 \
+  --output ./agenthealth-v0.13.2
 </code></pre>
 <p>See <a href="https://oras.land/docs/commands/oras_pull/">ORAS pull documentation</a>.
 Verify OCI provenance/digest and signed asset checksums before selecting and
@@ -155,14 +155,14 @@ verification remain available directly through GitHub Releases.</p>
 <h2 id="implementation-and-publication-checklist">Implementation and publication checklist</h2>
 <ul>
 <li>[x] Update release workflows and the Helm helper to consume the same software tag; avoid separate release creation and conflicting checksum uploads.</li>
-<li>[x] Advance chart metadata and all current image/install references to 0.12.0/v0.12.0 before tagging.</li>
+<li>[x] Advance chart metadata and all current image/install references to 0.13.2/v0.13.2 before tagging.</li>
 <li>[x] Build all release files from the exact same tagged source; generate the final checksum manifest after all formats are packaged.</li>
 <li>[x] Publish the Docker image, OCI chart and OCI binary bundle; attach all downloadable files to one GitHub Release.</li>
 <li>[x] Link packages to this repository and establish public visibility; verify anonymous registry access and repository Packages discovery.</li>
 <li>[x] Sign downloadable assets and OCI provenance; verify source tag/commit, digests, SBOMs, contents and byte identity across channels.</li>
 <li>[x] Gate release completion on all required publication jobs, regardless of whether jobs execute in parallel.</li>
 <li>[x] Download published files and verify native Linux behavior and actual chart installation; report other platforms according to evidence available.</li>
-<li>[x] Preserve existing releases and explain that v0.12.0 supersedes v0.11.1/chart 0.1.0.</li>
+<li>[x] Preserve existing releases and explain that v0.13.2 supersedes v0.11.1/chart 0.1.0.</li>
 </ul>
 <p>Skipping local test reruns at a maintainer's request does not mean that new
 workflow changes have passed old CI. Report skipped checks and respect actual
@@ -187,6 +187,11 @@ GitHub package settings and use <code>gh run rerun &lt;run-id&gt; --failed</code
 original signed files and immutable tag. The publisher reuses matching existing
 OCI versions and rejects different content. Do not rerun every job, recreate a
 tag or overwrite a public release to resolve a visibility issue.</p>
+<h2 id="python-sdk-distribution">Python SDK distribution</h2>
+<p>Phase 15 source adds the shared-version wheel and source archive to GitHub
+Release assets, checksums, build provenance and OCI binary bundles, with
+identical artifacts published to PyPI. GitHub Packages has no PyPI registry.
+See <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/RELEASING.md#python-distribution-phase-15">release requirements</a>.</p>
 
 </article>
 </div>

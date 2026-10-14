@@ -12,11 +12,11 @@
 <header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
 <main id="main">
 <div class="doc-shell wrap">
-<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html" class="current">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="python-sdk.html">Python SDK</a><a href="phase-15-alignment.html">Phase 15 alignment</a><a href="verification-v0-13-2.html">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html" class="current">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
 <article class="doc-content">
 <p class="doc-back"><a href="index.html">← All documentation</a></p>
 <h1>Install AgentHealth</h1>
-<p>The commands below install the published v0.12.0 release. See <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/releases/verification-v0.12.0.md">publication verification</a>.</p>
+<p>The commands below install the published v0.13.2 release. See <a href="verification-v0-13-2.html">publication verification</a>.</p>
 <p>Choose a distribution:</p>
 <table>
 <thead>
@@ -48,7 +48,7 @@
 </tr>
 </tbody>
 </table>
-<p>Python/PyPI and JavaScript/npm SDKs are planned and not published.</p>
+<p>The <a href="python-sdk.html">Python SDK</a> is implemented for the matching software version; it is published on PyPI as <code>agenthealth==0.13.2</code>. JavaScript/npm remains planned.</p>
 <p>Download the archive for your operating system and CPU from <a href="https://github.com/TheAgentHealth/agenthealth/releases">GitHub Releases</a>. Go is not required for downloaded binaries.</p>
 <table>
 <thead>
@@ -81,10 +81,10 @@
 </tbody>
 </table>
 <h2 id="linux-x86-64-example">Linux x86-64 example</h2>
-<pre><code class="language-bash">curl -fLO https://github.com/TheAgentHealth/agenthealth/releases/download/v0.12.0/agenthealth_v0.12.0_linux_amd64.tar.gz
-curl -fLO https://github.com/TheAgentHealth/agenthealth/releases/download/v0.12.0/checksums.txt
+<pre><code class="language-bash">curl -fLO https://github.com/TheAgentHealth/agenthealth/releases/download/v0.13.2/agenthealth_v0.13.2_linux_amd64.tar.gz
+curl -fLO https://github.com/TheAgentHealth/agenthealth/releases/download/v0.13.2/checksums.txt
 sha256sum --check --ignore-missing checksums.txt
-tar -xzf agenthealth_v0.12.0_linux_amd64.tar.gz
+tar -xzf agenthealth_v0.13.2_linux_amd64.tar.gz
 ./agenthealth version
 ./agenthealth ping http https://example.com
 </code></pre>
@@ -100,21 +100,21 @@ agenthealth version
 <p>With Go 1.23 or newer:</p>
 <pre><code class="language-bash">git clone https://github.com/TheAgentHealth/agenthealth.git
 cd agenthealth
-git checkout v0.12.0
-go build -ldflags '-X main.version=v0.12.0' -o agenthealth ./cmd/agenthealth
+git checkout v0.13.2
+go build -ldflags '-X main.version=v0.13.2' -o agenthealth ./cmd/agenthealth
 ./agenthealth version
 </code></pre>
-<p>See <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/cli.md">CLI usage</a> and <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/http-adapter.md">HTTP configuration</a>. The v0.12.0 security release rebuilds existing package-channel assets and includes the official container image, experimental AHP HTTP serving, shared dependency graphs, and supports agent/multi-agent, gateway/router HTTP signals, HTTP/API, MCP HTTP/stdio with OAuth, and A2A 1.0 JSON-RPC targets with explicit 0.3.0 compatibility. See <a href="agent-adapter.html">agent setup and runtime prerequisites</a>, <a href="mcp-adapter.html">MCP configuration</a> and <a href="a2a-adapter.html">A2A configuration</a>.</p>
+<p>See <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/cli.md">CLI usage</a> and <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/http-adapter.md">HTTP configuration</a>. The v0.13.2 release rebuilds existing package-channel assets and includes the official container image, experimental AHP HTTP serving, shared dependency graphs, and supports agent/multi-agent, gateway/router HTTP signals, HTTP/API, MCP HTTP/stdio with OAuth, and A2A 1.0 JSON-RPC targets with explicit 0.3.0 compatibility. See <a href="agent-adapter.html">agent setup and runtime prerequisites</a>, <a href="mcp-adapter.html">MCP configuration</a> and <a href="a2a-adapter.html">A2A configuration</a>.</p>
 <p>Phase 10 graph fields require v0.8.0 or newer. Existing nested configurations remain valid.
 The <a href="examples/graph-check.html">graph example</a> requires configured services
 and a safe runtime handler.</p>
 <h2 id="verify-provenance-and-sboms">Verify provenance and SBOMs</h2>
-<p>Each archive has a matching <code>agenthealth_v0.12.0_&lt;os&gt;_&lt;arch&gt;.cdx.json</code> CycloneDX
+<p>Each archive has a matching <code>agenthealth_v0.13.2_&lt;os&gt;_&lt;arch&gt;.cdx.json</code> CycloneDX
 1.6 SBOM describing linked Go modules, the standard-library version and the
 executable SHA-256. <code>checksums.txt</code> covers both archives and SBOMs.</p>
 <p>With a current GitHub CLI supporting <code>gh attestation</code>:</p>
-<pre><code class="language-bash">gh attestation verify agenthealth_v0.12.0_linux_amd64.tar.gz --repo TheAgentHealth/agenthealth
-gh attestation verify agenthealth_v0.12.0_linux_amd64.tar.gz --repo TheAgentHealth/agenthealth --predicate-type https://cyclonedx.org/bom
+<pre><code class="language-bash">gh attestation verify agenthealth_v0.13.2_linux_amd64.tar.gz --repo TheAgentHealth/agenthealth
+gh attestation verify agenthealth_v0.13.2_linux_amd64.tar.gz --repo TheAgentHealth/agenthealth --predicate-type https://cyclonedx.org/bom
 </code></pre>
 <p>Attestations bind artifacts to this repository’s release workflow through a
 GitHub OIDC identity. Checksums alone do not authenticate the publisher.
@@ -132,12 +132,12 @@ multi-platform image (<code>linux/amd64</code>, <code>linux/arm64</code>) to
 <code>ghcr.io/theagenthealth/agenthealth</code>, tagged <code>vX.Y.Z</code> with floating <code>vX</code> and
 <code>latest</code> for plain version tags; suffixed pre-release tags publish only their
 exact <code>vX.Y.Z-suffix</code>. Docker Hub at <code>theagenthealth/agenthealth</code> uses the same
-tags when mirror credentials are configured; v0.12.0 is available from both registries:</p>
+tags when mirror credentials are configured; v0.13.2 is available from both registries:</p>
 <pre><code class="language-bash"># GitHub Container Registry
-docker run --rm ghcr.io/theagenthealth/agenthealth:v0.12.0 version
+docker run --rm ghcr.io/theagenthealth/agenthealth:v0.13.2 version
 
 # Docker Hub
-docker run --rm theagenthealth/agenthealth:v0.12.0 version
+docker run --rm theagenthealth/agenthealth:v0.13.2 version
 </code></pre>
 <p>To build the image locally:</p>
 <pre><code class="language-bash">docker build --build-arg VERSION=dev -t agenthealth .
@@ -193,12 +193,14 @@ installation across distributions and public channel hosting remain follow-up wo
 <h2 id="kubernetes-and-helm-source-installation">Kubernetes and Helm source installation</h2>
 <p>Phase 14 provides <a href="https://github.com/TheAgentHealth/agenthealth/tree/main/deploy/kubernetes">manifests</a>, the
 <a href="https://github.com/TheAgentHealth/agenthealth/tree/main/deploy/helm/agenthealth">Helm chart</a> and
-<a href="examples/kubernetes.html">runnable scenarios</a>. Source chart 0.12.0
-pins CLI v0.12.0 and publishes through the shared release workflow. The
+<a href="examples/kubernetes.html">runnable scenarios</a>. Source chart 0.13.2
+pins CLI v0.13.2 and publishes through the shared release workflow. The
 historical chart 0.1.0 remains available as helm-v0.1.0, pinning CLI v0.11.1.
 See <a href="kubernetes.html">Kubernetes</a> and <a href="distribution.html">distribution</a> for direct
-release downloads, OCI Helm install and ORAS binary retrieval. New v0.12.0
-channels become available only after publication and verification.</p>
+release downloads, OCI Helm install and ORAS binary retrieval. The v0.13.2 channels are published and verified.</p>
+<h2 id="python-sdk">Python SDK</h2>
+<p>See the <a href="python-sdk.html">Python SDK guide</a>. The wheel does not install a CLI;
+install and verify a matching binary separately.</p>
 
 </article>
 </div>

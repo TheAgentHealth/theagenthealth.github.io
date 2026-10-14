@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python SDK — TheAgentHealth docs</title>
+<meta name="description" content="Sync and async Python health checks, typed evidence, configuration and errors.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/python-sdk.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="python-sdk.html" class="current">Python SDK</a><a href="phase-15-alignment.html">Phase 15 alignment</a><a href="verification-v0-13-2.html">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Python SDK</h1>
+<p>Phase 15 implements a Python 3.10+ wrapper around the Go CLI. Published SDK and CLI use
+software v0.13.2; publication is recorded separately in <a href="phase-status.html">capability status</a>.
+The SDK consumes AHS v1 and never reimplements adapter execution or aggregation.</p>
+<h2 id="installation">Installation</h2>
+<p>Install the published version:</p>
+<pre><code class="language-bash">pip install agenthealth==0.13.2
+</code></pre>
+<p>Install the matching CLI v0.13.2 separately using the
+<a href="installation.html#verify-provenance-and-sboms">verified binary installation</a> instructions.
+Select its exact platform archive and verify both checksums and signed
+provenance before execution. The SDK never downloads binaries, changes PATH,
+or executes code during import. For source development:</p>
+<pre><code class="language-bash">pip install -e sdk/python
+</code></pre>
+<h2 id="synchronous-and-asynchronous-checks">Synchronous and asynchronous checks</h2>
+<pre><code class="language-python">from agenthealth import Client, HealthStatus, load_config
+
+client = Client(binary=&quot;/usr/local/bin/agenthealth&quot;, timeout=30)
+report = client.check(load_config(&quot;agenthealth.yaml&quot;))
+print(report.status, report.exit_code)
+for result in report.results:
+    print(result.target.id, result.target.name, result.status)
+    for dependency in result.dependencies:
+        print(dependency.relationship, dependency.critical, dependency.target.name)
+</code></pre>
+<pre><code class="language-python">from agenthealth import async_check, check
+
+report = check(target_type=&quot;http&quot;, endpoint=&quot;http://localhost:8080/health&quot;)
+
+async def probe():
+    return await async_check(&quot;agenthealth.yaml&quot;, timeout=15)
+</code></pre>
+<p><code>check</code> returns a <code>CheckReport</code> for single or multiple targets. <code>report.result</code>
+is convenient for one root; batches use ordered <code>report.results</code>.
+<code>report.status</code> and <code>exit_code</code> reflect the Go aggregate health result. Health
+exits 0–5 return results. <code>HealthResult</code> exposes target ID/type/name, status,
+latency, checks, recursive dependencies, relationship and critical metadata.
+Each <code>CheckEntry</code> exposes status, message, diagnostic code and transport steps.
+<code>to_dict()</code> returns an independent copy, preserving unknown additive fields.
+Direct/composite roles remain contextual; no new role fields are invented.</p>
+<p>All implemented adapters are accessed through <code>target_type</code> or the existing
+configuration. <code>options</code> supplies additional target configuration, such as
+<code>auth</code>, <code>mcp</code>, <code>a2a</code>, <code>agent</code>, <code>gateway</code>, <code>router</code> or <code>dependencies</code>. It cannot
+override the named target arguments. Active checks require the same explicit
+configuration opt-in as the CLI. OAuth login remains a separate CLI operation.</p>
+<p><code>Configuration(data)</code> copies and validates JSON-compatible configuration.
+<code>load_config(path)</code> reads bounded JSON/YAML and rejects duplicate mapping keys.
+Schema validation is local; the Go CLI performs graph and semantic validation.
+Relative paths resolve from the caller's working directory, matching CLI
+behavior. Use <code>Configuration(data, base_dir=...)</code> to select another directory.
+The SDK writes configuration into a private temporary directory and removes it
+on completion, errors, timeout and cancellation.</p>
+<h2 id="errors-and-execution-policy">Errors and execution policy</h2>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ConfigurationError</code></td>
+<td>Invalid/unreadable SDK configuration or conflicting arguments</td>
+</tr>
+<tr>
+<td><code>BinaryNotFoundError</code></td>
+<td>CLI missing or cannot start</td>
+</tr>
+<tr>
+<td><code>CompatibilityError</code></td>
+<td>CLI software version differs from the SDK</td>
+</tr>
+<tr>
+<td><code>ExecutionError</code></td>
+<td>CLI tool failure, including semantic configuration rejection (exit 6)</td>
+</tr>
+<tr>
+<td><code>CheckTimeoutError</code></td>
+<td>SDK deadline expired and the process was stopped</td>
+</tr>
+<tr>
+<td><code>OutputError</code></td>
+<td>Oversized, invalid or inconsistent AHS output</td>
+</tr>
+</tbody>
+</table>
+<p>All inherit <code>AgentHealthError</code>. Exception messages omit configuration values,
+CLI stderr, response bodies and credentials. <code>asyncio.CancelledError</code> propagates
+after cleanup. Use <code>await client.async_check()</code> inside an event loop; synchronous
+<code>check</code> does not create a nested loop.</p>
+<p>A deadline covers version verification and checking. Configuration is limited
+to 4 MiB, stdout to 16 MiB, stderr to 64 KiB; output is captured in temporary
+files and monitored while the CLI runs. These are SDK limits in addition to
+engine transport, graph and deadline controls. There are no SDK retries.
+Each POSIX run has a process group; timeout/cancellation terminates CLI and
+stdio descendants. Windows termination covers the CLI process; detached stdio
+children require operator lifecycle controls.</p>
+<p>Configuration remains <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/SECURITY.md#trusted-configuration">trusted executable input</a>.
+<code>environment</code> overrides selected inherited environment variables, useful for
+credential references; credentials never appear in SDK exception messages.
+The SDK does not sandbox programs, authorize tenants or register Python adapters.</p>
+<h2 id="pypi-and-github-distribution">PyPI and GitHub distribution</h2>
+<p>The pending PyPI publisher must name project <code>agenthealth</code>, owner
+<code>TheAgentHealth</code>, repository <code>agenthealth</code>, workflow <code>release.yml</code>, environment
+<code>pypi</code>. The GitHub environment allows <code>v*</code> tags. A dedicated publishing job in
+<a href="https://github.com/TheAgentHealth/agenthealth/blob/main/.github/workflows/release.yml">the shared release workflow</a> uses OIDC with
+job-level <code>id-token: write</code> and PyPI attestations; API tokens are unnecessary.</p>
+<p>Wheel and source archive use the same software version and immutable source tag
+as CLI/Docker/Helm. They are built once, included in release checksums and GitHub
+build provenance, uploaded to the draft GitHub Release, and published unchanged
+to PyPI. The final GitHub Release waits for PyPI, Docker and OCI packages.
+GitHub Packages has no Python/PyPI registry; Python distributions are attached
+as GitHub Release assets. The existing GHCR binary bundle also contains them,
+but requires an OCI artifact client rather than pip.</p>
+<p>CI installs the built wheel on Linux, macOS and Windows with Python 3.10/3.13,
+rebuilds the wheel from the source archive, and exercises real CLI integration,
+error handling, cancellation, typed graph/path evidence and schema alignment.
+The <a href="phase-15-alignment.html">phase impact review</a> records compatibility and limits.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

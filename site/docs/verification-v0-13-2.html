@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>v0.13.2 publication verification — TheAgentHealth docs</title>
+<meta name="description" content="Published signatures, hashes, packages and runtime verification.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/verification-v0-13-2.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="python-sdk.html">Python SDK</a><a href="phase-15-alignment.html">Phase 15 alignment</a><a href="verification-v0-13-2.html" class="current">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>v0.13.2 publication verification</h1>
+<p>Verified on 2026-10-14 UTC (2026-10-13 America/Chicago) after
+<a href="https://github.com/TheAgentHealth/agenthealth/actions/runs/38490405098">Release run 38490405098</a> succeeded.</p>
+<ul>
+<li><a href="https://github.com/TheAgentHealth/agenthealth/releases/tag/v0.13.2">GitHub Release v0.13.2</a> is public, regular and Latest.</li>
+<li>Immutable source: <code>cd8e85d4bda39e754668e50ad68de899a5a81345</code>.</li>
+<li><a href="https://github.com/TheAgentHealth/agenthealth/actions/runs/38489812404">Main CI</a> and <a href="https://github.com/TheAgentHealth/agenthealth/actions/runs/38490414756">fresh tagged-source CI</a> passed: six Python SDK jobs, five native binary jobs, Go tests, upgrade/rollback and Kubernetes 1.31.9/1.32.2/1.33.1 runtime checks.</li>
+<li>Downloaded all 20 public assets anonymously. GitHub digests and bytes match signed staging files; all 19 checksum entries match.</li>
+<li>Verified 20 source-bound GitHub build provenance attestations, five signed CycloneDX predicates and three signed GHCR package provenance statements. Verification requires the release workflow and exact source commit and rejects self-hosted runners.</li>
+<li>Inspected five archives: executable platform headers, version-specific INSTALL.md, license, permissions, timestamps, executable hashes and Go 1.27.2 SBOMs. Four DEB/RPM payloads match archives; metadata, certificate dependencies and absence of install hooks passed. Homebrew/Scoop URLs, versions and hashes match.</li>
+<li>Downloaded Linux AMD64 CLI passed version/help, health exits 0–5, tool exit 6, JSON/YAML schema validation, ping/doctor, AHP authorization, dependencies, capabilities, shutdown and credential redaction.</li>
+<li>Both container registries permit anonymous access. Linux AMD64/ARM64 image executables match signed archives; manifest/layer digests, source/version labels, runtime identity and BuildKit SBOM/provenance passed. Native AMD64 version/help passed.</li>
+<li>Chart 0.13.2/appVersion v0.13.2, image pin, source revision and packaged files match tagged source. Strict lint and serve/job/cronjob rendering passed. Anonymous OCI chart and complete binary-bundle manifest/config/all-blob checks passed.</li>
+<li><a href="https://pypi.org/project/agenthealth/0.13.2/">PyPI agenthealth 0.13.2</a> exposes exactly the wheel and source archive. Downloads match PyPI SHA-256 and signed GitHub bytes. Both PyPI attestations cryptographically verify the GitHub publisher, release.yml workflow and pypi environment.</li>
+<li>A fresh virtual environment installed the public PyPI package and passed all 15 SDK integration tests against the downloaded matching CLI. CI also rebuilt/installed the source archive and checked repeat-build byte identity.</li>
+<li>Local tests: 235 passed, five explicitly skipped environment-dependent cases; CI covers the platform/runtime gates separately. Documentation links and canonical examples passed.</li>
+</ul>
+<h2 id="immutable-package-references">Immutable package references</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Digest</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ghcr.io/theagenthealth/agenthealth</td>
+<td><code>sha256:2f333b296fed27a301c1be0b18208dae95ee8dfa4329512fb18adec22f395b3d</code></td>
+</tr>
+<tr>
+<td>theagenthealth/agenthealth</td>
+<td><code>sha256:73134420a033c30c04c118d693c21737dfa2baa2d69617d5741a015c16d7133e</code></td>
+</tr>
+<tr>
+<td>ghcr.io/theagenthealth/charts/agenthealth</td>
+<td><code>sha256:23939bc8cf2a8fc07baaa6e54420aea5f53d39b68d51b791ceb09bdfce12d7f8</code></td>
+</tr>
+<tr>
+<td>ghcr.io/theagenthealth/agenthealth-binaries</td>
+<td><code>sha256:9920594c8db9bf40fa0423a47b39c8c6fe61d6911ffb9ab842aaeb77d9817da3</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="attempt-history-and-limits">Attempt history and limits</h2>
+<p>v0.13.0 staging stopped when verification found stale embedded installation references.
+v0.13.1 staging failed because the PyPA action pin was an annotated tag object
+without a matching container image. Its infrastructure-only recovery then caught
+a macOS SDK cleanup race. Both immutable tags and staged artifacts are preserved;
+neither became a final GitHub or PyPI release. v0.13.2 fixes installation rendering,
+the publisher commit pin and cleanup, accepting a permission error only after
+confirming CLI exit.</p>
+<p>The first Copilot review's reproducibility and stderr credential findings were
+addressed. No second review was requested or awaited. Final fixes were pushed to
+main under the maintainer's explicit authorization.</p>
+<p>Native OS signing/notarization, Helm GPG .prov, APT/YUM repositories, public
+Homebrew/Scoop hosting and cloud-cluster certification remain deferred. Local
+ARM64 container execution was not tested; native ARM64 archive CI passed.
+Windows detached stdio descendants need external lifecycle controls. GitHub
+Packages has no Python registry: the wheel/source archive are ordinary GitHub
+Release assets and also included in the signed OCI file bundle.</p>
+<p>Local verification reports are under <code>/tmp/agenthealth-release-verification/v0.13.2</code>;
+that temporary directory is not a public download channel.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

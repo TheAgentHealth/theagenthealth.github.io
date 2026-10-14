@@ -12,7 +12,7 @@
 <header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
 <main id="main">
 <div class="doc-shell wrap">
-<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html" class="current">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="python-sdk.html">Python SDK</a><a href="phase-15-alignment.html">Phase 15 alignment</a><a href="verification-v0-13-2.html">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html" class="current">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
 <article class="doc-content">
 <p class="doc-back"><a href="index.html">← All documentation</a></p>
 <h1>Agent health adapter</h1>
@@ -20,6 +20,9 @@
 cooperating-system endpoint using the same interface. Direct means the user's
 first agent; composite means a downstream agent. Roles are expressed by the
 configuration's named result tree rather than new target types or result fields.</p>
+<p>Reference implementations for Go, FastAPI, Express and LangGraph are available
+in the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/reference-middleware.md">middleware guide</a>. Applications must integrate
+them explicitly; framework product certification remains separate work.</p>
 <h2 id="passive-interface">Passive interface</h2>
 <p>Point <code>endpoint</code> at a runtime's health resource. It must support HEAD for
 reachability and GET for this JSON document (<code>Content-Type: application/json</code>):</p>
@@ -69,8 +72,8 @@ See the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/example
 Unicode characters. Engine deadlines, cancellation, TLS verification, redirect refusal,
 bearer environment references, credential redaction, and concurrency limits
 apply. <code>safe: true</code> declares operator authorization and handler safety; the CLI
-cannot sandbox a remote runtime. The interface is a Phase 7 adapter contract,
-not the planned AHP serving protocol. Existing v1 configurations/results and
+cannot sandbox a remote runtime. The interface is a Phase 7 application contract,
+separate from the implemented experimental AHP serving protocol. Existing v1 configurations/results and
 exit codes remain compatible; <code>agent</code> options are an additive extension.</p>
 <pre><code class="language-bash">agenthealth ping agent http://localhost:8080/health
 agenthealth check examples/agent-check/agenthealth.yaml --format json
@@ -85,6 +88,8 @@ count Unicode characters; Go additionally enforces the task text byte limit.</p>
 <p>The Kubernetes fixture distinguishes direct and composite agent health from supporting gateway/router/route evidence. It does not supply a first-runtime safe downstream handler. Existing functional configurations remain opt-in and may repeat in serving mode.
 See <a href="kubernetes.html">Phase 14 deployment guidance</a> for ConfigMaps, Secrets,
 probe policy and validation limits. No adapter or configuration migration is required.</p>
+<h2 id="trust-boundary">Trust boundary</h2>
+<p>See the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/threat-model.md">threat model</a> for trusted configuration, credential handling, network access, output limits and in-process adapter isolation. A shared process is not a boundary for mutually untrusted tenants.</p>
 
 </article>
 </div>
