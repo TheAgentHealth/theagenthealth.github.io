@@ -2,6 +2,8 @@ name: Deploy organization website
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: "23 8 * * *"
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,6 +21,21 @@ jobs:
     steps:
       - name: Check out website source
         uses: actions/checkout@v4
+      - name: Check out current documentation source
+        uses: actions/checkout@v4
+        with:
+          repository: TheAgentHealth/agenthealth
+          ref: main
+          path: _agenthealth
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Regenerate documentation from source
+        run: |
+          python3 -m pip install -r scripts/requirements.txt
+          python3 scripts/build_docs.py _agenthealth
+          echo "Documentation source: $(git -C _agenthealth rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
       - name: Validate site
         run: |
           python3 scripts/validate.py

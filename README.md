@@ -12,7 +12,7 @@ Open http://localhost:8080. Edit files in `site/`.
 
 ## Publication
 
-Pushing `main` validates and deploys `site/` directly to GitHub Pages using this repository's built-in workflow credentials. Manual workflow dispatch can republish the current source. All source and hosting configuration live in this repository.
+Pushing `main` regenerates the docs from `agenthealth/main`, validates and deploys `site/` to GitHub Pages using this repository's built-in workflow credentials. A daily scheduled run picks up upstream documentation changes; manual workflow dispatch can refresh them immediately. The workflow records the exact documentation source commit in its run summary. Failed generation or validation stops deployment. All source and hosting configuration live in this repository.
 
 ## Content
 
@@ -27,7 +27,7 @@ python3 scripts/build_docs.py ../agenthealth
 ```
 
 This requires `markdown-it-py` (`pip install -r scripts/requirements.txt`). The script is a
-maintenance-time tool; its output (`site/docs/`) is committed like any other static file.
+local maintenance tool and a required deployment step. Its output (`site/docs/`) is committed for local preview; deployment always regenerates it from current source.
 Edit `scripts/build_docs.py`'s `DOCS`/`EXAMPLES` lists to add or remove mirrored pages.
 The build also refreshes the sitemap. Current guides include the v0.14.0
 JavaScript/TypeScript SDK, Python SDK, examples and publication verification.

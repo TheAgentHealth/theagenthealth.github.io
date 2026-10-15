@@ -1,7 +1,7 @@
 """Generate the static /docs wiki pages under site/ from the agenthealth repo's
-docs/ and examples/ markdown. Maintenance-time tool, not part of serving the
-site: re-run it after agenthealth/docs or agenthealth/examples change, then
-commit the regenerated site/docs/ output like any other static file.
+docs/ and examples/ markdown. Run locally after source changes and commit the
+generated output for preview. The Pages workflow also runs this generator before
+validation and deployment, including daily refreshes of upstream documentation.
 
 Usage:
     python3 scripts/build_docs.py [path-to-agenthealth-repo]
