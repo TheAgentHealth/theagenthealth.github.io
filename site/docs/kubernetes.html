@@ -12,14 +12,14 @@
 <header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
 <main id="main">
 <div class="doc-shell wrap">
-<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="python-sdk.html">Python SDK</a><a href="phase-15-alignment.html">Phase 15 alignment</a><a href="verification-v0-13-2.html">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html" class="current">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="javascript-sdk.html">JavaScript / TypeScript SDK</a><a href="phase-16-alignment.html">Phase 16 alignment</a><a href="verification-v0-14-0.html">v0.14.0 verification</a><a href="python-sdk.html">Python SDK</a><a href="phase-15-alignment.html">Phase 15 alignment</a><a href="verification-v0-13-2.html">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html" class="current">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
 <article class="doc-content">
 <p class="doc-back"><a href="index.html">← All documentation</a></p>
 <h1>Kubernetes integration</h1>
 <p>Phase 14's initial chart 0.1.0/CLI v0.11.1 releases remain public. The source
-chart is now <strong>0.13.2</strong>, with <code>appVersion: v0.13.2</code>, matching image defaults and
-coordinated OCI/chart/binary release jobs. v0.13.2 is published and verified.
-See the <a href="verification-v0-13-2.html">verification record</a>.
+chart is now <strong>0.14.0</strong>, with <code>appVersion: v0.14.0</code>, matching image defaults and
+coordinated OCI/chart/binary release jobs. v0.14.0 is published and verified.
+See the <a href="verification-v0-14-0.html">verification record</a>.
 See <a href="distribution.html">the distribution guide</a>.</p>
 <p>Start with the <a href="examples/kubernetes.html">runnable scenarios</a>,
 <a href="https://github.com/TheAgentHealth/agenthealth/tree/main/deploy/kubernetes">manifests</a>, or <a href="https://github.com/TheAgentHealth/agenthealth/tree/main/deploy/helm/agenthealth">Helm chart</a>.
@@ -27,10 +27,10 @@ They consume the existing executable without changing AHS, AHP or CLI contracts.
 <h2 id="images-and-configuration">Images and configuration</h2>
 <p>Both public references for the pinned CLI version are:</p>
 <ul>
-<li>GHCR: <code>ghcr.io/theagenthealth/agenthealth:v0.13.2</code></li>
-<li>Docker Hub: <code>docker.io/theagenthealth/agenthealth:v0.13.2</code></li>
+<li>GHCR: <code>ghcr.io/theagenthealth/agenthealth:v0.14.0</code></li>
+<li>Docker Hub: <code>docker.io/theagenthealth/agenthealth:v0.14.0</code></li>
 </ul>
-<p>Both synchronized v0.13.2 references passed anonymous access checks.
+<p>Both synchronized v0.14.0 references passed anonymous access checks.
 The chart defaults to GHCR. Set <code>image.repository</code> to the Docker Hub reference
 without its tag to select the mirror. For plain YAML, replace the full image
 reference in each AgentHealth container, including init containers. Registry
@@ -39,7 +39,7 @@ index digests differ; use the digest verified for the chosen registry.</p>
 helm template agenthealth deploy/helm/agenthealth --kube-version 1.32.2
 helm upgrade --install agenthealth deploy/helm/agenthealth \
   --set image.repository=docker.io/theagenthealth/agenthealth \
-  --set image.tag=v0.13.2 \
+  --set image.tag=v0.14.0 \
   --set-file config=examples/kubernetes/agenthealth.yaml
 </code></pre>
 <p>Review configuration before applying it. ConfigMaps contain trusted executable
@@ -89,7 +89,7 @@ pod templates; delete a completed validation Job deliberately before reapplying.
 kubectl -n agenthealth-demo apply -k examples/kubernetes
 </code></pre>
 <p>Edit the Kustomize <code>images</code> entry's <code>newName</code> to choose either registry listed
-above and keep <code>newTag: v0.13.2</code>. Do not combine these examples with separately
+above and keep <code>newTag: v0.14.0</code>. Do not combine these examples with separately
 installed same-name resources in the same namespace.</p>
 <p>For an application-container exec probe, the optional
 <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/kubernetes/Dockerfile.exec-probe">derived-image Dockerfile</a> copies
@@ -99,7 +99,7 @@ with your application image. Build from the repository root:</p>
   -t agenthealth-demo-exec:local .
 docker run --rm --entrypoint /usr/local/bin/agenthealth agenthealth-demo-exec:local version
 </code></pre>
-<p>Supply <code>--build-arg AGENTHEALTH_IMAGE=docker.io/theagenthealth/agenthealth:v0.13.2</code>
+<p>Supply <code>--build-arg AGENTHEALTH_IMAGE=docker.io/theagenthealth/agenthealth:v0.14.0</code>
 to use the mirror. Mount the reviewed configuration and Secret references in
 the application container; use the absolute executable path shown in the exec
 probe example. Startup should check the application's own process

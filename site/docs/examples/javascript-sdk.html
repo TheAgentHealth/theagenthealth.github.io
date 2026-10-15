@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JavaScript SDK example — TheAgentHealth docs</title>
+<meta name="description" content="Example configuration: JavaScript SDK example.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/examples/javascript-sdk.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="../index.html">Docs</a><a href="index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="../index.html">Overview</a><a href="../javascript-sdk.html">JavaScript / TypeScript SDK</a><a href="../phase-16-alignment.html">Phase 16 alignment</a><a href="../verification-v0-14-0.html">v0.14.0 verification</a><a href="../python-sdk.html">Python SDK</a><a href="../phase-15-alignment.html">Phase 15 alignment</a><a href="../verification-v0-13-2.html">v0.13.2 verification</a><a href="../architecture.html">Architecture</a><a href="../cli.html">CLI</a><a href="../installation.html">Installation</a><a href="../docker.html">Docker</a><a href="../kubernetes.html">Kubernetes</a><a href="../distribution.html">Distribution</a><a href="../http-adapter.html">HTTP adapter</a><a href="../mcp-adapter.html">MCP adapter</a><a href="../a2a-adapter.html">A2A adapter</a><a href="../agent-adapter.html">Agent adapter</a><a href="../agent-router.html">Agent Router</a><a href="../agentgateway.html">Agentgateway</a><a href="../dependency-graph.html">Dependency graph</a><a href="../ahp.html">AHP (experimental)</a><a href="../interoperability.html">Interoperability</a><a href="../phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="index.html">Overview</a><a href="javascript-sdk.html" class="current">javascript sdk</a><a href="python-sdk.html">python sdk</a><a href="a2a-check.html">a2a check</a><a href="agent-check.html">agent check</a><a href="ahp-check.html">ahp check</a><a href="distribution.html">distribution</a><a href="gateway-check.html">gateway check</a><a href="graph-check.html">graph check</a><a href="kubernetes.html">kubernetes</a><a href="router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="../index.html">← All documentation</a></p>
+<h1>JavaScript SDK example</h1>
+<p>Requires Node 22.14+ and a verified AgentHealth CLI v0.14.0 on PATH, or
+<code>AGENTHEALTH_BINARY</code> pointing to it. Install the published v0.14.0 package:</p>
+<pre><code class="language-sh">cd examples/javascript-sdk
+npm install --ignore-scripts
+node check.mjs http://localhost:8080/health
+</code></pre>
+<p>The example prints a typed SDK report and uses the health exit code (0–5).
+Missing/mismatched CLI and invalid configuration reject rather than becoming
+health results. For source development, install a locally built npm tarball.
+See the <a href="../javascript-sdk.html">SDK guide</a>.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

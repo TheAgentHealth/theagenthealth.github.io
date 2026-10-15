@@ -29,6 +29,9 @@ python3 scripts/build_docs.py ../agenthealth
 This requires `markdown-it-py` (`pip install -r scripts/requirements.txt`). The script is a
 maintenance-time tool; its output (`site/docs/`) is committed like any other static file.
 Edit `scripts/build_docs.py`'s `DOCS`/`EXAMPLES` lists to add or remove mirrored pages.
+The build also refreshes the sitemap. Current guides include the v0.14.0
+JavaScript/TypeScript SDK, Python SDK, examples and publication verification.
+When syncing a new release, update the landing page's release and registry links too.
 
 ## Validation
 

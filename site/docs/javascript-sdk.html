@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JavaScript / TypeScript SDK — TheAgentHealth docs</title>
+<meta name="description" content="Node.js Promise API, TypeScript declarations, configuration and cancellation.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/javascript-sdk.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="javascript-sdk.html" class="current">JavaScript / TypeScript SDK</a><a href="phase-16-alignment.html">Phase 16 alignment</a><a href="verification-v0-14-0.html">v0.14.0 verification</a><a href="python-sdk.html">Python SDK</a><a href="phase-15-alignment.html">Phase 15 alignment</a><a href="verification-v0-13-2.html">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>JavaScript / TypeScript SDK</h1>
+<p>Phase 16 releases <a href="https://www.npmjs.com/package/@theagenthealth/agenthealth/v/0.14.0"><code>@theagenthealth/agenthealth</code></a> for Node.js <strong>22.14+</strong>, ESM.
+It wraps the reference Go CLI at the exact same software version and does not
+fetch or run executables on installation/import. Browser execution is outside
+this SDK's scope. The software remains pre-1.0.</p>
+<pre><code class="language-sh">npm install @theagenthealth/agenthealth@0.14.0
+</code></pre>
+<p>Install and verify CLI v0.14.0 separately following
+<a href="installation.html">installation</a>. See the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/sdk/javascript/README.md">package API</a>
+for configuration, cancellation, timeouts, limits and typed errors, and the
+<a href="examples/javascript-sdk.html">runnable example</a>.</p>
+<pre><code class="language-typescript">import { Client, loadConfig } from '@theagenthealth/agenthealth';
+const client = new Client({ binary: 'agenthealth', timeout: 30000 });
+const controller = new AbortController();
+const config = await loadConfig('agenthealth.yaml');
+const report = await client.check(config, { signal: controller.signal });
+for (const root of report.results) {
+  console.log(root.target.id, root.status, root.dependencies);
+}
+</code></pre>
+<p>All existing adapters remain available through canonical configuration:
+HTTP/API, MCP, A2A, direct/composite agents, gateway/router and graph targets.
+The SDK preserves named peer/path checks, graph IDs, relationship and critical
+metadata, transport steps and diagnostic codes. Supporting dependencies remain
+distinct from composite agents. Health semantics and active-check opt-ins stay
+in Go. No schema, exit-code or protocol changes are introduced by the wrapper.
+AHP serving remains an experimental CLI capability.</p>
+<p>Health statuses 0–5 resolve, including UNREACHABLE and MISCONFIGURED. CLI tool
+failure 6, invalid output, incompatible CLI, timeout and cancellation reject
+with sanitized typed errors. The timeout unit is milliseconds. POSIX cleanup
+terminates process groups; Windows guarantees direct-process cleanup only.
+Credentials use configured references and the caller's cwd unless a Configuration
+explicitly selects a baseDir. Treat configuration as trusted executable input,
+especially when it contains MCP stdio commands or enables active checks.</p>
+<p>The synchronized release includes a reproducible npm tarball in signed GitHub
+assets, the checksum set and the OCI binary bundle. The explicit <code>npm</code> job in <code>release.yml</code> publishes directly using the
+configured OIDC identity and GitHub environment <code>npm</code>, alongside <code>pypi</code>.
+The final <code>publish</code> job requires both. Verify downloaded
+bytes against signed checksums and verify installed registry provenance:</p>
+<pre><code class="language-sh">npm install --ignore-scripts @theagenthealth/agenthealth@0.14.0
+npm audit signatures
+</code></pre>
+<p>CI runs Node 22 and 24 on Linux/macOS/Windows, real CLI HTTP/batch/failure checks,
+TypeScript compilation, schema parity, bounded error/cancellation tests,
+deterministic packaging and installed-tarball import checks. This controlled
+coverage does not complete broader Phase 25 ecosystem interoperability.
+See the <a href="phase-16-alignment.html">impact review</a>.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

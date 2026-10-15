@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phase 16 impact review and alignment — TheAgentHealth docs</title>
+<meta name="description" content="JavaScript SDK impact and earlier-phase compatibility evidence.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/phase-16-alignment.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="javascript-sdk.html">JavaScript / TypeScript SDK</a><a href="phase-16-alignment.html" class="current">Phase 16 alignment</a><a href="verification-v0-14-0.html">v0.14.0 verification</a><a href="python-sdk.html">Python SDK</a><a href="phase-15-alignment.html">Phase 15 alignment</a><a href="verification-v0-13-2.html">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Phase 16 impact review and alignment</h1>
+<p>Phase 16 implements the Node.js ESM JavaScript/TypeScript SDK, synchronized at
+v0.14.0 with CLI, Python, chart and all existing distribution formats. Publication is verified in the
+<a href="verification-v0-14-0.html">release record</a>. The existing npm 0.0.0 placeholder remains
+historical and is not the SDK described here.</p>
+<table>
+<thead>
+<tr>
+<th>Phases</th>
+<th>Assessment and required alignment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0–1 foundation/spec</td>
+<td>No health/schema changes. Canonical configuration/result schemas are bundled and parity-tested.</td>
+</tr>
+<tr>
+<td>2–3 engine/CLI</td>
+<td>Go retains aggregation, policy, diagnostics and exit semantics. Exact CLI version probe precedes checks; failures are sanitized.</td>
+</tr>
+<tr>
+<td>4 HTTP</td>
+<td>Real local HTTP success, failure and batch checks exercise the wrapper.</td>
+</tr>
+<tr>
+<td>5 MCP</td>
+<td>Config accepts existing protocol options and opt-ins. POSIX groups are stopped on cancellation; Windows descendant cleanup remains limited.</td>
+</tr>
+<tr>
+<td>6 A2A</td>
+<td>Existing A2A 1.0 and explicit 0.3 compatibility configuration passes through; no new protocol claims.</td>
+</tr>
+<tr>
+<td>7 agents</td>
+<td>Direct/composite terminology and named peer/path evidence retained; supporting dependencies are not composite agents.</td>
+</tr>
+<tr>
+<td>8–9 gateway/router</td>
+<td>Existing read-only signals and separate backend/path evidence preserved without new product support claims.</td>
+</tr>
+<tr>
+<td>10 graph</td>
+<td>Typed IDs, relationship/critical metadata and recursive dependencies preserve CLI evidence. No SDK graph reaggregation.</td>
+</tr>
+<tr>
+<td>11 AHP</td>
+<td>Experimental serving stays a CLI capability; no HTTP server/browser SDK added.</td>
+</tr>
+<tr>
+<td>12–13 distribution</td>
+<td>Signed/checksummed reproducible npm tarball joins release assets and OCI bundle; npm registry bytes must match.</td>
+</tr>
+<tr>
+<td>14 Kubernetes</td>
+<td>Deployment pins/chart metadata advance to the shared version; existing Kubernetes CI/runtime requirements remain.</td>
+</tr>
+<tr>
+<td>15 Python</td>
+<td>Python metadata advances to the shared version; canonical schemas and subprocess/version contracts stay aligned.</td>
+</tr>
+<tr>
+<td>17–19 adapters</td>
+<td>Planned adapters require Go implementation first; SDK configuration can follow canonical schema additions.</td>
+</tr>
+<tr>
+<td>20 frameworks</td>
+<td>Future integrations consume installed SDK, propagate AbortSignal and preserve health reports versus tool exceptions.</td>
+</tr>
+<tr>
+<td>21 CI/CD</td>
+<td>Six Node platform/version jobs and exact-source pre-release gate; <code>release.yml</code> with environment <code>npm</code> is the npm trusted OIDC identity.</td>
+</tr>
+<tr>
+<td>22 observability</td>
+<td>Reports retain diagnostics; no exporter implemented or implied.</td>
+</tr>
+<tr>
+<td>23 plugins</td>
+<td>No plugin loading or new adapter registration introduced.</td>
+</tr>
+<tr>
+<td>24 conformance</td>
+<td>Canonical schema parity and installed-package tests added; full conformance remains planned.</td>
+</tr>
+<tr>
+<td>25 interoperability</td>
+<td>Controlled Node/CLI tests added; real JavaScript framework/product interoperability remains future work.</td>
+</tr>
+<tr>
+<td>26 hardening</td>
+<td>Bounded output/configuration, private temporary files, deadline/cancellation and sanitized errors included. Browser support, OS signing and Windows descendant termination remain limitations.</td>
+</tr>
+</tbody>
+</table>
+<p>Completed extensions: source SDK/API declarations, configuration loading,
+normalized report parsing, error/cancellation coverage, schema parity, deterministic
+packaging, installed-tarball smoke tests, six-job CI, shared-version metadata,
+OIDC publication using the configured workflow, registry integrity/signature
+verification, guides/examples and roadmap/status alignment. Historical release
+records are retained. Later phase design includes the Phase 20/25 integration work.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

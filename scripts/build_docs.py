@@ -11,6 +11,7 @@ Defaults to a sibling "agenthealth" checkout next to this website repo.
 import os
 import re
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from markdown_it import MarkdownIt
@@ -20,6 +21,9 @@ GITHUB_REPO = "https://github.com/TheAgentHealth/agenthealth"
 
 # (source .md relative to agenthealth/docs, slug, nav title, meta description)
 DOCS = [
+    ("javascript-sdk.md", "javascript-sdk", "JavaScript / TypeScript SDK", "Node.js Promise API, TypeScript declarations, configuration and cancellation."),
+    ("phase-16-alignment.md", "phase-16-alignment", "Phase 16 alignment", "JavaScript SDK impact and earlier-phase compatibility evidence."),
+    ("releases/verification-v0.14.0.md", "verification-v0-14-0", "v0.14.0 verification", "Verified npm, PyPI, signatures, hashes, packages and runtime behavior."),
     ("python-sdk.md", "python-sdk", "Python SDK", "Sync and async Python health checks, typed evidence, configuration and errors."),
     ("phase-15-alignment.md", "phase-15-alignment", "Phase 15 alignment", "Python SDK impact and earlier-phase compatibility evidence."),
     ("releases/verification-v0.13.2.md", "verification-v0-13-2", "v0.13.2 verification", "Published signatures, hashes, packages and runtime verification."),
@@ -43,6 +47,7 @@ DOCS = [
 
 # (dir under agenthealth/examples, slug, config files to embed inline)
 EXAMPLES = [
+    ("javascript-sdk", "javascript-sdk", []),
     ("python-sdk", "python-sdk", []),
     ("a2a-check", "a2a-check", ["agenthealth.yaml", "bearer.yaml", "custom-card.yaml", "functional.yaml", "v1.yaml"]),
     ("agent-check", "agent-check", ["agenthealth.yaml"]),
@@ -226,6 +231,18 @@ def main() -> None:
         title, body = render_markdown_file(repo, f"examples/{dir_name}/README.md", path_map, site_path)
         body += config_block(repo, dir_name, configs)
         write(site_path, page_shell(site_path, title, f"Example configuration: {title}.", body))
+
+    # Include every committed HTML page, including historical verification pages.
+    namespace = "http://www.sitemaps.org/schemas/sitemap/0.9"
+    ET.register_namespace("", namespace)
+    sitemap = ET.Element(f"{{{namespace}}}urlset")
+    for page in sorted(SITE_ROOT.rglob("*.html")):
+        relative = page.relative_to(SITE_ROOT).as_posix()
+        url = ET.SubElement(sitemap, f"{{{namespace}}}url")
+        location = "" if relative == "index.html" else relative
+        ET.SubElement(url, f"{{{namespace}}}loc").text = "https://theagenthealth.github.io/" + location
+    ET.indent(sitemap)
+    ET.ElementTree(sitemap).write(SITE_ROOT / "sitemap.xml", encoding="utf-8", xml_declaration=True)
 
 
 if __name__ == "__main__":

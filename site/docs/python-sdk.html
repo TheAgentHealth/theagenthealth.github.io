@@ -12,18 +12,18 @@
 <header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
 <main id="main">
 <div class="doc-shell wrap">
-<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="python-sdk.html" class="current">Python SDK</a><a href="phase-15-alignment.html">Phase 15 alignment</a><a href="verification-v0-13-2.html">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="javascript-sdk.html">JavaScript / TypeScript SDK</a><a href="phase-16-alignment.html">Phase 16 alignment</a><a href="verification-v0-14-0.html">v0.14.0 verification</a><a href="python-sdk.html" class="current">Python SDK</a><a href="phase-15-alignment.html">Phase 15 alignment</a><a href="verification-v0-13-2.html">v0.13.2 verification</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
 <article class="doc-content">
 <p class="doc-back"><a href="index.html">← All documentation</a></p>
 <h1>Python SDK</h1>
 <p>Phase 15 implements a Python 3.10+ wrapper around the Go CLI. Published SDK and CLI use
-software v0.13.2; publication is recorded separately in <a href="phase-status.html">capability status</a>.
+software v0.14.0; publication is recorded separately in <a href="phase-status.html">capability status</a>.
 The SDK consumes AHS v1 and never reimplements adapter execution or aggregation.</p>
 <h2 id="installation">Installation</h2>
 <p>Install the published version:</p>
-<pre><code class="language-bash">pip install agenthealth==0.13.2
+<pre><code class="language-bash">pip install agenthealth==0.14.0
 </code></pre>
-<p>Install the matching CLI v0.13.2 separately using the
+<p>Install the matching CLI v0.14.0 separately using the
 <a href="installation.html#verify-provenance-and-sboms">verified binary installation</a> instructions.
 Select its exact platform archive and verify both checksums and signed
 provenance before execution. The SDK never downloads binaries, changes PATH,
@@ -119,7 +119,7 @@ children require operator lifecycle controls.</p>
 credential references; credentials never appear in SDK exception messages.
 The SDK does not sandbox programs, authorize tenants or register Python adapters.</p>
 <h2 id="pypi-and-github-distribution">PyPI and GitHub distribution</h2>
-<p>The pending PyPI publisher must name project <code>agenthealth</code>, owner
+<p>The configured PyPI trusted publisher names project <code>agenthealth</code>, owner
 <code>TheAgentHealth</code>, repository <code>agenthealth</code>, workflow <code>release.yml</code>, environment
 <code>pypi</code>. The GitHub environment allows <code>v*</code> tags. A dedicated publishing job in
 <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/.github/workflows/release.yml">the shared release workflow</a> uses OIDC with
@@ -127,7 +127,7 @@ job-level <code>id-token: write</code> and PyPI attestations; API tokens are unn
 <p>Wheel and source archive use the same software version and immutable source tag
 as CLI/Docker/Helm. They are built once, included in release checksums and GitHub
 build provenance, uploaded to the draft GitHub Release, and published unchanged
-to PyPI. The final GitHub Release waits for PyPI, Docker and OCI packages.
+to PyPI. The final GitHub Release waits for PyPI, npm, Docker and OCI packages.
 GitHub Packages has no Python/PyPI registry; Python distributions are attached
 as GitHub Release assets. The existing GHCR binary bundle also contains them,
 but requires an OCI artifact client rather than pip.</p>
