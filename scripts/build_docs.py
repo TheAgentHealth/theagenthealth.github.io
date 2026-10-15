@@ -21,10 +21,10 @@ GITHUB_REPO = "https://github.com/TheAgentHealth/agenthealth"
 
 # (source .md relative to agenthealth/docs, slug, nav title, meta description)
 DOCS = [
-    ("javascript-sdk.md", "javascript-sdk", "JavaScript / TypeScript SDK", "Node.js Promise API, TypeScript declarations, configuration and cancellation."),
-    ("phase-16-alignment.md", "phase-16-alignment", "Phase 16 alignment", "JavaScript SDK impact and earlier-phase compatibility evidence."),
+    ("phase-16-alignment.md", "phase-16-alignment", "Phase 16 alignment (latest release)", "JavaScript SDK impact and earlier-phase compatibility evidence."),
     ("releases/verification-v0.14.0.md", "verification-v0-14-0", "v0.14.0 verification", "Verified npm, PyPI, signatures, hashes, packages and runtime behavior."),
-    ("python-sdk.md", "python-sdk", "Python SDK", "Sync and async Python health checks, typed evidence, configuration and errors."),
+    ("javascript-sdk.md", "javascript-sdk", "JavaScript/TypeScript (npm)", "Node.js Promise API, TypeScript declarations, configuration and cancellation."),
+    ("python-sdk.md", "python-sdk", "Python SDK (PyPi)", "Sync and async Python health checks, typed evidence, configuration and errors."),
     ("architecture.md", "architecture", "Architecture", "Project foundation and architecture decisions."),
     ("cli.md", "cli", "CLI", "Commands, formats, doctor advice, OAuth login, and exit codes."),
     ("installation.md", "installation", "Installation", "Download, verify, and run AgentHealth across distribution channels."),
