@@ -25,8 +25,6 @@ DOCS = [
     ("phase-16-alignment.md", "phase-16-alignment", "Phase 16 alignment", "JavaScript SDK impact and earlier-phase compatibility evidence."),
     ("releases/verification-v0.14.0.md", "verification-v0-14-0", "v0.14.0 verification", "Verified npm, PyPI, signatures, hashes, packages and runtime behavior."),
     ("python-sdk.md", "python-sdk", "Python SDK", "Sync and async Python health checks, typed evidence, configuration and errors."),
-    ("phase-15-alignment.md", "phase-15-alignment", "Phase 15 alignment", "Python SDK impact and earlier-phase compatibility evidence."),
-    ("releases/verification-v0.13.2.md", "verification-v0-13-2", "v0.13.2 verification", "Published signatures, hashes, packages and runtime verification."),
     ("architecture.md", "architecture", "Architecture", "Project foundation and architecture decisions."),
     ("cli.md", "cli", "CLI", "Commands, formats, doctor advice, OAuth login, and exit codes."),
     ("installation.md", "installation", "Installation", "Download, verify, and run AgentHealth across distribution channels."),
