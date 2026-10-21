@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Model / LLM examples — TheAgentHealth docs</title>
+<meta name="description" content="Example configuration: Model / LLM examples.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/examples/model-check.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="../index.html">Docs</a><a href="index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="../index.html">Overview</a><a href="../phase-17-alignment.html">Phase 17 alignment (latest release)</a><a href="../release-v0-15-0.html">v0.15.0 release notes</a><a href="../verification-v0-15-0.html">v0.15.0 verification</a><a href="../phase-16-alignment.html">Phase 16 alignment</a><a href="../verification-v0-14-0.html">v0.14.0 verification (historical)</a><a href="../javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="../python-sdk.html">Python SDK (PyPi)</a><a href="../architecture.html">Architecture</a><a href="../cli.html">CLI</a><a href="../installation.html">Installation</a><a href="../docker.html">Docker</a><a href="../kubernetes.html">Kubernetes</a><a href="../distribution.html">Distribution</a><a href="../model-adapter.html">Model / LLM adapter</a><a href="../http-adapter.html">HTTP adapter</a><a href="../mcp-adapter.html">MCP adapter</a><a href="../a2a-adapter.html">A2A adapter</a><a href="../agent-adapter.html">Agent adapter</a><a href="../agent-router.html">Agent Router</a><a href="../agentgateway.html">Agentgateway</a><a href="../dependency-graph.html">Dependency graph</a><a href="../ahp.html">AHP (experimental)</a><a href="../interoperability.html">Interoperability</a><a href="../phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="index.html">Overview</a><a href="model-check.html" class="current">model check</a><a href="javascript-sdk.html">javascript sdk</a><a href="python-sdk.html">python sdk</a><a href="a2a-check.html">a2a check</a><a href="agent-check.html">agent check</a><a href="ahp-check.html">ahp check</a><a href="distribution.html">distribution</a><a href="gateway-check.html">gateway check</a><a href="graph-check.html">graph check</a><a href="kubernetes.html">kubernetes</a><a href="router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="../index.html">← All documentation</a></p>
+<h1>Model / LLM examples</h1>
+<p>Requires a Phase 17 build (released in v0.15.0), a running model API and
+credentials/model IDs appropriate to that server. These are templates, not
+claims of tested hosted-provider compatibility.</p>
+<table>
+<thead>
+<tr>
+<th>Configuration</th>
+<th>Setup and behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/model-check/openai.yaml">OpenAI-compatible</a></td>
+<td>Set <code>OPENAI_API_KEY</code>; change the required model to one your account advertises. Passive listing only.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/model-check/anthropic.yaml">Anthropic</a></td>
+<td>Set <code>ANTHROPIC_API_KEY</code>; adjust required model ID. Uses <code>x-api-key</code>.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/model-check/ollama.yaml">Ollama</a></td>
+<td>Start a local OpenAI-compatible <code>/v1</code> endpoint and install the configured model. Includes active inference.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/model-check/functional.yaml">Functional</a></td>
+<td>Set <code>OPENAI_API_KEY</code>; choose a model supporting <code>max_completion_tokens</code>. May incur charges.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/model-check/graph.yaml">Shared graph</a></td>
+<td>Start the configured agents and path handler plus local model API. Passive model evidence is shared by agent dependencies.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">agenthealth ping llm http://localhost:11434/v1
+agenthealth check examples/model-check/openai.yaml --format json
+agenthealth doctor examples/model-check/anthropic.yaml
+</code></pre>
+<p>Functional checks require explicit opt-in and are never retried. The requested
+token bound depends on the server honoring it; reported excess usage is degraded.
+See the <a href="../model-adapter.html">model guide</a> and
+<a href="../phase-17-alignment.html">alignment audit</a>.</p>
+<div class="doc-config"><h2>Configuration files</h2>
+<h3>openai.yaml</h3><pre><code>version: v1
+targets:
+  - name: openai
+    type: llm
+    endpoint: https://api.openai.com/v1
+    auth:
+      bearer_env: OPENAI_API_KEY
+    model:
+      required_models: [gpt-test]
+    thresholds:
+      latency_ms: 2000
+</code></pre>
+<h3>anthropic.yaml</h3><pre><code>version: v1
+targets:
+  - name: anthropic
+    type: llm
+    endpoint: https://api.anthropic.com/v1
+    auth:
+      bearer_env: ANTHROPIC_API_KEY
+    model:
+      api: anthropic
+      required_models: [claude-test]
+    thresholds:
+      latency_ms: 2000
+</code></pre>
+<h3>ollama.yaml</h3><pre><code>version: v1
+targets:
+  - name: local-llm
+    type: llm
+    endpoint: http://localhost:11434/v1
+    checks: [reachability, protocol, capability, functional, latency]
+    timeout_ms: 30000
+    model:
+      required_models: [qwen2.5:0.5b]
+      functional:
+        safe: true
+        model: qwen2.5:0.5b
+        prompt: Reply with OK.
+        max_output_tokens: 4
+</code></pre>
+<h3>functional.yaml</h3><pre><code>version: v1
+targets:
+  - name: openai-inference
+    type: llm
+    endpoint: https://api.openai.com/v1
+    auth:
+      bearer_env: OPENAI_API_KEY
+    checks: [reachability, authentication, capability, functional, latency]
+    timeout_ms: 15000
+    model:
+      required_models: [gpt-test]
+      functional:
+        safe: true
+        model: gpt-test
+        prompt: Reply with OK.
+        max_output_tokens: 16
+        token_parameter: max_completion_tokens
+</code></pre>
+<h3>graph.yaml</h3><pre><code>version: v1
+targets:
+  - id: first
+    name: direct-agent
+    type: agent
+    endpoint: http://localhost:8080/health
+    dependencies:
+      - ref: peer
+        relationship: downstream
+      - ref: communication
+        relationship: path
+      - ref: shared-model
+        relationship: supporting
+  - id: peer
+    name: composite-agent
+    type: agent
+    endpoint: http://localhost:8081/health
+    dependencies:
+      - ref: shared-model
+        relationship: supporting
+  - id: communication
+    name: direct-to-composite-path
+    type: http
+    endpoint: http://localhost:8080/peer-health
+    http:
+      method: GET
+  - id: shared-model
+    name: supporting-model
+    type: llm
+    endpoint: http://localhost:11434/v1
+    model:
+      required_models: [qwen2.5:0.5b]
+</code></pre>
+</div>
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>
