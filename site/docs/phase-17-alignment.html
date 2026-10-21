@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phase 17 alignment audit — TheAgentHealth docs</title>
+<meta name="description" content="Model adapter scope, contributor credit and cross-phase compatibility.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/phase-17-alignment.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-17-alignment.html" class="current">Phase 17 alignment (latest release)</a><a href="release-v0-15-0.html">v0.15.0 release notes</a><a href="verification-v0-15-0.html">v0.15.0 verification</a><a href="phase-16-alignment.html">Phase 16 alignment</a><a href="verification-v0-14-0.html">v0.14.0 verification (historical)</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Phase 17 alignment audit</h1>
+<p>Scope: model/LLM OpenAI-compatible and Anthropic dialects, released in v0.15.0. Based on <a href="https://github.com/TheAgentHealth/agenthealth/issues/14">RFC #14</a>
+and <a href="https://github.com/TheAgentHealth/agenthealth/pull/17">PR #17</a> by Sharath K.
+The contributor commit retains its original author; current integration and
+additional validation are separate commits. Hosted provider/product testing is
+not established by controlled HTTP fixtures or the contributor's Ollama report.</p>
+<table>
+<thead>
+<tr>
+<th>Phases</th>
+<th>Impact and required extension</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 foundation</td>
+<td>Contribution, status, README and guide indexes include model scope and credit.</td>
+</tr>
+<tr>
+<td>1 specification</td>
+<td>Additive optional <code>model</code> block, schema fixtures, Go validation and stable diagnostics; v1 states/result shapes/exit codes unchanged.</td>
+</tr>
+<tr>
+<td>2 engine</td>
+<td>Existing credential resolution, retry/cancellation, aggregation, redaction and bounded HTTP client reused; canonical model diagnostics added.</td>
+</tr>
+<tr>
+<td>3 CLI</td>
+<td>Both target aliases registered in shared check/doctor/ping/serve registry; passive ping regression.</td>
+</tr>
+<tr>
+<td>4 HTTP</td>
+<td>No HTTP adapter changes; model transport retains verified TLS, no redirects, bounded bodies and no error-body disclosure.</td>
+</tr>
+<tr>
+<td>5 MCP</td>
+<td>No protocol/transport changes; full regression suite retained.</td>
+</tr>
+<tr>
+<td>6 A2A</td>
+<td>No protocol changes; model availability does not prove agent communication.</td>
+</tr>
+<tr>
+<td>7 agents</td>
+<td>Models remain supporting dependencies; graph example separates direct/composite agents, path and model nodes.</td>
+</tr>
+<tr>
+<td>8–9 gateway/router</td>
+<td>Existing signals unchanged; no new product interoperability claims.</td>
+</tr>
+<tr>
+<td>10 graph</td>
+<td>Shared model IDs execute once per run, independent runs refetch; optional/critical edge policies unchanged.</td>
+</tr>
+<tr>
+<td>11 AHP</td>
+<td>Shared registry supports model targets in snapshots; freshness/auth/readiness behavior unchanged.</td>
+</tr>
+<tr>
+<td>12–13 distribution</td>
+<td>Compile adapter into all CLI/image/package formats; synchronized v0.15.0 metadata and signed publication required.</td>
+</tr>
+<tr>
+<td>14 Kubernetes</td>
+<td>Chart/image pins advance together; configuration can reference model credentials supplied as secrets. No active default probes. Existing runtime CI remains required.</td>
+</tr>
+<tr>
+<td>15–16 SDKs</td>
+<td>Both bundled configuration schemas updated and parity-tested; wrappers preserve engine-owned classifications. SDK/CLI versions advance together.</td>
+</tr>
+<tr>
+<td>18–19 data adapters</td>
+<td>Still planned; reuse scoped configuration, explicit active checks and bounded responses without implying SQL/vector support.</td>
+</tr>
+<tr>
+<td>20 frameworks</td>
+<td>Future integrations distinguish advertised models from successful inference and agent/path evidence.</td>
+</tr>
+<tr>
+<td>21 CI/CD</td>
+<td>Existing platform, schema, SDK and distribution jobs cover new source; new safety regressions included.</td>
+</tr>
+<tr>
+<td>22 observability</td>
+<td>Stable diagnostic codes available; no exporter or usage/billing telemetry added.</td>
+</tr>
+<tr>
+<td>23 plugins</td>
+<td>Compiled trusted adapter only; no dynamic loading or tenant isolation introduced.</td>
+</tr>
+<tr>
+<td>24 conformance</td>
+<td>Configuration fixtures and malformed-response tests added; full conformance remains planned.</td>
+</tr>
+<tr>
+<td>25 interoperability</td>
+<td>Controlled dialect fixtures plus attributed contributor Ollama report; hosted OpenAI/Anthropic, vLLM/LiteLLM and cloud-signing matrices remain future work.</td>
+</tr>
+<tr>
+<td>26 hardening</td>
+<td>TLS/redirect/deadline/partial-response/no-retry/secret regressions; token bound relies on remote enforcement and truthful usage. No security-audit claim.</td>
+</tr>
+</tbody>
+</table>
+<p>Validation: Go vet/race suite, Python/schema/example suite, SDK schema parity,
+Node tests/typecheck, markdown links and documentation example validation.
+Release publication and native multi-platform/Kubernetes checks use the existing
+synchronized release gate. See <a href="release-v0-15-0.html">release notes</a>.</p>
+<p>Publication is verified across all implemented distributions; see the
+<a href="verification-v0-15-0.html">v0.15.0 verification record</a>.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

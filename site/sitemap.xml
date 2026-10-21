@@ -61,6 +61,9 @@
     <loc>https://theagenthealth.github.io/docs/examples/kubernetes.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/examples/model-check.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/examples/python-sdk.html</loc>
   </url>
   <url>
@@ -88,7 +91,13 @@
     <loc>https://theagenthealth.github.io/docs/mcp-adapter.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/model-adapter.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/phase-16-alignment.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/phase-17-alignment.html</loc>
   </url>
   <url>
     <loc>https://theagenthealth.github.io/docs/phase-status.html</loc>
@@ -97,7 +106,13 @@
     <loc>https://theagenthealth.github.io/docs/python-sdk.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/release-v0-15-0.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/verification-v0-14-0.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/verification-v0-15-0.html</loc>
   </url>
   <url>
     <loc>https://theagenthealth.github.io/</loc>

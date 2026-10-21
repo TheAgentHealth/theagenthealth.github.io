@@ -21,8 +21,11 @@ GITHUB_REPO = "https://github.com/TheAgentHealth/agenthealth"
 
 # (source .md relative to agenthealth/docs, slug, nav title, meta description)
 DOCS = [
-    ("phase-16-alignment.md", "phase-16-alignment", "Phase 16 alignment (latest release)", "JavaScript SDK impact and earlier-phase compatibility evidence."),
-    ("releases/verification-v0.14.0.md", "verification-v0-14-0", "v0.14.0 verification", "Verified npm, PyPI, signatures, hashes, packages and runtime behavior."),
+    ("phase-17-alignment.md", "phase-17-alignment", "Phase 17 alignment (latest release)", "Model adapter scope, contributor credit and cross-phase compatibility."),
+    ("releases/v0.15.0.md", "release-v0-15-0", "v0.15.0 release notes", "Model/LLM health, shared distribution versions and actual release limitations."),
+    ("releases/verification-v0.15.0.md", "verification-v0-15-0", "v0.15.0 verification", "Verified signatures, public downloads, registries, SDKs and runtime behavior."),
+    ("phase-16-alignment.md", "phase-16-alignment", "Phase 16 alignment", "JavaScript SDK impact and earlier-phase compatibility evidence."),
+    ("releases/verification-v0.14.0.md", "verification-v0-14-0", "v0.14.0 verification (historical)", "Verified npm, PyPI, signatures, hashes, packages and runtime behavior."),
     ("javascript-sdk.md", "javascript-sdk", "JavaScript/TypeScript (npm)", "Node.js Promise API, TypeScript declarations, configuration and cancellation."),
     ("python-sdk.md", "python-sdk", "Python SDK (PyPi)", "Sync and async Python health checks, typed evidence, configuration and errors."),
     ("architecture.md", "architecture", "Architecture", "Project foundation and architecture decisions."),
@@ -31,6 +34,7 @@ DOCS = [
     ("docker.md", "docker", "Docker", "Running AgentHealth as a container image."),
     ("kubernetes.md", "kubernetes", "Kubernetes", "Manifests, Helm chart, probes, and deployment guidance."),
     ("distribution.md", "distribution", "Distribution", "Release channels and synchronized package publication."),
+    ("model-adapter.md", "model-adapter", "Model / LLM adapter", "OpenAI-compatible and Anthropic health, required models and opt-in inference."),
     ("http-adapter.md", "http-adapter", "HTTP adapter", "Status, headers, bearer auth, body checks, and transport diagnostics."),
     ("mcp-adapter.md", "mcp-adapter", "MCP adapter", "HTTP/stdio transport, protocol selection, OAuth, and functional probes."),
     ("a2a-adapter.md", "a2a-adapter", "A2A adapter", "Agent card discovery, authentication, skills, and safe interactions."),
@@ -45,6 +49,7 @@ DOCS = [
 
 # (dir under agenthealth/examples, slug, config files to embed inline)
 EXAMPLES = [
+    ("model-check", "model-check", ["openai.yaml", "anthropic.yaml", "ollama.yaml", "functional.yaml", "graph.yaml"]),
     ("javascript-sdk", "javascript-sdk", []),
     ("python-sdk", "python-sdk", []),
     ("a2a-check", "a2a-check", ["agenthealth.yaml", "bearer.yaml", "custom-card.yaml", "functional.yaml", "v1.yaml"]),

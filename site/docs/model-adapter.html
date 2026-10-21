@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Model health adapter — TheAgentHealth docs</title>
+<meta name="description" content="OpenAI-compatible and Anthropic health, required models and opt-in inference.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/model-adapter.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-17-alignment.html">Phase 17 alignment (latest release)</a><a href="release-v0-15-0.html">v0.15.0 release notes</a><a href="verification-v0-15-0.html">v0.15.0 verification</a><a href="phase-16-alignment.html">Phase 16 alignment</a><a href="verification-v0-14-0.html">v0.14.0 verification (historical)</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="model-adapter.html" class="current">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Model health adapter</h1>
+<p>The model adapter checks model and LLM inference endpoints used by agents
+(<a href="https://github.com/TheAgentHealth/agenthealth/blob/main/ROADMAP.md#phase-17--model--llm-adapters">Phase 17</a>). It handles <code>model</code>
+and <code>llm</code> targets and supports two API dialects:</p>
+<ul>
+<li><code>openai</code> (default): OpenAI-compatible APIs, including OpenAI, vLLM, Ollama,
+LiteLLM and other servers exposing <code>/models</code> and <code>/chat/completions</code>.</li>
+<li><code>anthropic</code>: the Anthropic API (<code>/models</code> and <code>/messages</code>).</li>
+</ul>
+<pre><code class="language-bash">agenthealth ping llm http://localhost:11434/v1
+agenthealth check examples/model-check/openai.yaml
+agenthealth doctor examples/model-check/anthropic.yaml
+</code></pre>
+<p>Streaming, embeddings, tool calls, cloud-provider signing (Amazon Bedrock,
+Google Vertex AI) and Azure <code>api-key</code> headers are not implemented.</p>
+<h2 id="configuration-options">Configuration options</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>endpoint</code></td>
+<td>API base URL including its version path, such as <code>https://api.openai.com/v1</code>; a configured query is preserved on every request</td>
+</tr>
+<tr>
+<td><code>auth.bearer_env</code></td>
+<td>Credential reference: sent as <code>Authorization: Bearer</code> for <code>openai</code>, and as <code>x-api-key</code> for <code>anthropic</code></td>
+</tr>
+<tr>
+<td><code>model.api</code></td>
+<td><code>openai</code> (also the empty default) or <code>anthropic</code></td>
+</tr>
+<tr>
+<td><code>model.required_models</code></td>
+<td>Unique, nonblank model IDs that the model listing must contain</td>
+</tr>
+<tr>
+<td><code>model.functional</code></td>
+<td>Opt-in minimal inference; requires <code>safe: true</code>, <code>model</code>, <code>prompt</code> (at most 4 KiB) and explicit <code>functional</code> in <code>checks</code></td>
+</tr>
+<tr>
+<td><code>model.functional.max_output_tokens</code></td>
+<td>Output token bound from 1 to 1024; default 16</td>
+</tr>
+<tr>
+<td><code>model.functional.token_parameter</code></td>
+<td><code>max_tokens</code> (default) or <code>max_completion_tokens</code>; <code>anthropic</code> always uses <code>max_tokens</code></td>
+</tr>
+</tbody>
+</table>
+<p>Explicit <code>checks</code> must include <code>capability</code> when <code>required_models</code> is set. See
+the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/spec/configuration.md#model-expectations-phase-17-draft">configuration contract</a>.</p>
+<h2 id="passive-checks">Passive checks</h2>
+<p>Reachability, authentication, protocol and capability share a single
+<code>GET &lt;endpoint&gt;/models</code> request per target run. The <code>anthropic</code> dialect adds
+<code>limit=1000</code> and the <code>anthropic-version: 2023-06-01</code> header. Reachability
+records <code>dns</code>, <code>tcp</code>, <code>tls</code> and <code>http</code> transport steps, and any HTTP response
+establishes reachability. Later checks classify the response:</p>
+<table>
+<thead>
+<tr>
+<th>Response</th>
+<th>Status</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>401 or 403</td>
+<td><code>MISCONFIGURED</code></td>
+<td><code>model_auth</code></td>
+</tr>
+<tr>
+<td>429</td>
+<td><code>DEGRADED</code></td>
+<td><code>model_rate_limit</code></td>
+</tr>
+<tr>
+<td>529</td>
+<td><code>DEGRADED</code></td>
+<td><code>model_overloaded</code></td>
+</tr>
+<tr>
+<td>Other non-2xx, including a wrong base path</td>
+<td><code>UNHEALTHY</code></td>
+<td><code>model_http</code></td>
+</tr>
+<tr>
+<td>Not a JSON object with a <code>data</code> array of models with nonblank <code>id</code></td>
+<td><code>UNHEALTHY</code></td>
+<td><code>model_protocol</code></td>
+</tr>
+<tr>
+<td>Listing larger than 4 MiB</td>
+<td><code>UNKNOWN</code></td>
+<td><code>model_limit</code></td>
+</tr>
+<tr>
+<td>A required model missing</td>
+<td><code>UNHEALTHY</code></td>
+<td><code>model_required</code></td>
+</tr>
+<tr>
+<td>A required model missing from a listing that reports <code>has_more</code></td>
+<td><code>UNKNOWN</code></td>
+<td><code>model_limit</code></td>
+</tr>
+</tbody>
+</table>
+<p>A listed model means that the API advertises it to this credential. It does
+not prove that the model can serve requests; use the functional check for that.</p>
+<h2 id="minimal-inference-active">Minimal inference (active)</h2>
+<p>The functional check sends one non-streaming request with one user message:
+<code>POST /chat/completions</code> for <code>openai</code> or <code>POST /messages</code> for <code>anthropic</code>. It
+runs only when <code>functional</code> is listed in <code>checks</code>, and the engine never retries
+it. The prompt should ask for a short reply and must not trigger tools or
+external actions; <code>safe: true</code> records that the operator reviewed it.</p>
+<p>Responses are classified as for listings, except that 404 yields
+<code>model_unavailable</code> (unknown or unserved model) and other errors yield
+<code>model_functional</code>. A 2xx response must contain a non-empty <code>choices</code> array
+(<code>openai</code>) or a <code>message</code> with <code>content</code> (<code>anthropic</code>).</p>
+<p>Each functional check may incur provider charges. Keep <code>max_output_tokens</code> small and run
+functional checks less often than passive ones.</p>
+<h3 id="output-token-bound">Output token bound</h3>
+<p>OpenAI-compatible servers disagree on the output limit field. Ollama 0.40, for
+example, ignores <code>max_completion_tokens</code> and honors <code>max_tokens</code>, while
+current OpenAI reasoning models reject <code>max_tokens</code>. The default <code>max_tokens</code>
+fails visibly where it is rejected rather than generating without a limit. Set
+<code>token_parameter: max_completion_tokens</code> for such models.</p>
+<p>When a response reports more output tokens (<code>usage.completion_tokens</code> or
+<code>usage.output_tokens</code>) than <code>max_output_tokens</code>, the server did not enforce the
+bound, and the check reports <code>DEGRADED</code> with code <code>model_token_limit</code>. Switch
+<code>token_parameter</code> to fix it.</p>
+<h2 id="safety">Safety</h2>
+<ul>
+<li>Error response bodies are never read. Successful bodies are bounded (4 MiB
+for listings, 1 MiB for inference) and never printed.</li>
+<li>Credentials come only from environment references, are validated as header
+values before network access, and are redacted from all output.</li>
+<li>TLS is verified and redirects are not followed, as in all adapters.</li>
+</ul>
+<h2 id="validation">Validation</h2>
+<p>Unit tests cover both dialects, every classification above, shared listings,
+no retries for inference, token parameter selection and redaction. Contributor <a href="https://github.com/sharath568">Sharath K</a> reports running the adapter
+against Ollama 0.40 with <code>qwen2.5:0.5b</code>. That run covered passive
+checks, required-model detection, <code>model_unavailable</code> for an unknown model, a
+bounded inference, and <code>model_token_limit</code> detection when
+<code>max_completion_tokens</code> was ignored. It has not been run against the hosted
+OpenAI or Anthropic APIs; their request shapes follow the public API references.</p>
+<p>The token field is a request limit, not an independently enforced spending cap.
+A server can ignore it; detection relies on reported usage after the request.
+Missing usage does not prove that the bound was honored. No tools or streaming
+are requested. Inference success validates response structure, not answer quality.</p>
+<p>API references: <a href="https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create">OpenAI Chat Completions</a>,
+<a href="https://platform.claude.com/docs/en/api/models/list">Anthropic models</a> and
+<a href="https://platform.claude.com/docs/en/api/messages/create">Anthropic messages</a>.
+The OpenAI token field includes reasoning tokens where applicable.</p>
+<p>Requires a Phase 17 CLI and matching SDK (released in v0.15.0). Both SDKs
+validate the canonical model block and delegate execution to Go. AHP, Docker
+and Kubernetes use the same registry; provide referenced secrets explicitly
+and keep functional checks off high-frequency readiness probes. The
+<a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/model-check/graph.yaml">shared graph example</a> keeps model evidence
+separate from direct/composite agent health and communication paths.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>
