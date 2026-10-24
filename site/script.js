@@ -125,7 +125,8 @@ if (systemDiagram) {
   const count = systemDiagram.querySelector('.hub-count');
   const timers = [];
   const svgNS = 'http://www.w3.org/2000/svg';
-  let started = false;
+  const loopPause = 1200;
+  let inView = false;
   let scanning = false;
   const groups = targets.map(() => {
     const group = document.createElementNS(svgNS, 'g');
@@ -173,10 +174,13 @@ if (systemDiagram) {
     message.textContent = 'System ready';
     count.textContent = `${targets.length} / ${targets.length} checks healthy`;
     replay.disabled = false;
+    if (inView && !motionPreference.matches) {
+      timers.push(setTimeout(runSystemCheck, loopPause));
+    }
   }
   function runSystemCheck() {
     if (scanning) return;
-    started = true;
+    timers.splice(0).forEach(clearTimeout);
     if (motionPreference.matches) {
       finishSystemCheck();
       return;
@@ -216,15 +220,21 @@ if (systemDiagram) {
   }
   new ResizeObserver(drawConnections).observe(map);
   const systemObserver = new IntersectionObserver(entries => {
-    if (!started && entries.some(entry => entry.isIntersecting)) {
-      systemObserver.disconnect();
+    inView = entries.some(entry => entry.isIntersecting);
+    if (inView) {
       runSystemCheck();
+    } else {
+      finishSystemCheck();
     }
   }, {threshold: 0.2});
   systemObserver.observe(map);
   replay.addEventListener('click', runSystemCheck);
   motionPreference.addEventListener('change', event => {
-    if (event.matches) finishSystemCheck();
+    if (event.matches) {
+      finishSystemCheck();
+    } else if (inView) {
+      runSystemCheck();
+    }
   });
 }
 
