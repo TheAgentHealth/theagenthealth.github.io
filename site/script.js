@@ -111,6 +111,7 @@ capabilityTabs.forEach((tab, index) => {
   });
 });
 
+// Continuously replay system checks while any part of the diagram is visible.
 // AgentHealth is a health observer; these animated paths represent probes,
 // rather than routing the application's prompts through the health engine.
 const systemDiagram = document.querySelector('.system-diagram');
@@ -226,7 +227,7 @@ if (systemDiagram) {
     } else {
       finishSystemCheck();
     }
-  }, {threshold: 0.2});
+  }, {threshold: 0});
   systemObserver.observe(map);
   replay.addEventListener('click', runSystemCheck);
   motionPreference.addEventListener('change', event => {
