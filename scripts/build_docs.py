@@ -24,14 +24,6 @@ DOCS = [
     ("phase-19-alignment.md", "phase-19-alignment", "Phase 19 alignment (latest release)", "Qdrant/Pinecone vector-store health and compatibility across phases 0–26."),
     ("releases/v0.17.0.md", "release-v0-17-0", "v0.17.0 release notes", "Read-only vector-store health and synchronized CLI, SDK and deployment distributions."),
     ("releases/verification-v0.17.0.md", "verification-v0-17-0", "v0.17.0 verification", "Verified artifacts, signatures, registries, OCI packages and public runtime tests."),
-    ("phase-18-alignment.md", "phase-18-alignment", "Phase 18 alignment", "Native database adapter scope and cross-phase compatibility."),
-    ("releases/v0.16.0.md", "release-v0-16-0", "v0.16.0 release notes (historical)", "PostgreSQL, MySQL, Redis and MongoDB native health checks."),
-    ("releases/verification-v0.16.0.md", "verification-v0-16-0", "v0.16.0 verification (historical)", "Verified database release artifacts, registries and runtime behavior."),
-    ("phase-17-alignment.md", "phase-17-alignment", "Phase 17 alignment", "Model adapter scope, contributor credit and cross-phase compatibility."),
-    ("releases/v0.15.0.md", "release-v0-15-0", "v0.15.0 release notes (historical)", "Model/LLM health, shared distribution versions and actual release limitations."),
-    ("releases/verification-v0.15.0.md", "verification-v0-15-0", "v0.15.0 verification (historical)", "Verified signatures, public downloads, registries, SDKs and runtime behavior."),
-    ("phase-16-alignment.md", "phase-16-alignment", "Phase 16 alignment", "JavaScript SDK impact and earlier-phase compatibility evidence."),
-    ("releases/verification-v0.14.0.md", "verification-v0-14-0", "v0.14.0 verification (historical)", "Verified npm, PyPI, signatures, hashes, packages and runtime behavior."),
     ("javascript-sdk.md", "javascript-sdk", "JavaScript/TypeScript (npm)", "Node.js Promise API, TypeScript declarations, configuration and cancellation."),
     ("python-sdk.md", "python-sdk", "Python SDK (PyPi)", "Sync and async Python health checks, typed evidence, configuration and errors."),
     ("architecture.md", "architecture", "Architecture", "Project foundation and architecture decisions."),
@@ -54,6 +46,19 @@ DOCS = [
     ("interoperability.md", "interoperability", "Interoperability", "Standardization status and ecosystem compatibility."),
     ("phase-status.md", "phase-status", "Phase status", "Implementation, documentation, and example coverage by phase."),
 ]
+
+# Preserve historical URLs and internal links without crowding the main menu.
+ARCHIVED_DOCS = [
+    ("phase-18-alignment.md", "phase-18-alignment", "Phase 18 alignment", "Native database adapter scope and cross-phase compatibility."),
+    ("releases/v0.16.0.md", "release-v0-16-0", "v0.16.0 release notes (historical)", "PostgreSQL, MySQL, Redis and MongoDB native health checks."),
+    ("releases/verification-v0.16.0.md", "verification-v0-16-0", "v0.16.0 verification (historical)", "Verified database release artifacts, registries and runtime behavior."),
+    ("phase-17-alignment.md", "phase-17-alignment", "Phase 17 alignment", "Model adapter scope, contributor credit and cross-phase compatibility."),
+    ("releases/v0.15.0.md", "release-v0-15-0", "v0.15.0 release notes (historical)", "Model/LLM health, shared distribution versions and actual release limitations."),
+    ("releases/verification-v0.15.0.md", "verification-v0-15-0", "v0.15.0 verification (historical)", "Verified signatures, public downloads, registries, SDKs and runtime behavior."),
+    ("phase-16-alignment.md", "phase-16-alignment", "Phase 16 alignment", "JavaScript SDK impact and earlier-phase compatibility evidence."),
+    ("releases/verification-v0.14.0.md", "verification-v0-14-0", "v0.14.0 verification (historical)", "Verified npm, PyPI, signatures, hashes, packages and runtime behavior."),
+]
+ALL_DOCS = DOCS + ARCHIVED_DOCS
 
 # (dir under agenthealth/examples, slug, config files to embed inline)
 EXAMPLES = [
@@ -104,7 +109,7 @@ def add_heading_ids(html: str) -> str:
 def build_path_map(repo: Path) -> dict[str, str]:
     """repo-relative markdown path -> site-relative generated page path."""
     mapping = {"docs/README.md": "docs/index.html", "examples/README.md": "docs/examples/index.html"}
-    for source, slug, _, _ in DOCS:
+    for source, slug, _, _ in ALL_DOCS:
         mapping[f"docs/{source}"] = f"docs/{slug}.html"
     for dir_name, slug, _ in EXAMPLES:
         mapping[f"examples/{dir_name}/README.md"] = f"docs/examples/{slug}.html"
@@ -229,7 +234,7 @@ def main() -> None:
     title, body = render_markdown_file(repo, "docs/README.md", path_map, site_path)
     write(site_path, page_shell(site_path, "Documentation", "Documentation index for AgentHealth.", body))
 
-    for source, slug, nav_title, description in DOCS:
+    for source, slug, nav_title, description in ALL_DOCS:
         site_path = f"docs/{slug}.html"
         title, body = render_markdown_file(repo, f"docs/{source}", path_map, site_path)
         write(site_path, page_shell(site_path, title, description, body))

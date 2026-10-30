@@ -28,7 +28,9 @@ python3 scripts/build_docs.py ../agenthealth
 
 This requires `markdown-it-py` (`pip install -r scripts/requirements.txt`). The script is a
 local maintenance tool and a required deployment step. Its output (`site/docs/`) is committed for local preview; deployment always regenerates it from current source.
-Edit `scripts/build_docs.py`'s `DOCS`/`EXAMPLES` lists to add or remove mirrored pages.
+Edit `scripts/build_docs.py`'s `DOCS`/`EXAMPLES` lists to update the main navigation.
+Use `ARCHIVED_DOCS` for historical pages that should retain their URLs without
+appearing in the sidebar.
 The build also refreshes the sitemap. Current guides include v0.17.0 Qdrant/Pinecone vector-store health, Phase 19
 alignment, release notes and publication verification, plus Phase 18 native
 database health, both SDKs, model/LLM checks and vector/database/model examples.
