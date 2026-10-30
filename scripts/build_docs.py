@@ -21,9 +21,15 @@ GITHUB_REPO = "https://github.com/TheAgentHealth/agenthealth"
 
 # (source .md relative to agenthealth/docs, slug, nav title, meta description)
 DOCS = [
-    ("phase-17-alignment.md", "phase-17-alignment", "Phase 17 alignment (latest release)", "Model adapter scope, contributor credit and cross-phase compatibility."),
-    ("releases/v0.15.0.md", "release-v0-15-0", "v0.15.0 release notes", "Model/LLM health, shared distribution versions and actual release limitations."),
-    ("releases/verification-v0.15.0.md", "verification-v0-15-0", "v0.15.0 verification", "Verified signatures, public downloads, registries, SDKs and runtime behavior."),
+    ("phase-19-alignment.md", "phase-19-alignment", "Phase 19 alignment (latest release)", "Qdrant/Pinecone vector-store health and compatibility across phases 0–26."),
+    ("releases/v0.17.0.md", "release-v0-17-0", "v0.17.0 release notes", "Read-only vector-store health and synchronized CLI, SDK and deployment distributions."),
+    ("releases/verification-v0.17.0.md", "verification-v0-17-0", "v0.17.0 verification", "Verified artifacts, signatures, registries, OCI packages and public runtime tests."),
+    ("phase-18-alignment.md", "phase-18-alignment", "Phase 18 alignment", "Native database adapter scope and cross-phase compatibility."),
+    ("releases/v0.16.0.md", "release-v0-16-0", "v0.16.0 release notes (historical)", "PostgreSQL, MySQL, Redis and MongoDB native health checks."),
+    ("releases/verification-v0.16.0.md", "verification-v0-16-0", "v0.16.0 verification (historical)", "Verified database release artifacts, registries and runtime behavior."),
+    ("phase-17-alignment.md", "phase-17-alignment", "Phase 17 alignment", "Model adapter scope, contributor credit and cross-phase compatibility."),
+    ("releases/v0.15.0.md", "release-v0-15-0", "v0.15.0 release notes (historical)", "Model/LLM health, shared distribution versions and actual release limitations."),
+    ("releases/verification-v0.15.0.md", "verification-v0-15-0", "v0.15.0 verification (historical)", "Verified signatures, public downloads, registries, SDKs and runtime behavior."),
     ("phase-16-alignment.md", "phase-16-alignment", "Phase 16 alignment", "JavaScript SDK impact and earlier-phase compatibility evidence."),
     ("releases/verification-v0.14.0.md", "verification-v0-14-0", "v0.14.0 verification (historical)", "Verified npm, PyPI, signatures, hashes, packages and runtime behavior."),
     ("javascript-sdk.md", "javascript-sdk", "JavaScript/TypeScript (npm)", "Node.js Promise API, TypeScript declarations, configuration and cancellation."),
@@ -34,6 +40,8 @@ DOCS = [
     ("docker.md", "docker", "Docker", "Running AgentHealth as a container image."),
     ("kubernetes.md", "kubernetes", "Kubernetes", "Manifests, Helm chart, probes, and deployment guidance."),
     ("distribution.md", "distribution", "Distribution", "Release channels and synchronized package publication."),
+    ("vector-store-adapter.md", "vector-store-adapter", "Vector-store adapter", "Qdrant/Pinecone metadata, collection availability and opt-in bounded vector queries."),
+    ("database-adapter.md", "database-adapter", "Database adapter", "Native PostgreSQL, MySQL, Redis and MongoDB health with opt-in fixed SQL queries."),
     ("model-adapter.md", "model-adapter", "Model / LLM adapter", "OpenAI-compatible and Anthropic health, required models and opt-in inference."),
     ("http-adapter.md", "http-adapter", "HTTP adapter", "Status, headers, bearer auth, body checks, and transport diagnostics."),
     ("mcp-adapter.md", "mcp-adapter", "MCP adapter", "HTTP/stdio transport, protocol selection, OAuth, and functional probes."),
@@ -49,6 +57,8 @@ DOCS = [
 
 # (dir under agenthealth/examples, slug, config files to embed inline)
 EXAMPLES = [
+    ("vector-check", "vector-check", ["agenthealth.yaml", "query.yaml", "pinecone.yaml"]),
+    ("database-check", "database-check", ["agenthealth.yaml"]),
     ("model-check", "model-check", ["openai.yaml", "anthropic.yaml", "ollama.yaml", "functional.yaml", "graph.yaml"]),
     ("javascript-sdk", "javascript-sdk", []),
     ("python-sdk", "python-sdk", []),
