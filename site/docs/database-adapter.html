@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Database adapter — TheAgentHealth docs</title>
+<meta name="description" content="Native PostgreSQL, MySQL, Redis and MongoDB health with opt-in fixed SQL queries.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/database-adapter.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-19-alignment.html">Phase 19 alignment (latest release)</a><a href="release-v0-17-0.html">v0.17.0 release notes</a><a href="verification-v0-17-0.html">v0.17.0 verification</a><a href="phase-18-alignment.html">Phase 18 alignment</a><a href="release-v0-16-0.html">v0.16.0 release notes (historical)</a><a href="verification-v0-16-0.html">v0.16.0 verification (historical)</a><a href="phase-17-alignment.html">Phase 17 alignment</a><a href="release-v0-15-0.html">v0.15.0 release notes (historical)</a><a href="verification-v0-15-0.html">v0.15.0 verification (historical)</a><a href="phase-16-alignment.html">Phase 16 alignment</a><a href="verification-v0-14-0.html">v0.14.0 verification (historical)</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html" class="current">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Database adapter</h1>
+<p>Phase 18 implements native PostgreSQL, MySQL, Redis and MongoDB checks.
+Use the <code>database</code> target type. Data services are supporting dependencies,
+not composite agents. The implementation uses trusted compiled Go drivers;
+it does not add a SQL console or accept arbitrary commands.</p>
+<table>
+<thead>
+<tr>
+<th>Endpoint scheme</th>
+<th>Default port</th>
+<th>Passive evidence</th>
+<th>Explicit <code>functional</code> probe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>postgres</code></td>
+<td>5432</td>
+<td>Native connection/login</td>
+<td><code>SELECT 1</code>, expect integer 1</td>
+</tr>
+<tr>
+<td><code>mysql</code></td>
+<td>3306</td>
+<td>Native connection/login</td>
+<td><code>SELECT 1</code>, expect 1</td>
+</tr>
+<tr>
+<td><code>redis</code></td>
+<td>6379</td>
+<td>Authenticated <code>PING</code>, expect <code>PONG</code></td>
+<td>Another <code>PING</code></td>
+</tr>
+<tr>
+<td><code>mongodb</code></td>
+<td>27017</td>
+<td>Authenticated <code>ping</code> command</td>
+<td>Another <code>ping</code> command</td>
+</tr>
+</tbody>
+</table>
+<p>SQL query execution requires <code>functional</code> in <code>checks</code>. No writes, application
+queries, collection reads, DDL, migrations or server-side scripts are supported.
+A successful login/ping does not establish application permissions, table/index
+availability, replication freshness or overall application read readiness.
+Even <code>SELECT 1</code> only proves a minimal constant query can execute.</p>
+<pre><code class="language-yaml">version: v1
+targets:
+  - name: primary-db
+    type: database
+    endpoint: postgres://db.example.com:5432/app
+    checks: [reachability, authentication, protocol, capability, functional, latency]
+    timeout_ms: 3000
+    database:
+      username: health
+      password_env: AGENTHEALTH_DATABASE_PASSWORD
+      tls: required
+</code></pre>
+<p><code>database</code> accepts only <code>username</code>, <code>password_env</code>, and <code>tls</code>. SQL endpoints
+require a username and a nonempty database path. Redis permits database numbers
+0–15 (default 0). MongoDB uses the path as database and authentication source,
+defaulting to <code>admin</code>. A MongoDB password reference requires a username. MongoDB connects to one explicit server directly;
+SRV discovery, replica-set discovery and sharded topologies are outside this
+initial scope. MongoDB username/password authentication uses SCRAM negotiation;
+Redis supports password and username/password ACL authentication. SQL uses the
+selected driver's supported password handshake. TLS client certificates and
+cloud/IAM authentication are not implemented.</p>
+<p>TLS defaults to <code>required</code>, verifies server names and trust chains, and requires
+TLS 1.2+. There is no skip-verification or plaintext fallback. <code>disabled</code> is an
+explicit plaintext mode intended for the disposable loopback examples. PostgreSQL
+uses native TLS negotiation; MySQL uses its TLS handshake, and Redis/MongoDB use
+TLS connections. URI credentials, query options, fragments, multiple hosts and
+arbitrary driver settings are rejected. Use an explicit port when needed.</p>
+<p>Passwords resolve once per run from <code>password_env</code>, participate in engine
+redaction, and never enter a configured endpoint. Missing or empty referenced
+passwords fail Configuration before any connection. Do not set <code>auth</code> on a
+database target; <code>auth.bearer_env</code> belongs to other adapter transports. An absent
+password reference permits a passwordless server configuration. Keep service
+accounts minimally privileged and protect the configuration as trusted input.</p>
+<p>Reachability measures a short TCP connection, including its latency. It does
+not authenticate or verify TLS; native authentication/protocol/capability checks
+perform that work under their check deadlines. A configuration containing only
+<code>reachability</code> therefore establishes TCP reachability alone. Default checks also
+request native protocol/authentication evidence. Passive native evidence is shared
+within one target run; separate graph nodes and runs do not reuse it. Functional
+SQL uses a fresh connection and runs exactly one constant query. Driver-level
+operation retries are disabled. Received native/TLS bytes mark response evidence;
+only passive no-response communication failures may use engine retries. Active
+queries and partial responses never retry.</p>
+<p>Recognized server authentication denials produce <code>MISCONFIGURED</code>; other native
+protocol/query failures produce <code>UNHEALTHY</code>. TCP failures and deadline expiry use
+the shared engine classification. PostgreSQL message bodies are capped at 4 MiB and Redis reply lines at 1 KiB.
+MySQL and MongoDB retain their native driver framing limits. Raw driver errors, server messages, query
+results and passwords never appear in output. A native probe's failure can affect
+multiple dimensions because those dimensions consume the same evidence.
+Connections close on success/failure/cancellation; cleanup contexts are bounded.</p>
+<p>Use these targets as independent nested dependencies or shared graph nodes.
+Existing critical/optional edge policies, graph deduplication, JSON/YAML results,
+CLI exit codes and AHP snapshot freshness semantics apply unchanged. The Python
+and JavaScript SDKs use their bundled canonical schemas and matching CLI; they
+do not create independent database connections.</p>
+<p>For Kubernetes, supply <code>password_env</code> using a Secret and the chart's existing
+<code>envFrom</code>/environment facilities. Keep the total check budget below probe/Job
+deadlines. <code>/live</code> remains process liveness; database readiness belongs to the
+AHP snapshot and its dependency policy. Never place literal production passwords
+in ConfigMaps, Helm values, command arguments or example files.</p>
+<p><a href="examples/database-check.html">Disposable examples</a> record exact tested
+server versions and healthy/wrong-password expectations. This controlled native
+matrix does not establish managed-cloud, cluster, proxy or broad version support.
+See the <a href="phase-18-alignment.html">phase impact review</a> and
+<a href="https://github.com/TheAgentHealth/agenthealth/blob/main/spec/configuration.md#database-options-phase-18">configuration contract</a>.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

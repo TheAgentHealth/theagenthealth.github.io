@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Native database health — TheAgentHealth docs</title>
+<meta name="description" content="Example configuration: Native database health.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/examples/database-check.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="../index.html">Docs</a><a href="index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="../index.html">Overview</a><a href="../phase-19-alignment.html">Phase 19 alignment (latest release)</a><a href="../release-v0-17-0.html">v0.17.0 release notes</a><a href="../verification-v0-17-0.html">v0.17.0 verification</a><a href="../phase-18-alignment.html">Phase 18 alignment</a><a href="../release-v0-16-0.html">v0.16.0 release notes (historical)</a><a href="../verification-v0-16-0.html">v0.16.0 verification (historical)</a><a href="../phase-17-alignment.html">Phase 17 alignment</a><a href="../release-v0-15-0.html">v0.15.0 release notes (historical)</a><a href="../verification-v0-15-0.html">v0.15.0 verification (historical)</a><a href="../phase-16-alignment.html">Phase 16 alignment</a><a href="../verification-v0-14-0.html">v0.14.0 verification (historical)</a><a href="../javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="../python-sdk.html">Python SDK (PyPi)</a><a href="../architecture.html">Architecture</a><a href="../cli.html">CLI</a><a href="../installation.html">Installation</a><a href="../docker.html">Docker</a><a href="../kubernetes.html">Kubernetes</a><a href="../distribution.html">Distribution</a><a href="../vector-store-adapter.html">Vector-store adapter</a><a href="../database-adapter.html">Database adapter</a><a href="../model-adapter.html">Model / LLM adapter</a><a href="../http-adapter.html">HTTP adapter</a><a href="../mcp-adapter.html">MCP adapter</a><a href="../a2a-adapter.html">A2A adapter</a><a href="../agent-adapter.html">Agent adapter</a><a href="../agent-router.html">Agent Router</a><a href="../agentgateway.html">Agentgateway</a><a href="../dependency-graph.html">Dependency graph</a><a href="../ahp.html">AHP (experimental)</a><a href="../interoperability.html">Interoperability</a><a href="../phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="index.html">Overview</a><a href="vector-check.html">vector check</a><a href="database-check.html" class="current">database check</a><a href="model-check.html">model check</a><a href="javascript-sdk.html">javascript sdk</a><a href="python-sdk.html">python sdk</a><a href="a2a-check.html">a2a check</a><a href="agent-check.html">agent check</a><a href="ahp-check.html">ahp check</a><a href="distribution.html">distribution</a><a href="gateway-check.html">gateway check</a><a href="graph-check.html">graph check</a><a href="kubernetes.html">kubernetes</a><a href="router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="../index.html">← All documentation</a></p>
+<h1>Native database health</h1>
+<p>These disposable services use PostgreSQL 17.6, MySQL 8.4.6, Redis 7.4.5 and
+MongoDB 8.0.13. Docker Compose v2 and Go 1.26+ are required. Ports bind only to
+loopback. Credentials below are public test values; remove volumes after use.</p>
+<pre><code class="language-bash">docker compose -p agenthealth-phase18 -f examples/database-check/compose.yaml up -d --wait --wait-timeout 240
+export AGENTHEALTH_DB_PASSWORD=health-test-password
+go run ./cmd/agenthealth check examples/database-check/agenthealth.yaml --format json
+AGENTHEALTH_DATABASE_TESTS=1 go test -race ./adapters/database -run TestRealDatabases -v
+docker compose -p agenthealth-phase18 -f examples/database-check/compose.yaml down -v
+</code></pre>
+<p>The suite expects healthy read-only probes, then <code>MISCONFIGURED</code> for incorrect
+passwords, and checks password suppression in JSON. The configuration explicitly
+disables TLS for these loopback fixtures; production defaults verify TLS.
+Use a least-privilege database user in production, not this MongoDB root fixture.
+The <a href="../database-adapter.html">guide</a> explains scope and limits.</p>
+<div class="doc-config"><h2>Configuration files</h2>
+<h3>agenthealth.yaml</h3><pre><code>version: v1
+concurrency: 4
+targets:
+  - name: postgres
+    type: database
+    endpoint: postgres://127.0.0.1:15432/health
+    checks: [reachability, authentication, protocol, capability, latency]
+    database:
+      username: health
+      password_env: AGENTHEALTH_DB_PASSWORD
+      tls: disabled
+  - name: mysql
+    type: database
+    endpoint: mysql://127.0.0.1:13306/health
+    database:
+      username: health
+      password_env: AGENTHEALTH_DB_PASSWORD
+      tls: disabled
+  - name: redis
+    type: database
+    endpoint: redis://127.0.0.1:16379/0
+    database:
+      password_env: AGENTHEALTH_DB_PASSWORD
+      tls: disabled
+  - name: mongodb
+    type: database
+    endpoint: mongodb://127.0.0.1:17017/admin
+    database:
+      username: health
+      password_env: AGENTHEALTH_DB_PASSWORD
+      tls: disabled
+</code></pre>
+</div>
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phase 18 alignment audit — TheAgentHealth docs</title>
+<meta name="description" content="Native database adapter scope and cross-phase compatibility.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/phase-18-alignment.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-19-alignment.html">Phase 19 alignment (latest release)</a><a href="release-v0-17-0.html">v0.17.0 release notes</a><a href="verification-v0-17-0.html">v0.17.0 verification</a><a href="phase-18-alignment.html" class="current">Phase 18 alignment</a><a href="release-v0-16-0.html">v0.16.0 release notes (historical)</a><a href="verification-v0-16-0.html">v0.16.0 verification (historical)</a><a href="phase-17-alignment.html">Phase 17 alignment</a><a href="release-v0-15-0.html">v0.15.0 release notes (historical)</a><a href="verification-v0-15-0.html">v0.15.0 verification (historical)</a><a href="phase-16-alignment.html">Phase 16 alignment</a><a href="verification-v0-14-0.html">v0.14.0 verification (historical)</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Phase 18 alignment audit</h1>
+<p>Scope: PostgreSQL, MySQL, Redis and MongoDB native database health under the
+existing <code>database</code> target vocabulary. <a href="https://github.com/TheAgentHealth/agenthealth/issues/54">RFC #54</a>
+records the authorized additive configuration and safety design. The synchronized v0.16.0 publication is verified; see the
+<a href="verification-v0-16-0.html">verification record</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Phases</th>
+<th>Impact and completed alignment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 foundation</td>
+<td>README, documentation/example indexes and contribution guidance describe the implemented database scope.</td>
+</tr>
+<tr>
+<td>1 specification</td>
+<td>Additive optional <code>database</code> block, canonical/bundled schemas, valid/invalid fixtures and strict Go validation. Existing states, result shape, contract v1 and exits remain unchanged.</td>
+</tr>
+<tr>
+<td>2 engine</td>
+<td>Existing credential references/environment snapshot/redaction, deadlines, aggregation and pools reused. No raw driver errors escape; native response tracking preserves no-response retry classification.</td>
+</tr>
+<tr>
+<td>3 CLI</td>
+<td>Shared check/doctor/ping/serve registry registers database targets; SQL ping requires a configuration file with username/database options.</td>
+</tr>
+<tr>
+<td>4 HTTP</td>
+<td>No transport changes; native drivers do not use the engine HTTP client. TLS verification remains mandatory by default.</td>
+</tr>
+<tr>
+<td>5 MCP</td>
+<td>No protocol changes; database evidence does not establish tool availability. Existing regressions retained.</td>
+</tr>
+<tr>
+<td>6 A2A</td>
+<td>No protocol changes; database health does not establish peer communication. Existing regressions retained.</td>
+</tr>
+<tr>
+<td>7 agents</td>
+<td>Data services remain supporting dependencies. Direct/composite agents and communication paths retain separate evidence.</td>
+</tr>
+<tr>
+<td>8–9 gateway/router</td>
+<td>No changes to configured HTTP signals or product compatibility claims. A database is a separate dependency.</td>
+</tr>
+<tr>
+<td>10 graph</td>
+<td>Existing database vocabulary can be used in nested dependencies/shared graph nodes; per-run native evidence cache does not cross node/run boundaries. Critical/optional edge aggregation is unchanged.</td>
+</tr>
+<tr>
+<td>11 AHP</td>
+<td>Same shared registry serves database results; endpoint authorization, snapshot freshness and readiness/liveness remain unchanged.</td>
+</tr>
+<tr>
+<td>12–13 distribution</td>
+<td>Native drivers compile into the ordinary five-platform CLI, images and package formats. No external database executables required by installed CLI. Shared release metadata advances together.</td>
+</tr>
+<tr>
+<td>14 Kubernetes</td>
+<td>Existing configuration/Secret injection supports database passwords. Explicit plaintext is only for loopback test services. Keep AHP/probe/Job deadlines aligned and dependency readiness separate from <code>/live</code>. Chart/image/source versions remain synchronized.</td>
+</tr>
+<tr>
+<td>15–16 SDKs</td>
+<td>Both bundled canonical configuration schemas updated. Wrappers continue to use matching CLI and preserve engine results; no language-specific driver implementation added.</td>
+</tr>
+<tr>
+<td>17 models</td>
+<td>Model/provider configuration and active inference remain independent. SQL query probes likewise require functional opt-in. Historical v0.15.0 scope remains accurate.</td>
+</tr>
+<tr>
+<td>19 vectors</td>
+<td>Still planned. Database login/SELECT 1 does not implement pgvector, collection/index discovery or retrieval health.</td>
+</tr>
+<tr>
+<td>20 frameworks</td>
+<td>Future integrations must keep data health separate from agent and communication-path evidence.</td>
+</tr>
+<tr>
+<td>21 CI/CD</td>
+<td>Versioned disposable four-service native matrix adds healthy/authentication-denial checks, alongside schema, race, platform, SDK and deployment jobs.</td>
+</tr>
+<tr>
+<td>22 observability</td>
+<td>Existing health dimensions and output only; no query metrics exporter or database content collection.</td>
+</tr>
+<tr>
+<td>23 plugins</td>
+<td>Trusted compiled drivers only, no dynamic plugin or tenant isolation claim.</td>
+</tr>
+<tr>
+<td>24 conformance</td>
+<td>Add schema rejection and native protocol safety regression coverage; full conformance remains planned.</td>
+</tr>
+<tr>
+<td>25 interoperability</td>
+<td>Controlled PostgreSQL 17.6, MySQL 8.4.6, Redis 7.4.5 and MongoDB 8.0.13 matrix; cloud products, version matrices, TLS database deployment matrices and cluster/failover compatibility remain future work.</td>
+</tr>
+<tr>
+<td>26 hardening</td>
+<td>Verified TLS default, no insecure fallback, fixed query constants, environment passwords, context-bound connections and no native operation retries. Go source minimum advances to 1.26 for security-patched dependencies; minimum-version CI and build guides align. No security audit claim.</td>
+</tr>
+</tbody>
+</table>
+<p>Validation includes Go vet/race, canonical fixtures and examples, SDK schema
+parity/type declarations, markdown links and real database healthy/wrong-password
+runs. Full distribution and disposable Kubernetes runtime validation remain
+required CI/release gates. See the <a href="database-adapter.html">database guide</a> for
+limitations and <a href="release-v0-16-0.html">release notes</a> for synchronized artifacts.</p>
+<p>Current cross-phase follow-up: <a href="phase-19-alignment.html">Phase 19 alignment</a>
+adds Qdrant/Pinecone retrieval dependency checks. Historical release scope above
+is unchanged; database login remains distinct from vector retrieval.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

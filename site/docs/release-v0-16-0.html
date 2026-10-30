@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgentHealth v0.16.0 — TheAgentHealth docs</title>
+<meta name="description" content="PostgreSQL, MySQL, Redis and MongoDB native health checks.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/release-v0-16-0.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-19-alignment.html">Phase 19 alignment (latest release)</a><a href="release-v0-17-0.html">v0.17.0 release notes</a><a href="verification-v0-17-0.html">v0.17.0 verification</a><a href="phase-18-alignment.html">Phase 18 alignment</a><a href="release-v0-16-0.html" class="current">v0.16.0 release notes (historical)</a><a href="verification-v0-16-0.html">v0.16.0 verification (historical)</a><a href="phase-17-alignment.html">Phase 17 alignment</a><a href="release-v0-15-0.html">v0.15.0 release notes (historical)</a><a href="verification-v0-15-0.html">v0.15.0 verification (historical)</a><a href="phase-16-alignment.html">Phase 16 alignment</a><a href="verification-v0-14-0.html">v0.14.0 verification (historical)</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>AgentHealth v0.16.0</h1>
+<p>Phase 18 adds PostgreSQL, MySQL, Redis and MongoDB native database health.
+SQL passive checks establish login; explicit <code>functional</code> runs one fixed
+<code>SELECT 1</code>. Redis/MongoDB use authenticated PING. Verified TLS is the default;
+passwords resolve through environment references and engine redaction.
+URI credentials/options and arbitrary queries are rejected. Native probes share
+passive evidence per target run, honor deadlines and disable operation retries.</p>
+<p>Both SDKs include the additive database configuration schema. Earlier phases
+retain their health states, v1 result/exit contracts, independent dependency
+policies and AHP freshness semantics. Kubernetes continues to use existing
+Secret injection, liveness/readiness separation and synchronized image/chart
+pins. See the <a href="https://github.com/TheAgentHealth/agenthealth/blob/v0.16.0/docs/phase-18-alignment.md">all-phase review</a>.</p>
+<pre><code class="language-sh">pip install agenthealth==0.16.0
+npm install @theagenthealth/agenthealth@0.16.0
+docker run --rm ghcr.io/theagenthealth/agenthealth:v0.16.0 version
+helm upgrade --install agenthealth oci://ghcr.io/theagenthealth/charts/agenthealth \
+  --version 0.16.0 --set-file config=./agenthealth.yaml
+</code></pre>
+<p>All implemented artifacts share immutable source tag v0.16.0: five CLI archives,
+five CycloneDX SBOMs, checksums, four Linux packages, Homebrew/Scoop manifests,
+Docker images, chart <code>agenthealth-0.16.0.tgz</code>, OCI download bundle, Python
+wheel/sdist and npm tarball. Downloads are attached to this Release. Verify
+checksums and GitHub attestations before installation.</p>
+<ul>
+<li>Docker: <code>ghcr.io/theagenthealth/agenthealth:v0.16.0</code> and configured Docker Hub mirror <code>theagenthealth/agenthealth:v0.16.0</code>.</li>
+<li>Helm: <code>oci://ghcr.io/theagenthealth/charts/agenthealth</code>, version <code>0.16.0</code>, <code>appVersion: v0.16.0</code>.</li>
+<li>OCI bundle: <code>ghcr.io/theagenthealth/agenthealth-binaries:v0.16.0</code>, retrieved with ORAS.</li>
+<li>Python: <code>agenthealth==0.16.0</code>; npm: <code>@theagenthealth/agenthealth@0.16.0</code>.</li>
+</ul>
+<p>No breaking AHS v1/result/exit-code changes; older CLIs reject the new database
+options. Upgrade SDK and CLI together. Source-build Go minimum advances to 1.26 for
+security-patched native drivers and Unicode/cryptography dependencies; installed binaries require no Go
+or external database CLI. See the tagged <code>go.mod</code> for the exact minimum.</p>
+<p>Controlled tests cover PostgreSQL 17.6, MySQL 8.4.6, Redis 7.4.5 and MongoDB
+8.0.13 healthy probes and incorrect passwords. Application data permissions,
+replication freshness, broad server-version/TLS matrices, MongoDB topology/SRV,
+cloud/IAM authentication and vector retrieval remain outside this baseline.
+Minimal query success does not prove application read readiness.</p>
+<h2 id="verified-publication">Verified publication</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Immutable manifest digest</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GHCR Docker image</code></td>
+<td><code>sha256:ec147b0368f76bd45d104ff3c3249257ce893b711649d6d9d0e1ce171249f606</code></td>
+</tr>
+<tr>
+<td><code>Docker Hub mirror</code></td>
+<td><code>sha256:bb9db2f7f81a3dd45778f2cce19d0b6021c19717646d7b1fefef33794c97fc0c</code></td>
+</tr>
+<tr>
+<td><code>ghcr.io/theagenthealth/charts/agenthealth:0.16.0</code></td>
+<td><code>sha256:13c7588c35f6a829cd7a909947ac644783996b43bb27fd55aea29347e68569ad</code></td>
+</tr>
+<tr>
+<td><code>ghcr.io/theagenthealth/agenthealth-binaries:v0.16.0</code></td>
+<td><code>sha256:20b1ff516d50f6d73a136aaa3c57d8e5479d4bfc4b3e288ccee99de54a6fc6e2</code></td>
+</tr>
+</tbody>
+</table>
+<p>All required downloads, SDK registries and OCI packages are public and verified.
+See the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/releases/verification-v0.16.0.md">verification record</a>
+for source, CI, provenance and runtime evidence.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

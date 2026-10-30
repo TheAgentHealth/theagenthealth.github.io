@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>v0.17.0 publication verification — TheAgentHealth docs</title>
+<meta name="description" content="Verified artifacts, signatures, registries, OCI packages and public runtime tests.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/verification-v0-17-0.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-19-alignment.html">Phase 19 alignment (latest release)</a><a href="release-v0-17-0.html">v0.17.0 release notes</a><a href="verification-v0-17-0.html" class="current">v0.17.0 verification</a><a href="phase-18-alignment.html">Phase 18 alignment</a><a href="release-v0-16-0.html">v0.16.0 release notes (historical)</a><a href="verification-v0-16-0.html">v0.16.0 verification (historical)</a><a href="phase-17-alignment.html">Phase 17 alignment</a><a href="release-v0-15-0.html">v0.15.0 release notes (historical)</a><a href="verification-v0-15-0.html">v0.15.0 verification (historical)</a><a href="phase-16-alignment.html">Phase 16 alignment</a><a href="verification-v0-14-0.html">v0.14.0 verification (historical)</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>v0.17.0 publication verification</h1>
+<p>Verified on October 30, 2026 (America/Chicago). The regular Latest
+<a href="https://github.com/TheAgentHealth/agenthealth/releases/tag/v0.17.0">GitHub Release</a>,
+<a href="https://pypi.org/project/agenthealth/0.17.0/">PyPI</a> and
+<a href="https://www.npmjs.com/package/@theagenthealth/agenthealth/v/0.17.0">npm</a> are public.</p>
+<h2 id="source-and-gates">Source and gates</h2>
+<p>Immutable tag <code>v0.17.0</code> points to <code>a45f24ceffb775fda13f491df3fd230bb3f34025</code>, the merge commit of
+<a href="https://github.com/TheAgentHealth/agenthealth/pull/58">PR #58</a>. Its 17 focused
+commits implement the Qdrant/Pinecone Phase 19 baseline and realign phases 0–26.
+All 42 <a href="https://github.com/TheAgentHealth/agenthealth/actions/runs/41033837424">PR CI jobs</a>
+passed before the user-authorized approval bypass was used.</p>
+<p>The first Copilot review was assessed. Valid schema zero-value parity and
+packaged SDK README findings were fixed; Compose exclusion was already fixed.
+The proposed Qdrant array decoder was rejected with a direct Qdrant 1.15.5
+<code>result.points</code> response and official query-endpoint documentation.
+No second Copilot review was requested or awaited.</p>
+<p><a href="https://github.com/TheAgentHealth/agenthealth/actions/runs/41034796628">Fresh tagged-source CI</a>
+passed all 41 test jobs, including five native archive platforms, real Qdrant
+and native databases, both SDK matrices and Kubernetes 1.31.9/1.32.2/1.33.1.
+Only the PR-only path detector was intentionally skipped.
+The <a href="https://github.com/TheAgentHealth/agenthealth/actions/runs/41034782605">Release workflow</a> succeeded on attempt 2.</p>
+<p>npm publication first became visible through the per-version endpoint while
+the install index still returned ETARGET. After public npm install visibility
+was confirmed, only failed jobs and dependents were retried. The retry reused
+the identical npm tarball, immutable tag, signed assets and existing packages;
+nothing was rebuilt, replaced or republished under a changed source.</p>
+<h2 id="downloads-signatures-and-runtime">Downloads, signatures and runtime</h2>
+<ul>
+<li>Downloaded all 21 files anonymously. GitHub digests and all 20 SHA-256
+checksum entries matched the complete required synchronized distribution set.</li>
+<li>Verified all 21 build-provenance attestations against the immutable source
+tag/commit and hosted release workflow, plus five CycloneDX attestations.
+Verified signed OCI provenance for the image, chart and binary bundle.</li>
+<li>Inspected five archives and executable/SBOM hashes. The downloaded Linux
+AMD64 executable reports v0.17.0 and passed a real Qdrant functional query
+and denied-key checks without disclosure. Other platforms ran in native CI.</li>
+<li>PyPI wheel/sdist bytes and SHA-256 match signed assets. Both PyPI attestations
+verified with pypi-attestations. A fresh public installation passed all 18
+SDK integration tests against the downloaded matching CLI.</li>
+<li>Public npm tarball bytes and SHA-512 integrity match the signed asset.
+Fresh registry installation passed signature/attestation auditing and
+installed-package ESM/TypeScript/CLI smoke checks.</li>
+<li>Anonymous GHCR pull passed version/help, non-root image configuration and
+HTTP-check smoke tests. Both image architectures bind the exact source and
+version; GHCR and Docker Hub filesystem/runtime identities match.</li>
+<li>Downloaded public chart and public image passed serve, Job and CronJob modes
+on disposable Kubernetes 1.32.2. Earlier local source smoke covered init
+outage/recovery, exec/HTTP probes, sidecars, Secrets and readiness recovery.</li>
+</ul>
+<h2 id="public-manifests">Public manifests</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Immutable manifest digest</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GHCR image</td>
+<td><code>sha256:fedb1bbb852713b7bca6e5721cb00d7f6675c5ad3eaf86d20d26f1234994ca68</code></td>
+</tr>
+<tr>
+<td>Docker Hub mirror</td>
+<td><code>sha256:58d46986656edd3c9d176a5ac869853d282e0ec212abccb7e5961cbf99a0f0db</code></td>
+</tr>
+<tr>
+<td><code>ghcr.io/theagenthealth/charts/agenthealth:0.17.0</code></td>
+<td><code>sha256:7f1e26deb3018650318c159fd38b017c2c924a751503f51acff73f9338437165</code></td>
+</tr>
+<tr>
+<td><code>ghcr.io/theagenthealth/agenthealth-binaries:v0.17.0</code></td>
+<td><code>sha256:5329c8a3f217c646ab82d11572bc4600addc285ec2e01c73ffff4fa35b64467f</code></td>
+</tr>
+</tbody>
+</table>
+<p>Anonymous OCI verification checked every chart/bundle blob, manifest,
+configuration hash, source/version annotation and both Linux image platforms.
+The OCI binary bundle contains the same 21 Release files. Chart version is
+0.17.0, appVersion is v0.17.0, and image defaults match.</p>
+<h2 id="scope-and-limits">Scope and limits</h2>
+<p>Controlled vector interoperability covers Qdrant 1.15.5. Pinecone dense-vector
+REST 2025-10 uses official API fixtures; live Pinecone cloud accounts are not
+claimed as tested. Weaviate, Milvus, pgvector, OpenSearch, Elasticsearch, named/
+sparse vectors and broad provider/cluster/failover matrices remain planned.
+Query execution does not prove relevance or corpus completeness. PostgreSQL
+login/SELECT 1 does not verify pgvector retrieval. No security audit is claimed.
+See the <a href="vector-store-adapter.html">vector guide</a> and
+<a href="phase-19-alignment.html">all-phase alignment audit</a>.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vector-store health examples — TheAgentHealth docs</title>
+<meta name="description" content="Example configuration: Vector-store health examples.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/examples/vector-check.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="../index.html">Docs</a><a href="index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="../index.html">Overview</a><a href="../phase-19-alignment.html">Phase 19 alignment (latest release)</a><a href="../release-v0-17-0.html">v0.17.0 release notes</a><a href="../verification-v0-17-0.html">v0.17.0 verification</a><a href="../phase-18-alignment.html">Phase 18 alignment</a><a href="../release-v0-16-0.html">v0.16.0 release notes (historical)</a><a href="../verification-v0-16-0.html">v0.16.0 verification (historical)</a><a href="../phase-17-alignment.html">Phase 17 alignment</a><a href="../release-v0-15-0.html">v0.15.0 release notes (historical)</a><a href="../verification-v0-15-0.html">v0.15.0 verification (historical)</a><a href="../phase-16-alignment.html">Phase 16 alignment</a><a href="../verification-v0-14-0.html">v0.14.0 verification (historical)</a><a href="../javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="../python-sdk.html">Python SDK (PyPi)</a><a href="../architecture.html">Architecture</a><a href="../cli.html">CLI</a><a href="../installation.html">Installation</a><a href="../docker.html">Docker</a><a href="../kubernetes.html">Kubernetes</a><a href="../distribution.html">Distribution</a><a href="../vector-store-adapter.html">Vector-store adapter</a><a href="../database-adapter.html">Database adapter</a><a href="../model-adapter.html">Model / LLM adapter</a><a href="../http-adapter.html">HTTP adapter</a><a href="../mcp-adapter.html">MCP adapter</a><a href="../a2a-adapter.html">A2A adapter</a><a href="../agent-adapter.html">Agent adapter</a><a href="../agent-router.html">Agent Router</a><a href="../agentgateway.html">Agentgateway</a><a href="../dependency-graph.html">Dependency graph</a><a href="../ahp.html">AHP (experimental)</a><a href="../interoperability.html">Interoperability</a><a href="../phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="index.html">Overview</a><a href="vector-check.html" class="current">vector check</a><a href="database-check.html">database check</a><a href="model-check.html">model check</a><a href="javascript-sdk.html">javascript sdk</a><a href="python-sdk.html">python sdk</a><a href="a2a-check.html">a2a check</a><a href="agent-check.html">agent check</a><a href="ahp-check.html">ahp check</a><a href="distribution.html">distribution</a><a href="gateway-check.html">gateway check</a><a href="graph-check.html">graph check</a><a href="kubernetes.html">kubernetes</a><a href="router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="../index.html">← All documentation</a></p>
+<h1>Vector-store health examples</h1>
+<p>Phase 19 supports Qdrant REST and Pinecone dense-vector data-plane REST.
+Use the verified v0.17.0 CLI and matching SDK packages.
+These services are supporting dependencies, not composite agents.</p>
+<h2 id="disposable-qdrant-matrix">Disposable Qdrant matrix</h2>
+<p>Qdrant <strong>1.15.5</strong> binds only loopback. The key below is a disposable test key.
+Provision the collection separately: the health adapter never creates data.</p>
+<pre><code class="language-bash">docker compose -p agenthealth-phase19 -f examples/vector-check/compose.yaml up -d
+# Wait until this authenticated metadata request succeeds:
+curl --fail --retry 30 --retry-all-errors --retry-connrefused --retry-delay 1 \
+  -H 'api-key: phase19-local-key' http://127.0.0.1:16333/collections
+curl --fail -X PUT -H 'api-key: phase19-local-key' \
+  -H 'Content-Type: application/json' \
+  -d '{&quot;vectors&quot;:{&quot;size&quot;:3,&quot;distance&quot;:&quot;Cosine&quot;}}' \
+  http://127.0.0.1:16333/collections/docs
+export VECTOR_KEY=phase19-local-key
+agenthealth check examples/vector-check/agenthealth.yaml
+agenthealth check examples/vector-check/query.yaml
+AGENTHEALTH_QDRANT_ENDPOINT=http://127.0.0.1:16333 \
+  go test -race ./adapters/vectorstore -run TestRealQdrant -v
+docker compose -p agenthealth-phase19 -f examples/vector-check/compose.yaml down -v
+</code></pre>
+<p>Expected: passive metadata and explicit top-1 query are healthy on the empty
+collection. The Go matrix also checks missing collection and wrong-key denial.
+No insertion is required; an empty query result validates execution, not relevance.
+Curl retries above are provisioning only; active health queries never retry.</p>
+<h2 id="pinecone">Pinecone</h2>
+<p>Replace <code>YOUR_INDEX_HOST</code> in <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/vector-check/pinecone.yaml">pinecone.yaml</a> with the actual
+index host, set <code>PINECONE_API_KEY</code>, then run <code>agenthealth check</code> with that file.
+Do not use the control-plane <code>api.pinecone.io</code> host. Add a <code>namespace</code> only if
+its existence is required. The checked dialect is dense vectors, API 2025-10.
+Cloud account interoperability is not established by the local mock suite.</p>
+<p>To opt into a query, add <code>checks</code> containing <code>functional</code> and
+<code>vector_store.functional: {safe: true, vector: [1, 0, 0]}</code> using your actual
+index dimension. Each query may incur read charges. Never put production
+vectors or API keys directly into committed examples.</p>
+<p>See the <a href="../vector-store-adapter.html">guide</a> and
+<a href="../phase-19-alignment.html">alignment audit</a>.</p>
+<div class="doc-config"><h2>Configuration files</h2>
+<h3>agenthealth.yaml</h3><pre><code>version: v1
+targets:
+  - name: retrieval
+    type: vector-store
+    endpoint: http://127.0.0.1:16333
+    auth:
+      bearer_env: VECTOR_KEY
+    vector_store:
+      provider: qdrant
+      collection: docs
+    thresholds:
+      latency_ms: 1000
+</code></pre>
+<h3>query.yaml</h3><pre><code>version: v1
+targets:
+  - name: retrieval-query
+    type: vector-store
+    endpoint: http://127.0.0.1:16333
+    checks: [configuration, reachability, authentication, protocol, capability, functional, latency]
+    auth:
+      bearer_env: VECTOR_KEY
+    vector_store:
+      provider: qdrant
+      collection: docs
+      functional:
+        safe: true
+        vector: [1, 0, 0]
+</code></pre>
+<h3>pinecone.yaml</h3><pre><code>version: v1
+targets:
+  - name: retrieval-index
+    type: vector-store
+    endpoint: https://YOUR_INDEX_HOST.svc.example.pinecone.io
+    auth:
+      bearer_env: PINECONE_API_KEY
+    vector_store:
+      provider: pinecone
+</code></pre>
+</div>
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>
