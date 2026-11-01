@@ -31,15 +31,21 @@ local maintenance tool and a required deployment step. Its output (`site/docs/`)
 Edit `scripts/build_docs.py`'s `DOCS`/`EXAMPLES` lists to update the main navigation.
 Use `ARCHIVED_DOCS` for historical pages that should retain their URLs without
 appearing in the sidebar.
-The build also refreshes the sitemap. Current guides include v0.17.0 Qdrant/Pinecone vector-store health, Phase 19
-alignment, release notes and publication verification, plus Phase 18 native
-database health, both SDKs, model/LLM checks and vector/database/model examples.
+The build also refreshes the sitemap. Current guides cover verified v0.19.0:
+Phase 21 CI/CD deployment gates, JUnit/GitHub reports and provider templates;
+Phase 20 LangGraph/FastAPI runtime integration; plus vector/database/model
+adapters, both SDKs, Kubernetes, release notes and publication verification.
+The CI examples embed the shell, GitHub, GitLab, Jenkins and Azure templates.
 The landing page credits Sharath K (@sharath568) for his initial Phase 17 contribution.
-Historical Phase 16–18 alignment and v0.14.0–v0.16.0 release/verification pages
+Historical Phase 16–20 alignment and v0.14.0–v0.18.0 release/verification pages
 retain their original scope.
 When syncing a new release, update the landing page's release and registry links too.
 
 ## Validation
+
+Pull requests regenerate and validate the site before merge. Publishing remains
+handled by the Pages workflow on `main`; documentation-only updates do not
+create another software release.
 
 ```sh
 python3 scripts/validate.py

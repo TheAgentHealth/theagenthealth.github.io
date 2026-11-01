@@ -21,9 +21,11 @@ GITHUB_REPO = "https://github.com/TheAgentHealth/agenthealth"
 
 # (source .md relative to agenthealth/docs, slug, nav title, meta description)
 DOCS = [
-    ("phase-19-alignment.md", "phase-19-alignment", "Phase 19 alignment (latest release)", "Qdrant/Pinecone vector-store health and compatibility across phases 0–26."),
-    ("releases/v0.17.0.md", "release-v0-17-0", "v0.17.0 release notes", "Read-only vector-store health and synchronized CLI, SDK and deployment distributions."),
-    ("releases/verification-v0.17.0.md", "verification-v0-17-0", "v0.17.0 verification", "Verified artifacts, signatures, registries, OCI packages and public runtime tests."),
+    ("phase-21-alignment.md", "phase-21-alignment", "Phase 21 alignment (latest release)", "CI/CD deployment validation and compatibility across phases 0–26."),
+    ("releases/v0.19.0.md", "release-v0-19-0", "v0.19.0 release notes", "JUnit/GitHub reports, deployment gates and synchronized distribution."),
+    ("releases/verification-v0.19.0.md", "verification-v0-19-0", "v0.19.0 verification", "Verified artifacts, provenance, public registries and runtime checks."),
+    ("ci-cd.md", "ci-cd", "CI/CD deployment gates", "GitHub Action, JUnit/GitHub reports and shell/GitLab/Jenkins/Azure deployment templates."),
+    ("framework-integrations.md", "framework-integrations", "Runtime integrations", "LangGraph/FastAPI health resources, safe peer callbacks and SDK consumers."),
     ("javascript-sdk.md", "javascript-sdk", "JavaScript/TypeScript (npm)", "Node.js Promise API, TypeScript declarations, configuration and cancellation."),
     ("python-sdk.md", "python-sdk", "Python SDK (PyPi)", "Sync and async Python health checks, typed evidence, configuration and errors."),
     ("architecture.md", "architecture", "Architecture", "Project foundation and architecture decisions."),
@@ -49,6 +51,12 @@ DOCS = [
 
 # Preserve historical URLs and internal links without crowding the main menu.
 ARCHIVED_DOCS = [
+    ("phase-20-alignment.md", "phase-20-alignment", "Phase 20 alignment", "Optional LangGraph/FastAPI integration and cross-phase compatibility."),
+    ("releases/v0.18.0.md", "release-v0-18-0", "v0.18.0 release notes (historical)", "Safe graph and peer integration in the Python SDK."),
+    ("releases/verification-v0.18.0.md", "verification-v0-18-0", "v0.18.0 verification (historical)", "Verified runtime integration release and synchronized packages."),
+    ("phase-19-alignment.md", "phase-19-alignment", "Phase 19 alignment", "Qdrant/Pinecone vector-store health and compatibility across phases 0–26."),
+    ("releases/v0.17.0.md", "release-v0-17-0", "v0.17.0 release notes (historical)", "Read-only vector-store health and synchronized CLI, SDK and deployment distributions."),
+    ("releases/verification-v0.17.0.md", "verification-v0-17-0", "v0.17.0 verification (historical)", "Verified artifacts, signatures, registries, OCI packages and public runtime tests."),
     ("phase-18-alignment.md", "phase-18-alignment", "Phase 18 alignment", "Native database adapter scope and cross-phase compatibility."),
     ("releases/v0.16.0.md", "release-v0-16-0", "v0.16.0 release notes (historical)", "PostgreSQL, MySQL, Redis and MongoDB native health checks."),
     ("releases/verification-v0.16.0.md", "verification-v0-16-0", "v0.16.0 verification (historical)", "Verified database release artifacts, registries and runtime behavior."),
@@ -62,6 +70,8 @@ ALL_DOCS = DOCS + ARCHIVED_DOCS
 
 # (dir under agenthealth/examples, slug, config files to embed inline)
 EXAMPLES = [
+    ("ci", "ci", ["agenthealth.yaml", "github.yml", "gitlab.yml", "Jenkinsfile", "azure-pipelines.yml", "gate.sh"]),
+    ("runtime-check", "runtime-check", ["agenthealth.yaml"]),
     ("vector-check", "vector-check", ["agenthealth.yaml", "query.yaml", "pinecone.yaml"]),
     ("database-check", "database-check", ["agenthealth.yaml"]),
     ("model-check", "model-check", ["openai.yaml", "anthropic.yaml", "ollama.yaml", "functional.yaml", "graph.yaml"]),
@@ -148,7 +158,7 @@ def nav_sidebar(current_site_path: str) -> str:
 
     guides = "".join(link(f"docs/{slug}.html", title) for _, slug, title, _ in DOCS)
     examples = "".join(
-        link(f"docs/examples/{slug}.html", slug.replace("-", " "))
+        link(f"docs/examples/{slug}.html", {"ci": "CI/CD deployment gates", "runtime-check": "Runtime integration"}.get(slug, slug.replace("-", " ")))
         for _, slug, _ in EXAMPLES
     )
     return (
