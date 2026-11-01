@@ -1,0 +1,28 @@
+name: Validate website
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: TheAgentHealth/agenthealth
+          ref: main
+          path: _agenthealth
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Regenerate and validate documentation
+        run: |
+          python3 -m pip install -r scripts/requirements.txt
+          python3 scripts/build_docs.py _agenthealth
+          python3 scripts/validate.py
+          node --check site/script.js
+          git diff --check
