@@ -22,6 +22,9 @@
     <loc>https://theagenthealth.github.io/docs/architecture.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/ci-cd.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/cli.html</loc>
   </url>
   <url>
@@ -44,6 +47,9 @@
   </url>
   <url>
     <loc>https://theagenthealth.github.io/docs/examples/ahp-check.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/examples/ci.html</loc>
   </url>
   <url>
     <loc>https://theagenthealth.github.io/docs/examples/database-check.html</loc>
@@ -76,7 +82,13 @@
     <loc>https://theagenthealth.github.io/docs/examples/router-check.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/examples/runtime-check.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/examples/vector-check.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/framework-integrations.html</loc>
   </url>
   <url>
     <loc>https://theagenthealth.github.io/docs/http-adapter.html</loc>
@@ -115,6 +127,12 @@
     <loc>https://theagenthealth.github.io/docs/phase-19-alignment.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/phase-20-alignment.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/phase-21-alignment.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/phase-status.html</loc>
   </url>
   <url>
@@ -130,6 +148,12 @@
     <loc>https://theagenthealth.github.io/docs/release-v0-17-0.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/release-v0-18-0.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/release-v0-19-0.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/vector-store-adapter.html</loc>
   </url>
   <url>
@@ -143,6 +167,12 @@
   </url>
   <url>
     <loc>https://theagenthealth.github.io/docs/verification-v0-17-0.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/verification-v0-18-0.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/verification-v0-19-0.html</loc>
   </url>
   <url>
     <loc>https://theagenthealth.github.io/</loc>

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CI deployment gates — TheAgentHealth docs</title>
+<meta name="description" content="Example configuration: CI deployment gates.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/examples/ci.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="../index.html">Docs</a><a href="index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="../index.html">Overview</a><a href="../phase-21-alignment.html">Phase 21 alignment (latest release)</a><a href="../release-v0-19-0.html">v0.19.0 release notes</a><a href="../verification-v0-19-0.html">v0.19.0 verification</a><a href="../ci-cd.html">CI/CD deployment gates</a><a href="../framework-integrations.html">Runtime integrations</a><a href="../javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="../python-sdk.html">Python SDK (PyPi)</a><a href="../architecture.html">Architecture</a><a href="../cli.html">CLI</a><a href="../installation.html">Installation</a><a href="../docker.html">Docker</a><a href="../kubernetes.html">Kubernetes</a><a href="../distribution.html">Distribution</a><a href="../vector-store-adapter.html">Vector-store adapter</a><a href="../database-adapter.html">Database adapter</a><a href="../model-adapter.html">Model / LLM adapter</a><a href="../http-adapter.html">HTTP adapter</a><a href="../mcp-adapter.html">MCP adapter</a><a href="../a2a-adapter.html">A2A adapter</a><a href="../agent-adapter.html">Agent adapter</a><a href="../agent-router.html">Agent Router</a><a href="../agentgateway.html">Agentgateway</a><a href="../dependency-graph.html">Dependency graph</a><a href="../ahp.html">AHP (experimental)</a><a href="../interoperability.html">Interoperability</a><a href="../phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="index.html">Overview</a><a href="ci.html" class="current">CI/CD deployment gates</a><a href="runtime-check.html">Runtime integration</a><a href="vector-check.html">vector check</a><a href="database-check.html">database check</a><a href="model-check.html">model check</a><a href="javascript-sdk.html">javascript sdk</a><a href="python-sdk.html">python sdk</a><a href="a2a-check.html">a2a check</a><a href="agent-check.html">agent check</a><a href="ahp-check.html">ahp check</a><a href="distribution.html">distribution</a><a href="gateway-check.html">gateway check</a><a href="graph-check.html">graph check</a><a href="kubernetes.html">kubernetes</a><a href="router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="../index.html">← All documentation</a></p>
+<h1>CI deployment gates</h1>
+<p>Use a trusted deployment configuration with an exact-version, verified CLI.
+Replace the placeholder HTTPS readiness endpoint in
+<a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/ci/agenthealth.yaml">agenthealth.yaml</a> with your deployed service. It uses passive
+checks; explicitly select safe functional checks only when required.</p>
+<ul>
+<li><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/ci/github.yml">GitHub Actions</a>: verified install, reusable local Action and report artifact.</li>
+<li><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/ci/gitlab.yml">GitLab</a>: JUnit report even on failure.</li>
+<li><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/ci/Jenkinsfile">Jenkins</a>: JUnit plugin, timeout and failure retention.</li>
+<li><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/ci/azure-pipelines.yml">Azure DevOps</a>: publish reports with <code>always()</code>.</li>
+<li><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/ci/gate.sh">Shell</a>: <code>sh examples/ci/gate.sh configuration.yaml report.xml</code>.</li>
+</ul>
+<p>The non-GitHub examples assume the CLI was installed and verified before the
+job, using the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/scripts/install_ci_binary.py">installer</a> or the
+<a href="../installation.html">installation guide</a>. They are templates, not
+claims of testing against hosted GitLab/Jenkins/Azure services.</p>
+<p>Exit codes 1–5 stop promotion; 6 means the tool failed and a complete report
+may not exist. Keep reports on failure, restrict artifact access and expiry,
+and never use <code>|| true</code> on the gate. Configure runner/job deadlines above the
+configuration budget. See the <a href="../ci-cd.html">guide</a> for evidence mapping,
+credential boundaries, Kubernetes validation and GitHub Action inputs.</p>
+<div class="doc-config"><h2>Configuration files</h2>
+<h3>agenthealth.yaml</h3><pre><code>version: v1
+targets:
+  - name: deployment-readiness
+    type: http
+    endpoint: https://example.com/health
+    budget_ms: 30000
+    checks: [reachability, protocol]
+</code></pre>
+<h3>github.yml</h3><pre><code>name: Validate deployment
+on: workflow_dispatch
+permissions:
+  contents: read
+  attestations: read
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      # This example runs from the AgentHealth source checkout. In an application
+      # repository, vendor the installer at a reviewed immutable source commit.
+      - name: Install verified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/install_ci_binary.py v0.19.0 "$RUNNER_TEMP/agenthealth"
+      - uses: ./integrations/github-action
+        with:
+          binary: ${{ runner.temp }}/agenthealth
+          version: v0.19.0
+          configuration: examples/ci/agenthealth.yaml
+          report: agenthealth-junit.xml
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: agenthealth-junit
+          path: agenthealth-junit.xml
+          if-no-files-found: warn
+          retention-days: 7
+</code></pre>
+<h3>gitlab.yml</h3><pre><code># Requires a runner with an exact-version, verified CLI installed.
+agenthealth:
+  stage: test
+  timeout: 5 minutes
+  script:
+    - sh examples/ci/gate.sh examples/ci/agenthealth.yaml
+  artifacts:
+    when: always
+    expire_in: 7 days
+    reports:
+      junit: agenthealth-junit.xml
+</code></pre>
+<h3>Jenkinsfile</h3><pre><code>// Requires an exact-version verified CLI and the JUnit plugin on this agent.
+pipeline {
+  agent any
+  options { timeout(time: 5, unit: 'MINUTES') }
+  stages {
+    stage('Deployment health') {
+      steps { sh 'sh examples/ci/gate.sh examples/ci/agenthealth.yaml' }
+      post { always { junit allowEmptyResults: true, testResults: 'agenthealth-junit.xml' } }
+    }
+  }
+}
+</code></pre>
+<h3>azure-pipelines.yml</h3><pre><code># Requires a runner with an exact-version verified CLI installed.
+steps:
+  - bash: sh examples/ci/gate.sh examples/ci/agenthealth.yaml
+    displayName: Deployment health gate
+    timeoutInMinutes: 5
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFormat: JUnit
+      testResultsFiles: agenthealth-junit.xml
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+</code></pre>
+<h3>gate.sh</h3><pre><code>#!/usr/bin/env sh
+# Use an exact-version, provenance-verified CLI already on PATH.
+# Preserve every health failure and code 6; do not pipe through tee.
+set -eu
+configuration=${1:?Usage: gate.sh configuration.yaml [report.xml]}
+report=${2:-agenthealth-junit.xml}
+if [ "$configuration" = "$report" ] || [ "$configuration" -ef "$report" ]; then
+  echo 'AgentHealth report must not overwrite configuration' &gt;&amp;2
+  exit 6
+fi
+if [ -L "$report" ]; then
+  echo 'AgentHealth report must not be a symlink' &gt;&amp;2
+  exit 6
+fi
+exec agenthealth check "$configuration" --format junit &gt; "$report"
+</code></pre>
+</div>
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phase 21 impact and alignment review — TheAgentHealth docs</title>
+<meta name="description" content="CI/CD deployment validation and compatibility across phases 0–26.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/phase-21-alignment.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-21-alignment.html" class="current">Phase 21 alignment (latest release)</a><a href="release-v0-19-0.html">v0.19.0 release notes</a><a href="verification-v0-19-0.html">v0.19.0 verification</a><a href="ci-cd.html">CI/CD deployment gates</a><a href="framework-integrations.html">Runtime integrations</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/ci.html">CI/CD deployment gates</a><a href="examples/runtime-check.html">Runtime integration</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Phase 21 impact and alignment review</h1>
+<p>Released in v0.19.0: CI/CD deployment gates, JUnit/GitHub reports, verified
+binary installation and provider examples. Synchronized publication and public installation
+checks passed; see the <a href="verification-v0-19-0.html">verification record</a>.
+See the <a href="ci-cd.html">guide</a> and <a href="examples/ci.html">examples</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Assessment and completed alignment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 foundation</td>
+<td>Focused integration directory, standard contribution/CI/release process; no new service.</td>
+</tr>
+<tr>
+<td>1 specification</td>
+<td>Existing v1 schemas and exit codes unchanged; CI reports are projections, not new AHS wire formats.</td>
+</tr>
+<tr>
+<td>2 engine</td>
+<td>Reporting consumes validated results; no execution, aggregation, retry or active-check changes.</td>
+</tr>
+<tr>
+<td>3 CLI</td>
+<td>Additive <code>junit</code>/<code>github</code> formats for check/ping/doctor; output failures still return 6.</td>
+</tr>
+<tr>
+<td>4 HTTP</td>
+<td>Passive readiness example; no hidden GET, redirects or functional activation.</td>
+</tr>
+<tr>
+<td>5 MCP</td>
+<td>Existing trusted configuration and subprocess boundary; runner process timeout is not child-process isolation.</td>
+</tr>
+<tr>
+<td>6 A2A</td>
+<td>Endpoint evidence remains distinct from verified peer exchange; no protocol change.</td>
+</tr>
+<tr>
+<td>7 agents</td>
+<td>Direct/composite/path checks use existing reviewed examples; supporting dependencies retain their role.</td>
+</tr>
+<tr>
+<td>8 gateway</td>
+<td>Configured gateway/backend/path evidence retained; no product certification.</td>
+</tr>
+<tr>
+<td>9 router</td>
+<td>Configured router signals retain existing scope; no inferred route decision.</td>
+</tr>
+<tr>
+<td>10 graph</td>
+<td>Each dependency occurrence gets a distinct positional report identity; JSON retains IDs, relationships and edge policy.</td>
+</tr>
+<tr>
+<td>11 AHP</td>
+<td>No protocol or freshness changes; deployment checks do not introduce an AHP authorization mechanism.</td>
+</tr>
+<tr>
+<td>12 Docker</td>
+<td>Same CLI formats in image; all implemented distributions remain mandatory at release.</td>
+</tr>
+<tr>
+<td>13 binaries</td>
+<td>Exact OS/architecture/version download verifies checksum plus source-tag/workflow provenance before install.</td>
+</tr>
+<tr>
+<td>14 Kubernetes</td>
+<td>Reuse schema/Helm tests and explicit-context runtime suite. Job completion, failure and timeout determine gates. Preserve live/ready separation and secret references.</td>
+</tr>
+<tr>
+<td>15 Python SDK</td>
+<td>No SDK API changes; health remains CLI-owned. Python integration helper uses only stdlib.</td>
+</tr>
+<tr>
+<td>16 JS/TS SDK</td>
+<td>No SDK API changes or report parsers; SDK callers continue requesting JSON.</td>
+</tr>
+<tr>
+<td>17 model</td>
+<td>Supporting dependency only; no automatic inference.</td>
+</tr>
+<tr>
+<td>18 database</td>
+<td>Existing login/PING and explicit SQL opt-in; no implicit query.</td>
+</tr>
+<tr>
+<td>19 vector store</td>
+<td>Existing provider metadata and explicit read-only query opt-in; no query activation by CI.</td>
+</tr>
+<tr>
+<td>20 runtime</td>
+<td>Safe graph/peer callbacks unchanged; pipeline results cannot claim additional runtime interoperability.</td>
+</tr>
+<tr>
+<td>22 observability</td>
+<td>CI projections deliberately omit sensitive topology; future exporters must separately preserve evidence and redact topology.</td>
+</tr>
+<tr>
+<td>23 plugins</td>
+<td>No third-party code loading or sandbox guarantee added.</td>
+</tr>
+<tr>
+<td>24 conformance</td>
+<td>Report and gate regression coverage establishes behavior, not certification.</td>
+</tr>
+<tr>
+<td>25 interoperability</td>
+<td>Provider files are templates; hosted-provider execution and real product/version matrix remain future validation work.</td>
+</tr>
+<tr>
+<td>26 hardening</td>
+<td>No secret exposure to untrusted PR configuration; runner isolation, scoped credentials and bounded execution remain required.</td>
+</tr>
+</tbody>
+</table>
+<p>Validation includes all six health statuses, dependency occurrence identities,
+empty/invalid/cyclic evidence, writer errors, CLI health/tool exits, Action version
+mismatch/timeouts/stale reports/path guards and installer checksum/provenance
+failures. Existing Go/schema/SDK/distribution/Kubernetes checks remain in place.
+SARIF is explicitly deferred because health evidence is not a security finding.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

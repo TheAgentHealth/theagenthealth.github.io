@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CI/CD deployment validation — TheAgentHealth docs</title>
+<meta name="description" content="GitHub Action, JUnit/GitHub reports and shell/GitLab/Jenkins/Azure deployment templates.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/ci-cd.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-21-alignment.html">Phase 21 alignment (latest release)</a><a href="release-v0-19-0.html">v0.19.0 release notes</a><a href="verification-v0-19-0.html">v0.19.0 verification</a><a href="ci-cd.html" class="current">CI/CD deployment gates</a><a href="framework-integrations.html">Runtime integrations</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/ci.html">CI/CD deployment gates</a><a href="examples/runtime-check.html">Runtime integration</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>CI/CD deployment validation</h1>
+<p>Released in v0.19.0, Phase 21 adds <code>--format junit</code>, <code>--format github</code>, a reusable
+<a href="https://github.com/TheAgentHealth/agenthealth/blob/main/integrations/github-action/action.yml">GitHub Action</a> and
+<a href="examples/ci.html">provider templates</a>. Run health checks after deployment
+and allow promotion only when the health command returns 0.</p>
+<h2 id="reports-and-exit-codes">Reports and exit codes</h2>
+<pre><code class="language-bash">agenthealth check deployment.yaml --format junit &gt; agenthealth-junit.xml
+agenthealth check deployment.yaml --format github
+</code></pre>
+<p>These are separate checks: choose one format per invocation to avoid repeating
+active probes. The Action runs once, writes JUnit and emits a generic annotation.
+Both formats preserve the CLI health exit mapping (0 healthy; 1 degraded;
+2 unhealthy; 3 unreachable; 4 misconfigured; 5 unknown). Tool failures return 6
+and may produce no complete report. An empty report is never proof of health.</p>
+<p>JUnit has one testcase per top-level target and nested dependency occurrence,
+with deterministic positional names (<code>target-1/dependency-1</code>) and target-type
+classnames. All non-HEALTHY statuses produce failures, including UNKNOWN.
+Optional dependency failures remain visible as failed cases while the parent
+retains engine-owned DEGRADED aggregation. Shared graph IDs are not deduplicated
+because edge policies may differ. This output is a CI projection; JSON/YAML
+remain authoritative for dimensions, relationships, IDs and detailed evidence.</p>
+<p>GitHub annotations use only fixed statuses, validated target types and positional
+paths. Neither CI format includes target names, URLs, messages, secrets or raw
+transport errors. This also prevents workflow-command injection. Preserve a
+separate JSON report only if its topology exposure and access policy are acceptable;
+doing so by rerunning checks can repeat functional probes. SARIF is deferred:
+health failures are not static-analysis security findings.</p>
+<h2 id="exact-version-installation-and-action">Exact-version installation and Action</h2>
+<p>The <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/scripts/install_ci_binary.py">installer</a> selects one exact <code>vX.Y.Z</code>
+platform asset, verifies SHA-256 and GitHub build provenance bound to the source
+tag and release workflow, then extracts only the executable. It requires Python
+3.10+, a recent authenticated <code>gh</code> supporting <code>--source-ref</code> and
+<code>--deny-self-hosted-runners</code>, and network access. It supports the five released
+platforms and refuses to overwrite an existing destination. Verification failure
+must fail the pipeline; never fall back to an unverified binary.</p>
+<p>Use the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/ci/github.yml">GitHub example</a> from this source checkout.
+Application repositories can reference
+<code>TheAgentHealth/agenthealth/integrations/github-action@bd65d3a0017ef26ea625f6b0d4f331996fe680b5</code>;
+this pins the reviewed v0.19.0 release commit. The Action requires
+an already installed verified CLI, so installing the Action alone does not install
+the CLI. Do not reference a mutable branch for production deployment gates.</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>configuration</code></td>
+<td>Required trusted YAML path</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>Required exact stable CLI version, checked before execution</td>
+</tr>
+<tr>
+<td><code>binary</code></td>
+<td>Installed executable; default <code>agenthealth</code></td>
+</tr>
+<tr>
+<td><code>report</code></td>
+<td>Workspace-relative JUnit path; default <code>agenthealth-junit.xml</code></td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td>Process deadline, 1–3600 seconds; default 120</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>exit-code</code> output preserves health codes or 6 for launch, version, timeout
+and tool failures. The Action removes stale reports, rejects report paths outside
+the workspace, symlinked report components or overlapping configuration (including hard links), and does not print CLI stderr.
+Upload reports with <code>if: always()</code>; a failed Action must still block promotion.
+Hosted Linux, macOS and Windows runners provide Python and Bash. Self-hosted
+runners must supply both. Python kills the CLI on the process deadline; configure
+trusted MCP child processes with their own lifecycle controls as well.</p>
+<h2 id="earlier-phase-deployment-evidence">Earlier-phase deployment evidence</h2>
+<p>Use the existing <a href="examples/agent-check.html">agent examples</a> for direct
+agents and composite peers, <a href="examples/gateway-check.html">gateway</a> and
+<a href="examples/router-check.html">router</a> examples for configured path/backend
+evidence, or <a href="examples/graph-check.html">graph examples</a> for explicit
+relationships. A healthy A2A endpoint alone does not establish peer communication.
+Model/database/vector targets remain supporting dependencies. Reports do not
+change active opt-in, dependency policies, retries or SDK contracts.</p>
+<h2 id="kubernetes-gates">Kubernetes gates</h2>
+<p>Reuse <a href="https://github.com/TheAgentHealth/agenthealth/tree/main/tests/kubernetes">manifest/schema tests</a> and
+<a href="https://github.com/TheAgentHealth/agenthealth/blob/main/scripts/test_kubernetes.py">the explicit-context smoke suite</a>:</p>
+<pre><code class="language-bash">python3 -m pytest tests/kubernetes -q
+python3 scripts/test_kubernetes.py --context kind-disposable-ci --image agenthealth:v0.19.0-ci
+</code></pre>
+<p>Provision a disposable cluster and load that exact test image first. The suite
+checks completed/failed Jobs, readiness, restart counts and failure scenarios;
+creating a Job or installing a chart alone is insufficient. For application Jobs,
+wait for completion with a bounded timeout, collect status and logs on failure,
+and fail the deployment gate if the Job fails or times out. Keep <code>/live</code>
+independent of dependency readiness and preserve the existing chart security
+context, secret references and check budgets.</p>
+<h2 id="credentials-and-trust">Credentials and trust</h2>
+<p>Configuration is executable trusted input. Run deployment gates only on reviewed
+configuration with scoped credentials, restricted egress, appropriate timeouts
+and isolated runners. Never expose deployment secrets to untrusted fork changes
+or execute their configuration using <code>pull_request_target</code>. Keep credentials in
+CI secret stores and environment references, not parameters, endpoints or reports.
+See the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/docs/threat-model.md">threat model</a> and <a href="phase-21-alignment.html">alignment review</a>.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

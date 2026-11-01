@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent runtime integrations — TheAgentHealth docs</title>
+<meta name="description" content="LangGraph/FastAPI health resources, safe peer callbacks and SDK consumers.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/framework-integrations.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-21-alignment.html">Phase 21 alignment (latest release)</a><a href="release-v0-19-0.html">v0.19.0 release notes</a><a href="verification-v0-19-0.html">v0.19.0 verification</a><a href="ci-cd.html">CI/CD deployment gates</a><a href="framework-integrations.html" class="current">Runtime integrations</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/ci.html">CI/CD deployment gates</a><a href="examples/runtime-check.html">Runtime integration</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Agent runtime integrations</h1>
+<p>Released in v0.18.0, Phase 20 provides a supported Python SDK integration for LangGraph and FastAPI.
+Install <code>agenthealth[langgraph]</code> with the matching verified CLI for consumer nodes.
+The server handler does not require a CLI. Semantic Kernel, CrewAI, AutoGen and
+JavaScript framework plugins remain planned; Express and Go remain reference middleware.</p>
+<h2 id="expose-health">Expose health</h2>
+<pre><code class="language-python">from agenthealth.integrations.langgraph import langgraph_router
+app.include_router(langgraph_router(safe_graph, snapshot, peers={&quot;peer&quot;: probe_peer}))
+</code></pre>
+<p><code>safe_graph</code> is a dedicated compiled LangGraph with async <code>ainvoke</code>. Its state
+accepts <code>health_probe</code> and returns <code>healthy: bool</code>. Use no production tools,
+checkpointer, thread memory, model inference or mutating nodes in this graph.
+<code>snapshot()</code> returns the Phase 7 name/live/ready/capabilities/dependencies document;
+see the <a href="agent-adapter.html">contract</a>. Passive HEAD/GET never invoke the graph.
+The optional <code>peers</code> mapping copies operator-owned selectors to async callbacks.
+Each callback receives text, must actually contact that selected peer through the
+application's authenticated, read-only transport, and return exactly <code>True</code> on
+success. Unknown selectors fail without executing a callback; they never resolve
+URLs from input. No automatic discovery or retries occur. The mapping is trusted
+application code, not independent proof of communication.</p>
+<p>POST requires explicit <code>safe: true</code>; text is bounded to 64 KiB UTF-8, selectors
+to 1024 Unicode characters, envelopes to 512 KiB. The whole probe has a one-second
+cooperative deadline. Exceptions/timeouts produce generic 503 responses without
+backend details. Cancellation cannot isolate uncooperative callbacks. Wrap routes
+with application authentication, ingress limits and process resource limits.</p>
+<h2 id="consume-health-in-a-graph">Consume health in a graph</h2>
+<pre><code class="language-python">from agenthealth import Client
+from agenthealth.integrations.langgraph import health_node
+builder.add_node(&quot;dependencies&quot;, health_node(Client(timeout=5), &quot;agenthealth.yaml&quot;))
+</code></pre>
+<p>Declare an <code>agenthealth: CheckReport</code> field in the graph state. The node returns
+the complete typed SDK report, including unhealthy results and dependency trees;
+only SDK/tool failures raise exceptions. Configuration is fixed by the operator,
+not read from graph state. Client deadlines are seconds and native async
+cancellation stops CLI work. Store reports only in trusted state; application
+serialization/checkpoint policy is the caller's responsibility. There is no
+JavaScript API change: the existing Node SDK retains AbortSignal and millisecond
+deadlines. <a href="examples/javascript-sdk.html">JavaScript examples</a> remain valid.</p>
+<h2 id="evidence-and-deployment">Evidence and deployment</h2>
+<p>Keep direct agent, composite peer endpoint, and first-to-peer path targets
+separate. Models, tools, gateways, routers, databases and vector stores remain
+supporting dependencies with independent policies. Vector health does not prove
+retrieval relevance. AHP serving remains separate from this application endpoint.
+Use the <a href="https://github.com/TheAgentHealth/agenthealth/blob/main/examples/agent-check/agenthealth.yaml">agent configuration</a> and
+<a href="examples/graph-check.html">graph example</a> without schema migration.
+Kubernetes may deploy the application and existing CLI sidecar independently;
+readiness should stay passive. Scheduled functional checks repeat authorized
+work. No framework runtime is bundled into the CLI image or Helm chart.</p>
+<h2 id="validation">Validation</h2>
+<p><a href="examples/runtime-check.html">Runnable example</a> and
+<a href="https://github.com/TheAgentHealth/agenthealth/tree/main/examples/reference/python">contract tests</a> use FastAPI 0.143.0,
+LangGraph 1.2.14 and httpx 0.28.1. CI installs the SDK before testing the compiled
+graph, safe task bounds, selected peer callback, failures and SDK consumer.
+This controlled baseline does not certify arbitrary production agents or complete
+Phase 25. See <a href="phase-20-alignment.html">alignment</a> and the upstream
+<a href="https://reference.langchain.com/python/langgraph/graph">LangGraph graph API</a>.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>
