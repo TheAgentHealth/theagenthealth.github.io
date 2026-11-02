@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>v0.21.0 publication verification — TheAgentHealth docs</title>
+<meta name="description" content="Verified downloads, signatures, registries, SDKs and runtime behavior.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/verification-v0-21-0.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="release-v0-21-0.html">v0.21.0 release notes</a><a href="verification-v0-21-0.html" class="current">v0.21.0 verification</a><a href="plugins.html">Executable adapters</a><a href="adapter-protocol-v1.html">Adapter protocol v1</a><a href="phase-23-alignment.html">Phase 23 alignment (latest release)</a><a href="observability.html">Observability export</a><a href="ci-cd.html">CI/CD deployment gates</a><a href="framework-integrations.html">Runtime integrations</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/plugin-check.html">plugin check</a><a href="examples/observability.html">observability</a><a href="examples/ci.html">CI/CD deployment gates</a><a href="examples/runtime-check.html">Runtime integration</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>v0.21.0 publication verification</h1>
+<p>Release: <a href="https://github.com/TheAgentHealth/agenthealth/releases/tag/v0.21.0">AgentHealth v0.21.0</a>. Regular public Latest release;
+source commit <code>ee6edbdc47731abe0cbffa8555dbaf90d081c389</code>. No published tag was moved or replaced.</p>
+<p>All 21 required release assets were downloaded anonymously and checked
+against published digests and the complete checksum manifest. Five platform
+archives, matching CycloneDX SBOMs, four DEB/RPM packages, channel manifests,
+Helm chart, Python wheel/sdist and npm tarball are present. Signed GitHub
+provenance was verified against the exact source SHA/tag for every asset;
+archive SBOM attestations were verified independently.</p>
+<p>The Linux AMD64 archive was executed: version, HTTP health checks, canonical JSON,
+JUnit/GitHub and all four observability projections passed. Other platform archive
+contents/hashes were checked; CI provides their native runtime coverage.</p>
+<p>Public GHCR Docker digest: <code>sha256:b8816f75e6a5806c1d7463cb19853dd264e19eaae5104452bc9751fa9ebdef67</code>.
+Docker Hub mirror digest: <code>sha256:6ef9b73598c0f007a8027db13af58526f95ebce45221d9df73a1b5b656aa3a8d</code>. Image source/version and
+platform identities match. Signed OCI provenance and anonymous layer access were
+verified for the Docker image, OCI chart and OCI binary bundle. OCI chart/binary
+contents match the signed release assets.</p>
+<ul>
+<li><code>ghcr.io/theagenthealth/charts/agenthealth:0.21.0</code>: <code>sha256:3c92f08e4c3a1803b9c0bc54a7e29a0a0bc0485dbf8a3378f96fdf7cf40f62b9</code></li>
+<li><code>ghcr.io/theagenthealth/agenthealth-binaries:v0.21.0</code>: <code>sha256:2d6143165707bda548f3165a3b6efa0c5e6f047e1fae94e43ac30db526757d47</code></li>
+</ul>
+<p>PyPI wheel/sdist and npm registry tarball bytes, digests/integrity and provenance
+match the signed release artifacts. See the release workflow for the exact-tag
+pre-release CI gate and publication jobs.</p>
+<p>Local validation covered Go vet/full race tests, process/CLI regression tests,
+Python schema and SDK tests, JavaScript tests/types, all marked documentation
+examples, Helm lint/static tests, native archive and container runtime smoke,
+and disposable Kubernetes 1.33.1 deployment scenarios. The initial Copilot review's
+two genuine findings were fixed and resolved; no second review was requested.</p>
+<p>Phase 23 remains an operator-trusted local process extension. It does not provide
+OS sandboxing, tenant isolation, automatic downloads, community certification or
+real third-party adapter interoperability. See <a href="phase-23-alignment.html">alignment</a>
+and <a href="adapter-protocol-v1.html">transport limitations</a>.</p>
+<p>Public runtime follow-up: the downloaded chart and public image passed serve,
+Job and CronJob modes on disposable Kubernetes 1.33.1. A fresh PyPI install
+passed all 48 SDK/framework tests against the public CLI. The public npm install
+passed its version/CLI check and npm 11 registry-signature/attestation audit.
+PyPI publisher attestations for both wheel and sdist also verified.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

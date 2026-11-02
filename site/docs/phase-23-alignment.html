@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phase 23 impact and alignment review — TheAgentHealth docs</title>
+<meta name="description" content="Executable adapters and compatibility across phases 0–26.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/phase-23-alignment.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="release-v0-21-0.html">v0.21.0 release notes</a><a href="verification-v0-21-0.html">v0.21.0 verification</a><a href="plugins.html">Executable adapters</a><a href="adapter-protocol-v1.html">Adapter protocol v1</a><a href="phase-23-alignment.html" class="current">Phase 23 alignment (latest release)</a><a href="observability.html">Observability export</a><a href="ci-cd.html">CI/CD deployment gates</a><a href="framework-integrations.html">Runtime integrations</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/plugin-check.html">plugin check</a><a href="examples/observability.html">observability</a><a href="examples/ci.html">CI/CD deployment gates</a><a href="examples/runtime-check.html">Runtime integration</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Phase 23 impact and alignment review</h1>
+<p>Released in v0.21.0; see <a href="verification-v0-21-0.html">publication verification</a>
+and <a href="phase-status.html">capability status</a>.
+Phase 14 is already released; its original chart tag remains historical.</p>
+<table>
+<thead>
+<tr>
+<th>Phases</th>
+<th>Assessment and completed alignment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0–1 foundation/spec</td>
+<td>Versioned executable protocol and RFC #68 supplement the existing adapter contract. No AHS/AHP field, target type or configuration schema change.</td>
+</tr>
+<tr>
+<td>2 engine</td>
+<td>Existing registry metadata validation, prerequisite gates, normalized errors, active opt-in, deadlines and aggregation apply. Metadata has explicit JSON keys.</td>
+</tr>
+<tr>
+<td>3 CLI</td>
+<td>Repeatable explicit <code>--adapter</code> option for check/ping/doctor; invalid manifests and duplicate types fail with code 6. No automatic execution from target YAML.</td>
+</tr>
+<tr>
+<td>4–9 adapters/agents/gateway/router</td>
+<td>Built-ins retain ownership. Direct/composite role examples keep separately observed peer, path, gateway/router and backend evidence distinct. Rich built-in options are not forwarded.</td>
+</tr>
+<tr>
+<td>10 graph</td>
+<td>Engine remains the sole owner of node scheduling, independent dependencies and shared-node execution. Children receive no graph/topology.</td>
+</tr>
+<tr>
+<td>11 AHP</td>
+<td>No remote plugin submission or serving flags. The same canonical JSON response contract remains.</td>
+</tr>
+<tr>
+<td>12–14 distribution/Kubernetes</td>
+<td>Host transport ships in every binary/container. External executables are not bundled or installed by chart/manifests. No new mount/command or RBAC permission. Shared release preparation updates all pins; historical chart remains unchanged.</td>
+</tr>
+<tr>
+<td>15–16 SDKs</td>
+<td>No new SDK manifest API; existing typed JSON and exact CLI version requirements remain. Packages adopt the shared version for release.</td>
+</tr>
+<tr>
+<td>17–19 model/database/vector</td>
+<td>Native adapters unchanged; only explicitly configured bearer credentials reach an executable. Native protocol settings and additional secrets do not cross this transport.</td>
+</tr>
+<tr>
+<td>20 runtime</td>
+<td>Framework integrations unchanged. Executable adapters do not establish framework/product interoperability.</td>
+</tr>
+<tr>
+<td>21 CI/CD</td>
+<td>Health codes and JUnit/GitHub projections remain unchanged. No untrusted text is emitted as workflow commands.</td>
+</tr>
+<tr>
+<td>22 observability</td>
+<td>Only normalized status enters existing projections. Plugins cannot introduce labels, messages, endpoints or arbitrary result fields.</td>
+</tr>
+<tr>
+<td>23 ecosystem</td>
+<td>Local manifests, pinned executable bytes, metadata validation, bounded strict JSON events, no environment inheritance and cancellation implemented; documented runnable fixture and trust limits.</td>
+</tr>
+<tr>
+<td>24 conformance</td>
+<td>Future independent suite must test manifest compatibility, response markers, strict bounds, active opt-in and normalized output. No certification claim.</td>
+</tr>
+<tr>
+<td>25 interoperability</td>
+<td>Controlled local protocol tests are not real community adapter/product testing. Retain exact-version external matrix work.</td>
+</tr>
+<tr>
+<td>26 hardening</td>
+<td>OS sandboxing, egress restrictions, interpreter/dependency pinning, Windows descendant termination and external security audit remain future work. Process lifecycle separation does not establish tenant isolation.</td>
+</tr>
+</tbody>
+</table>
+<p>Validation includes native process protocol, hash mismatch, manifest compatibility,
+metadata immutability, empty environment, explicit credentials, malformed/oversized
+output and cancellation/partial-response tests; CLI registration tests; existing
+Go race/vet, schema/docs, SDK and deployment gates. Historical phase alignment and
+release notes retain their original scope; this review supersedes their future
+Phase 23 statements for the current source.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

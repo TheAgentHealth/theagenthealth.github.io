@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgentHealth v0.21.0 — TheAgentHealth docs</title>
+<meta name="description" content="Explicit local executable adapters and synchronized distribution.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/release-v0-21-0.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="release-v0-21-0.html" class="current">v0.21.0 release notes</a><a href="verification-v0-21-0.html">v0.21.0 verification</a><a href="plugins.html">Executable adapters</a><a href="adapter-protocol-v1.html">Adapter protocol v1</a><a href="phase-23-alignment.html">Phase 23 alignment (latest release)</a><a href="observability.html">Observability export</a><a href="ci-cd.html">CI/CD deployment gates</a><a href="framework-integrations.html">Runtime integrations</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/plugin-check.html">plugin check</a><a href="examples/observability.html">observability</a><a href="examples/ci.html">CI/CD deployment gates</a><a href="examples/runtime-check.html">Runtime integration</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>AgentHealth v0.21.0</h1>
+<p>Phase 23 introduces explicitly authorized local executable adapters. Repeat
+<code>--adapter manifest.json</code> with <code>check</code>, <code>ping</code> or <code>doctor</code> to register an unclaimed
+target type. The host validates compatibility and metadata, checks executable
+SHA-256, starts each dimension without an inherited environment or shell,
+accepts bounded strict JSON events, and terminates checks on cancellation.
+The engine retains active opt-in, normalized health states, response-aware retry
+policy, dependency aggregation and all output/exit-code contracts.</p>
+<p>See the <a href="plugins.html">guide</a>, <a href="examples/plugin-check.html">example</a>,
+<a href="adapter-protocol-v1.html">transport RFC</a> and
+<a href="phase-23-alignment.html">all-phase alignment</a>.</p>
+<h2 id="installation-and-distributions">Installation and distributions</h2>
+<p>All implemented distributions share v0.21.0: five CLI archives and SBOMs,
+DEB/RPM, channel manifests, Docker image, Helm chart, OCI binary bundle, Python
+SDK and JavaScript/TypeScript SDK. Follow <a href="installation.html">installation</a> and
+<a href="distribution.html">distribution verification</a>. CLI and SDK versions must match.
+Helm uses chart <code>0.21.0</code>, app version/image <code>v0.21.0</code>. Publication and public access are verified; see the
+<a href="verification-v0-21-0.html">verification record</a>.</p>
+<h2 id="compatibility-and-migration">Compatibility and migration</h2>
+<p>No AHS/AHP v1 fields, target schema or built-in checks change. Existing target YAML
+cannot authorize executable loading. No migration is required for existing users.
+Executable manifests are a separate local operator choice; built-in ownership
+cannot be overridden through the CLI. External adapter executables are not bundled
+with the CLI, container, chart or SDKs.</p>
+<h2 id="limitations">Limitations</h2>
+<p>The transport forwards identity, endpoint, dimension and optional bearer credential
+only. Rich protocol configuration, persistent sessions, automatic discovery,
+downloads, SDK manifest APIs, AHP loading and community certification are absent.
+A process retains the invoking user's filesystem/network permissions. Hashes do
+not pin interpreter dependencies or prevent concurrent executable replacement in
+operator-writable directories. Unix process groups are terminated; other platforms
+only guarantee direct-child termination. OS sandboxing and real community adapter
+interoperability remain planned. The example is an UNKNOWN remote-health fixture.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

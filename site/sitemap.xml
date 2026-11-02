@@ -7,6 +7,9 @@
     <loc>https://theagenthealth.github.io/docs/a2a-adapter.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/adapter-protocol-v1.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/agent-adapter.html</loc>
   </url>
   <url>
@@ -79,6 +82,9 @@
     <loc>https://theagenthealth.github.io/docs/examples/observability.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/examples/plugin-check.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/examples/python-sdk.html</loc>
   </url>
   <url>
@@ -142,7 +148,13 @@
     <loc>https://theagenthealth.github.io/docs/phase-22-alignment.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/phase-23-alignment.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/phase-status.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/plugins.html</loc>
   </url>
   <url>
     <loc>https://theagenthealth.github.io/docs/python-sdk.html</loc>
@@ -164,6 +176,9 @@
   </url>
   <url>
     <loc>https://theagenthealth.github.io/docs/release-v0-20-0.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/release-v0-21-0.html</loc>
   </url>
   <url>
     <loc>https://theagenthealth.github.io/docs/vector-store-adapter.html</loc>
@@ -188,6 +203,9 @@
   </url>
   <url>
     <loc>https://theagenthealth.github.io/docs/verification-v0-20-0.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/verification-v0-21-0.html</loc>
   </url>
   <url>
     <loc>https://theagenthealth.github.io/</loc>

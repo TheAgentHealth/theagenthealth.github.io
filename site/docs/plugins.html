@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Executable adapter extensions — TheAgentHealth docs</title>
+<meta name="description" content="Explicit local executable extensions, SHA-256 pins and normalized health evidence.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/plugins.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="release-v0-21-0.html">v0.21.0 release notes</a><a href="verification-v0-21-0.html">v0.21.0 verification</a><a href="plugins.html" class="current">Executable adapters</a><a href="adapter-protocol-v1.html">Adapter protocol v1</a><a href="phase-23-alignment.html">Phase 23 alignment (latest release)</a><a href="observability.html">Observability export</a><a href="ci-cd.html">CI/CD deployment gates</a><a href="framework-integrations.html">Runtime integrations</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/plugin-check.html">plugin check</a><a href="examples/observability.html">observability</a><a href="examples/ci.html">CI/CD deployment gates</a><a href="examples/runtime-check.html">Runtime integration</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Executable adapter extensions</h1>
+<p>Phase 23 implements an opt-in local executable transport. Install and review the
+program yourself; AgentHealth never discovers or downloads executable adapters.
+See the <a href="adapter-protocol-v1.html">contract and security boundary</a> and
+<a href="examples/plugin-check.html">working example</a>.</p>
+<p>Build the example, calculate its SHA-256, and write a local manifest:</p>
+<pre><code class="language-json">{
+  &quot;protocol&quot;: &quot;v1&quot;,
+  &quot;command&quot;: &quot;/absolute/path/to/probe&quot;,
+  &quot;sha256&quot;: &quot;REPLACE_WITH_LOWERCASE_SHA256&quot;,
+  &quot;metadata&quot;: {
+    &quot;name&quot;: &quot;community-probe&quot;,
+    &quot;version&quot;: &quot;1.0.0&quot;,
+    &quot;compatibility_version&quot;: &quot;v1&quot;,
+    &quot;target_types&quot;: [&quot;custom&quot;],
+    &quot;dimensions&quot;: [&quot;configuration&quot;, &quot;reachability&quot;],
+    &quot;active_checks&quot;: []
+  }
+}
+</code></pre>
+<pre><code class="language-sh">agenthealth check examples/plugin-check/agenthealth.yaml --adapter /absolute/path/to/manifest.json --format json
+</code></pre>
+<p>Repeat <code>--adapter</code> for disjoint target types. Invalid manifests and duplicate
+registrations are tool failures (exit 6); child execution failures become health
+results. Existing health exit codes 0–5 and all output formats still apply.
+Built-in target registrations cannot be replaced through this flag. <code>serve</code> and
+SDK APIs do not load manifests. Compiled Go applications can explicitly register
+<code>process.New</code> adapters in their own registry before constructing the engine.</p>
+<p>Only identity, endpoint, dimension and the explicitly configured bearer credential
+are sent to the child. Rich protocol options and additional credential references
+are unsupported. Configuration must validate locally without networking. Report
+remote responses immediately; emit only normalized status, never arbitrary text,
+capability names, result fields, topology, labels or response bodies. Functional
+checks must be declared active and explicitly requested. The engine owns latency,
+dependency evidence and observability projections.</p>
+<p>Keep agent role and path evidence distinct: a custom check named <code>direct-agent</code>
+can observe a user-facing runtime; <code>composite-agent</code> observes a downstream runtime.
+Neither proves communication between them. Use separate configured path probes
+(or the existing agent safe peer task), and separate built-in A2A, gateway/router
+and backend targets. See <a href="examples/agent-check.html">agent examples</a>,
+<a href="examples/gateway-check.html">gateway examples</a>, and
+<a href="examples/router-check.html">router examples</a>. No role-specific target type
+or inferred dependency discovery is introduced.</p>
+<p>Executable metadata and status reports are trusted assertions from local code.
+Process termination is implemented, but filesystem/network permissions remain
+those of the invoking user. Keep binaries and manifests in trusted directories.
+Hashes pin executable bytes; they do not pin shared libraries or prevent concurrent
+replacement in a writable directory. No community certification is claimed.</p>
+<p>On Windows, Go may supply the OS-required <code>SystemRoot</code> variable; application
+environment variables remain excluded. Unix group termination is used before
+reaping starts. After stdout closes and reaping starts, cancellation uses the
+lifetime-aware direct-child handle; descendants that close inherited pipes are
+not guaranteed to be terminated. OS containment remains outside this protocol.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>
