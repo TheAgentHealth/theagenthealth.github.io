@@ -48,11 +48,10 @@ targets:
     endpoint: https://direct-agent.example.invalid/health
     checks: [configuration, reachability]
     dependencies:
-      - target:
-          name: composite-agent-extension-fixture
-          type: custom
-          endpoint: https://composite-agent.example.invalid/health
-          checks: [configuration, reachability]
+      - name: composite-agent-extension-fixture
+        type: custom
+        endpoint: https://composite-agent.example.invalid/health
+        checks: [configuration, reachability]
 </code></pre>
 <h3>main.go</h3><pre><code>// This executable demonstrates the v1 wire protocol without making network calls.
 // It is a protocol fixture, not evidence of a real remote service's health.
