@@ -21,9 +21,10 @@ GITHUB_REPO = "https://github.com/TheAgentHealth/agenthealth"
 
 # (source .md relative to agenthealth/docs, slug, nav title, meta description)
 DOCS = [
-    ("phase-21-alignment.md", "phase-21-alignment", "Phase 21 alignment (latest release)", "CI/CD deployment validation and compatibility across phases 0–26."),
-    ("releases/v0.19.0.md", "release-v0-19-0", "v0.19.0 release notes", "JUnit/GitHub reports, deployment gates and synchronized distribution."),
-    ("releases/verification-v0.19.0.md", "verification-v0-19-0", "v0.19.0 verification", "Verified artifacts, provenance, public registries and runtime checks."),
+    ("phase-22-alignment.md", "phase-22-alignment", "Phase 22 alignment (latest release)", "Observability export and compatibility across phases 0–26."),
+    ("releases/v0.20.0.md", "release-v0-20-0", "v0.20.0 release notes", "Redacted Prometheus, JSON Lines, OTLP and webhook payloads."),
+    ("releases/verification-v0.20.0.md", "verification-v0-20-0", "v0.20.0 verification", "Verified artifacts, provenance, public registries and runtime checks."),
+    ("observability.md", "observability", "Observability export", "Prometheus gauges, structured logs, OTLP/HTTP JSON and explicit webhook delivery."),
     ("ci-cd.md", "ci-cd", "CI/CD deployment gates", "GitHub Action, JUnit/GitHub reports and shell/GitLab/Jenkins/Azure deployment templates."),
     ("framework-integrations.md", "framework-integrations", "Runtime integrations", "LangGraph/FastAPI health resources, safe peer callbacks and SDK consumers."),
     ("javascript-sdk.md", "javascript-sdk", "JavaScript/TypeScript (npm)", "Node.js Promise API, TypeScript declarations, configuration and cancellation."),
@@ -51,6 +52,9 @@ DOCS = [
 
 # Preserve historical URLs and internal links without crowding the main menu.
 ARCHIVED_DOCS = [
+    ("phase-21-alignment.md", "phase-21-alignment", "Phase 21 alignment (historical)", "CI/CD deployment validation and compatibility across phases 0–26."),
+    ("releases/v0.19.0.md", "release-v0-19-0", "v0.19.0 release notes (historical)", "JUnit/GitHub reports, deployment gates and synchronized distribution."),
+    ("releases/verification-v0.19.0.md", "verification-v0-19-0", "v0.19.0 verification (historical)", "Verified artifacts, provenance, public registries and runtime checks."),
     ("phase-20-alignment.md", "phase-20-alignment", "Phase 20 alignment", "Optional LangGraph/FastAPI integration and cross-phase compatibility."),
     ("releases/v0.18.0.md", "release-v0-18-0", "v0.18.0 release notes (historical)", "Safe graph and peer integration in the Python SDK."),
     ("releases/verification-v0.18.0.md", "verification-v0-18-0", "v0.18.0 verification (historical)", "Verified runtime integration release and synchronized packages."),
@@ -70,6 +74,7 @@ ALL_DOCS = DOCS + ARCHIVED_DOCS
 
 # (dir under agenthealth/examples, slug, config files to embed inline)
 EXAMPLES = [
+    ("observability", "observability", []),
     ("ci", "ci", ["agenthealth.yaml", "github.yml", "gitlab.yml", "Jenkinsfile", "azure-pipelines.yml", "gate.sh"]),
     ("runtime-check", "runtime-check", ["agenthealth.yaml"]),
     ("vector-check", "vector-check", ["agenthealth.yaml", "query.yaml", "pinecone.yaml"]),
