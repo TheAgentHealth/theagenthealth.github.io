@@ -17,7 +17,8 @@
 <p class="doc-back"><a href="../index.html">← All documentation</a></p>
 <h1>Local executable adapter fixture</h1>
 <p>From the repository root:</p>
-<pre><code class="language-sh">go build -o /tmp/agenthealth-probe ./examples/plugin-check
+<pre><code class="language-sh">go build -o /tmp/agenthealth-host ./cmd/agenthealth
+go build -o /tmp/agenthealth-probe ./examples/plugin-check
 python3 - &lt;&lt;'PY'
 import hashlib, json
 from pathlib import Path
@@ -29,7 +30,7 @@ manifest = {'protocol': 'v1', 'command': str(binary),
                          'dimensions': ['configuration', 'reachability'], 'active_checks': []}}
 Path('/tmp/agenthealth-adapter.json').write_text(json.dumps(manifest))
 PY
-agenthealth check examples/plugin-check/agenthealth.yaml --adapter /tmp/agenthealth-adapter.json --format json
+/tmp/agenthealth-host check examples/plugin-check/agenthealth.yaml --adapter /tmp/agenthealth-adapter.json --format json
 </code></pre>
 <p>The fixture returns HEALTHY for configuration and UNKNOWN for reachability:
 it performs no network operation and makes no remote health claim. Expected health
