@@ -21,12 +21,10 @@ GITHUB_REPO = "https://github.com/TheAgentHealth/agenthealth"
 
 # (source .md relative to agenthealth/docs, slug, nav title, meta description)
 DOCS = [
-    ("plugins.md", "plugins", "Executable adapters", "Explicit local executable extensions, SHA-256 pins and normalized health evidence."),
+    ("releases/v0.21.0.md", "release-v0-21-0", "v0.21.0 release notes", "Explicit local executable adapters and synchronized distribution."),
+    ("releases/verification-v0.21.0.md", "verification-v0-21-0", "v0.21.0 verification", "Verified downloads, signatures, registries, SDKs and runtime behavior."),    ("plugins.md", "plugins", "Executable adapters", "Explicit local executable extensions, SHA-256 pins and normalized health evidence."),
     ("rfcs/phase-23-adapters.md", "adapter-protocol-v1", "Adapter protocol v1", "Bounded JSON process transport, compatibility and security requirements."),
-    ("phase-23-alignment.md", "phase-23-alignment", "Phase 23 alignment (source)", "Executable adapters and compatibility across phases 0–26."),
-    ("phase-22-alignment.md", "phase-22-alignment", "Phase 22 alignment (latest release)", "Observability export and compatibility across phases 0–26."),
-    ("releases/v0.20.0.md", "release-v0-20-0", "v0.20.0 release notes", "Redacted Prometheus, JSON Lines, OTLP and webhook payloads."),
-    ("releases/verification-v0.20.0.md", "verification-v0-20-0", "v0.20.0 verification", "Verified artifacts, provenance, public registries and runtime checks."),
+    ("phase-23-alignment.md", "phase-23-alignment", "Phase 23 alignment (latest release)", "Executable adapters and compatibility across phases 0–26."),
     ("observability.md", "observability", "Observability export", "Prometheus gauges, structured logs, OTLP/HTTP JSON and explicit webhook delivery."),
     ("ci-cd.md", "ci-cd", "CI/CD deployment gates", "GitHub Action, JUnit/GitHub reports and shell/GitLab/Jenkins/Azure deployment templates."),
     ("framework-integrations.md", "framework-integrations", "Runtime integrations", "LangGraph/FastAPI health resources, safe peer callbacks and SDK consumers."),
@@ -55,6 +53,9 @@ DOCS = [
 
 # Preserve historical URLs and internal links without crowding the main menu.
 ARCHIVED_DOCS = [
+    ("phase-22-alignment.md", "phase-22-alignment", "Phase 22 alignment (historical)", "Observability export and compatibility across phases 0–26."),
+    ("releases/v0.20.0.md", "release-v0-20-0", "v0.20.0 release notes (historical)", "Redacted Prometheus, JSON Lines, OTLP and webhook payloads."),
+    ("releases/verification-v0.20.0.md", "verification-v0-20-0", "v0.20.0 verification (historical)", "Verified artifacts, provenance, public registries and runtime checks."),
     ("phase-21-alignment.md", "phase-21-alignment", "Phase 21 alignment (historical)", "CI/CD deployment validation and compatibility across phases 0–26."),
     ("releases/v0.19.0.md", "release-v0-19-0", "v0.19.0 release notes (historical)", "JUnit/GitHub reports, deployment gates and synchronized distribution."),
     ("releases/verification-v0.19.0.md", "verification-v0-19-0", "v0.19.0 verification (historical)", "Verified artifacts, provenance, public registries and runtime checks."),
