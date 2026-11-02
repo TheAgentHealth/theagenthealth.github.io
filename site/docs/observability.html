@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Observability export — TheAgentHealth docs</title>
+<meta name="description" content="Prometheus gauges, structured logs, OTLP/HTTP JSON and explicit webhook delivery.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/observability.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-22-alignment.html">Phase 22 alignment (latest release)</a><a href="release-v0-20-0.html">v0.20.0 release notes</a><a href="verification-v0-20-0.html">v0.20.0 verification</a><a href="observability.html" class="current">Observability export</a><a href="ci-cd.html">CI/CD deployment gates</a><a href="framework-integrations.html">Runtime integrations</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/observability.html">observability</a><a href="examples/ci.html">CI/CD deployment gates</a><a href="examples/runtime-check.html">Runtime integration</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>Observability export</h1>
+<p>Phase 22 provides finite snapshots through <code>ping</code>, <code>check</code> and <code>doctor</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Output</th>
+<th>Delivery</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prometheus</code></td>
+<td>Prometheus text 0.0.4 gauges</td>
+<td>Atomic textfile publication to an existing exporter</td>
+</tr>
+<tr>
+<td><code>logs</code></td>
+<td>One reduced JSON object per line</td>
+<td>Existing log collector reads stdout or a file</td>
+</tr>
+<tr>
+<td><code>otlp</code></td>
+<td>OTLP/HTTP JSON <code>ExportLogsServiceRequest</code></td>
+<td>POST with <code>application/json</code> to a collector's <code>/v1/logs</code></td>
+</tr>
+<tr>
+<td><code>webhook</code></td>
+<td>JSON envelope with <code>export_version: v1</code> and <code>records</code></td>
+<td>Explicit HTTPS POST to a compatible receiver</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">agenthealth check examples/core-check/agenthealth.yaml --format prometheus
+agenthealth check examples/graph-check/agenthealth.yaml --format logs
+agenthealth check examples/core-check/agenthealth.yaml --format otlp
+agenthealth check examples/core-check/agenthealth.yaml --format webhook
+</code></pre>
+<p>Health exit codes remain 0–5; invalid configuration, invalid output and write
+failure use 6. A nonzero health code still produces a valid snapshot. SDKs
+continue to use canonical JSON. Exports are reduced projections, not replacements
+for the AHS result schema. See the <a href="examples/observability.html">delivery example</a>.</p>
+<h2 id="evidence-and-privacy">Evidence and privacy</h2>
+<p>Each record has <code>kind</code> (<code>node</code>, <code>check</code> or <code>edge</code>), <code>node</code>, target <code>type</code> and
+<code>status</code>. Check records add <code>dimension</code>; node records include <code>latency_ms</code> when
+measured. Edge records add a unique snapshot-local <code>edge</code>, <code>parent</code>, configured
+<code>relationship</code> and effective <code>critical</code> (default true). Empty relationship means
+unspecified. Node health is not replaced by its contribution to a parent.
+All six statuses remain distinct. Transport steps and diagnostic codes are
+omitted along with arbitrary messages.</p>
+<p>Explicit graph IDs deduplicate node/check evidence. Every incoming edge retains
+its own policy; a shared node's outgoing edges export once. Nodes without IDs
+remain distinct. The exporter expects coherent engine-generated snapshots;
+it does not reconcile conflicting caller-supplied results with the same ID.
+Aliases (<code>node-1</code>, <code>edge-1</code>) are assigned in configuration traversal order and
+reset for every snapshot. Do not correlate them across reordered configurations.
+Direct and composite agents both retain type <code>agent</code>; downstream/path relationships
+carry the available distinction. No role is inferred from names.</p>
+<p>Configured names, IDs, URLs, credentials and diagnostic text are excluded.
+Topology shape, counts, target types, relationships, status and timing remain
+visible: this is data minimization, not topology anonymization or tenant isolation.
+Restrict collector/file access accordingly. No original identifier opt-in exists.</p>
+<h2 id="metric-mapping">Metric mapping</h2>
+<p><code>agenthealth_status</code> is a one-hot gauge for each of the six <code>status</code> values.
+Other labels are <code>kind</code>, <code>node</code>, <code>parent</code>, <code>type</code>, <code>dimension</code>, <code>relationship</code>,
+<code>critical</code> and <code>edge</code>; inapplicable labels are empty strings. Edge labels prevent
+repeated relationships from producing duplicate series. <code>agenthealth_latency_seconds</code>
+converts measured node latency from milliseconds, with <code>node</code> and <code>type</code> labels.
+Missing latency produces no sample. No counter, histogram or fabricated zero
+latency is emitted. Cardinality grows with configured nodes, checks and edges;
+use bounded configurations and replace the whole textfile on every run.</p>
+<p>OTLP emits logs with scope <code>agenthealth</code>, a shared <code>observedTimeUnixNano</code>, and
+JSON-encoded reduced records in <code>body.stringValue</code>. It does not fabricate trace
+IDs, spans, resource identity, or severity mapping. The timestamp records export
+time, not the start of each check. Webhook records use the same evidence mapping.</p>
+<p>The formats follow the <a href="https://prometheus.io/docs/instrumenting/exposition_formats/">Prometheus exposition specification</a>
+and <a href="https://opentelemetry.io/docs/specs/otlp/">OTLP JSON specification</a>.
+Collector ingestion and hosted-provider compatibility require separate measured
+interoperability evidence. This baseline has no scrape server, remote-write,
+gRPC exporter, durable queue, authentication manager, automatic delivery or retry.
+AHP endpoints, health schemas and Kubernetes probes are unchanged.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>
