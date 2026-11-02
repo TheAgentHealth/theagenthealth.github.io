@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local executable adapter fixture — TheAgentHealth docs</title>
+<meta name="description" content="Example configuration: Local executable adapter fixture.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/examples/plugin-check.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="../index.html">Docs</a><a href="index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="../index.html">Overview</a><a href="../plugins.html">Executable adapters</a><a href="../adapter-protocol-v1.html">Adapter protocol v1</a><a href="../phase-23-alignment.html">Phase 23 alignment (source)</a><a href="../phase-22-alignment.html">Phase 22 alignment (latest release)</a><a href="../release-v0-20-0.html">v0.20.0 release notes</a><a href="../verification-v0-20-0.html">v0.20.0 verification</a><a href="../observability.html">Observability export</a><a href="../ci-cd.html">CI/CD deployment gates</a><a href="../framework-integrations.html">Runtime integrations</a><a href="../javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="../python-sdk.html">Python SDK (PyPi)</a><a href="../architecture.html">Architecture</a><a href="../cli.html">CLI</a><a href="../installation.html">Installation</a><a href="../docker.html">Docker</a><a href="../kubernetes.html">Kubernetes</a><a href="../distribution.html">Distribution</a><a href="../vector-store-adapter.html">Vector-store adapter</a><a href="../database-adapter.html">Database adapter</a><a href="../model-adapter.html">Model / LLM adapter</a><a href="../http-adapter.html">HTTP adapter</a><a href="../mcp-adapter.html">MCP adapter</a><a href="../a2a-adapter.html">A2A adapter</a><a href="../agent-adapter.html">Agent adapter</a><a href="../agent-router.html">Agent Router</a><a href="../agentgateway.html">Agentgateway</a><a href="../dependency-graph.html">Dependency graph</a><a href="../ahp.html">AHP (experimental)</a><a href="../interoperability.html">Interoperability</a><a href="../phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="index.html">Overview</a><a href="plugin-check.html" class="current">plugin check</a><a href="observability.html">observability</a><a href="ci.html">CI/CD deployment gates</a><a href="runtime-check.html">Runtime integration</a><a href="vector-check.html">vector check</a><a href="database-check.html">database check</a><a href="model-check.html">model check</a><a href="javascript-sdk.html">javascript sdk</a><a href="python-sdk.html">python sdk</a><a href="a2a-check.html">a2a check</a><a href="agent-check.html">agent check</a><a href="ahp-check.html">ahp check</a><a href="distribution.html">distribution</a><a href="gateway-check.html">gateway check</a><a href="graph-check.html">graph check</a><a href="kubernetes.html">kubernetes</a><a href="router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="../index.html">← All documentation</a></p>
+<h1>Local executable adapter fixture</h1>
+<p>From the repository root:</p>
+<pre><code class="language-sh">go build -o /tmp/agenthealth-probe ./examples/plugin-check
+python3 - &lt;&lt;'PY'
+import hashlib, json
+from pathlib import Path
+binary = Path('/tmp/agenthealth-probe').resolve()
+manifest = {'protocol': 'v1', 'command': str(binary),
+            'sha256': hashlib.sha256(binary.read_bytes()).hexdigest(),
+            'metadata': {'name': 'protocol-fixture', 'version': '1.0.0',
+                         'compatibility_version': 'v1', 'target_types': ['custom'],
+                         'dimensions': ['configuration', 'reachability'], 'active_checks': []}}
+Path('/tmp/agenthealth-adapter.json').write_text(json.dumps(manifest))
+PY
+agenthealth check examples/plugin-check/agenthealth.yaml --adapter /tmp/agenthealth-adapter.json --format json
+</code></pre>
+<p>The fixture returns HEALTHY for configuration and UNKNOWN for reachability:
+it performs no network operation and makes no remote health claim. Expected health
+exit code is 5. Adapt the output path for your OS; Windows uses an <code>.exe</code> suffix.</p>
+<p>The direct/composite names identify agent roles. Dependencies record independently
+observed health, not verified communication. Add an explicit peer/path target to
+measure that path. Keep built-in gateway/router, A2A and backend checks separate;
+see the <a href="../plugins.html">extension guide</a>. Do not forward arbitrary input,
+log credentials or return response bodies. Real probes must implement the safety
+and response-marker rules in the <a href="../adapter-protocol-v1.html">contract</a>.</p>
+<div class="doc-config"><h2>Configuration files</h2>
+<h3>agenthealth.yaml</h3><pre><code>version: v1
+targets:
+  - name: direct-agent-extension-fixture
+    type: custom
+    endpoint: https://direct-agent.example.invalid/health
+    checks: [configuration, reachability]
+    dependencies:
+      - target:
+          name: composite-agent-extension-fixture
+          type: custom
+          endpoint: https://composite-agent.example.invalid/health
+          checks: [configuration, reachability]
+</code></pre>
+<h3>main.go</h3><pre><code>// This executable demonstrates the v1 wire protocol without making network calls.
+// It is a protocol fixture, not evidence of a real remote service's health.
+package main
+
+import (
+	"encoding/json"
+	"github.com/TheAgentHealth/agenthealth/adapters/process"
+	"github.com/TheAgentHealth/agenthealth/core"
+	"os"
+)
+
+func main() {
+	var request process.WireRequest
+	decoder := json.NewDecoder(os.Stdin)
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&amp;request) != nil || request.Protocol != "v1" {
+		os.Exit(1)
+	}
+	status := core.Healthy
+	if request.Dimension != "configuration" {
+		status = core.Unknown
+	}
+	if json.NewEncoder(os.Stdout).Encode(process.Event{Kind: "result", Status: status}) != nil {
+		os.Exit(1)
+	}
+}
+</code></pre>
+</div>
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>
