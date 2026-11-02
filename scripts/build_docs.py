@@ -21,6 +21,9 @@ GITHUB_REPO = "https://github.com/TheAgentHealth/agenthealth"
 
 # (source .md relative to agenthealth/docs, slug, nav title, meta description)
 DOCS = [
+    ("plugins.md", "plugins", "Executable adapters", "Explicit local executable extensions, SHA-256 pins and normalized health evidence."),
+    ("rfcs/phase-23-adapters.md", "adapter-protocol-v1", "Adapter protocol v1", "Bounded JSON process transport, compatibility and security requirements."),
+    ("phase-23-alignment.md", "phase-23-alignment", "Phase 23 alignment (source)", "Executable adapters and compatibility across phases 0–26."),
     ("phase-22-alignment.md", "phase-22-alignment", "Phase 22 alignment (latest release)", "Observability export and compatibility across phases 0–26."),
     ("releases/v0.20.0.md", "release-v0-20-0", "v0.20.0 release notes", "Redacted Prometheus, JSON Lines, OTLP and webhook payloads."),
     ("releases/verification-v0.20.0.md", "verification-v0-20-0", "v0.20.0 verification", "Verified artifacts, provenance, public registries and runtime checks."),
@@ -74,6 +77,7 @@ ALL_DOCS = DOCS + ARCHIVED_DOCS
 
 # (dir under agenthealth/examples, slug, config files to embed inline)
 EXAMPLES = [
+    ("plugin-check", "plugin-check", ["agenthealth.yaml", "main.go"]),
     ("observability", "observability", []),
     ("ci", "ci", ["agenthealth.yaml", "github.yml", "gitlab.yml", "Jenkinsfile", "azure-pipelines.yml", "gate.sh"]),
     ("runtime-check", "runtime-check", ["agenthealth.yaml"]),

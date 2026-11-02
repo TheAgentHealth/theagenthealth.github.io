@@ -31,7 +31,8 @@ local maintenance tool and a required deployment step. Its output (`site/docs/`)
 Edit `scripts/build_docs.py`'s `DOCS`/`EXAMPLES` lists to update the main navigation.
 Use `ARCHIVED_DOCS` for historical pages that should retain their URLs without
 appearing in the sidebar.
-The build also refreshes the sitemap. Current guides cover verified v0.20.0:
+The build also refreshes the sitemap. Current guides cover verified v0.20.0 and Phase 23 source work:
+local executable adapters, the v1 transport, runnable fixture and all-phase alignment;
 Phase 22 redacted observability exports and explicit delivery examples;
 Phase 21 CI/CD deployment gates, JUnit/GitHub reports and provider templates;
 Phase 20 LangGraph/FastAPI runtime integration; plus vector/database/model
