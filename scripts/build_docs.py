@@ -22,6 +22,7 @@ GITHUB_REPO = "https://github.com/TheAgentHealth/agenthealth"
 # (source .md relative to agenthealth/docs, slug, nav title, meta description)
 DOCS = [
     ("phase-24-alignment.md", "phase-24-alignment", "Phase 24 impact and alignment review", "Conformance evidence and compatibility across phases 0–26."),
+    ("releases/v0.22.1.md", "release-v0-22-1", "v0.22.1 release preparation", "Go security patch, synchronized versions and publication requirements."),
     ("releases/v0.22.0.md", "release-v0-22-0", "v0.22.0 release notes", "Offline AHS validation, reference conformance and synchronized distribution."),
     ("releases/verification-v0.22.0.md", "verification-v0-22-0", "v0.22.0 verification", "Public downloads, registry byte identity, CI evidence and verification limits."),
     ("conformance.md", "conformance", "Conformance", "Bounded offline result validation and mandatory reference behavioral evidence."),
