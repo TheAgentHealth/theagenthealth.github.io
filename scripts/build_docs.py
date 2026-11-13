@@ -22,9 +22,8 @@ GITHUB_REPO = "https://github.com/TheAgentHealth/agenthealth"
 # (source .md relative to agenthealth/docs, slug, nav title, meta description)
 DOCS = [
     ("phase-24-alignment.md", "phase-24-alignment", "Phase 24 impact and alignment review", "Conformance evidence and compatibility across phases 0–26."),
-    ("releases/v0.22.1.md", "release-v0-22-1", "v0.22.1 release preparation", "Go security patch, synchronized versions and publication requirements."),
-    ("releases/v0.22.0.md", "release-v0-22-0", "v0.22.0 release notes", "Offline AHS validation, reference conformance and synchronized distribution."),
-    ("releases/verification-v0.22.0.md", "verification-v0-22-0", "v0.22.0 verification", "Public downloads, registry byte identity, CI evidence and verification limits."),
+    ("releases/v0.22.1.md", "release-v0-22-1", "v0.22.1 release notes", "Go security patch and verified synchronized distribution."),
+    ("releases/verification-v0.22.1.md", "verification-v0-22-1", "v0.22.1 verification", "Signed downloads, public registries, installed SDKs and Kubernetes runtime evidence."),
     ("conformance.md", "conformance", "Conformance", "Bounded offline result validation and mandatory reference behavioral evidence."),
     ("plugins.md", "plugins", "Executable adapters", "Explicit local executable extensions, SHA-256 pins and normalized health evidence."),
     ("rfcs/phase-23-adapters.md", "adapter-protocol-v1", "Adapter protocol v1", "Bounded JSON process transport, compatibility and security requirements."),
@@ -56,6 +55,8 @@ DOCS = [
 
 # Preserve historical URLs and internal links without crowding the main menu.
 ARCHIVED_DOCS = [
+    ("releases/v0.22.0.md", "release-v0-22-0", "v0.22.0 release notes (historical)", "Offline AHS validation, reference conformance and synchronized distribution."),
+    ("releases/verification-v0.22.0.md", "verification-v0-22-0", "v0.22.0 verification (historical)", "Public downloads, registry byte identity, CI evidence and verification limits."),
     ("phase-23-alignment.md", "phase-23-alignment", "Phase 23 alignment (historical)", "Executable adapters and compatibility across phases 0–26."),
     ("releases/v0.21.0.md", "release-v0-21-0", "v0.21.0 release notes (historical)", "Explicit local executable adapters and synchronized distribution."),
     ("releases/verification-v0.21.0.md", "verification-v0-21-0", "v0.21.0 verification (historical)", "Verified downloads, signatures, registries, SDKs and runtime behavior."),
