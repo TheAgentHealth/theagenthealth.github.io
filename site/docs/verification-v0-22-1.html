@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>v0.22.1 publication verification — TheAgentHealth docs</title>
+<meta name="description" content="Signed downloads, public registries, installed SDKs and Kubernetes runtime evidence.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/verification-v0-22-1.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-24-alignment.html">Phase 24 impact and alignment review</a><a href="release-v0-22-1.html">v0.22.1 release notes</a><a href="verification-v0-22-1.html" class="current">v0.22.1 verification</a><a href="conformance.html">Conformance</a><a href="plugins.html">Executable adapters</a><a href="adapter-protocol-v1.html">Adapter protocol v1</a><a href="observability.html">Observability export</a><a href="ci-cd.html">CI/CD deployment gates</a><a href="framework-integrations.html">Runtime integrations</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/conformance.html">conformance</a><a href="examples/plugin-check.html">plugin check</a><a href="examples/observability.html">observability</a><a href="examples/ci.html">CI/CD deployment gates</a><a href="examples/runtime-check.html">Runtime integration</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>v0.22.1 publication verification</h1>
+<p>Release: <a href="https://github.com/TheAgentHealth/agenthealth/releases/tag/v0.22.1">AgentHealth v0.22.1</a>. Regular public Latest release;
+source commit <code>9e62542762c371fdf05d95e9b275e09d46047898</code>. Public verification completed 2026-11-13
+(America/Chicago). Existing v0.22.0 tags and artifacts were preserved.</p>
+<h2 id="release-gates-and-signed-downloads">Release gates and signed downloads</h2>
+<p>The <a href="https://github.com/TheAgentHealth/agenthealth/actions/runs/43525793509">Release workflow</a>
+passed all required publication jobs. Its <a href="https://github.com/TheAgentHealth/agenthealth/actions/runs/43525820680">fresh exact-tag CI</a>
+passed the required source, conformance, five-platform native archive, SDK and
+Kubernetes gates. Missing/skipped mandatory jobs were not treated as passes.</p>
+<p>All 21 public assets were downloaded anonymously and matched their release
+SHA-256 digests and the complete checksum manifest: five platform archives,
+five CycloneDX SBOMs, four DEB/RPM packages, two channel manifests, Helm chart,
+Python wheel/source archive, npm tarball and checksums.</p>
+<p>GitHub cryptographic build provenance was independently verified for every
+asset against the exact source SHA, <code>refs/tags/v0.22.1</code>, repository release
+workflow and GitHub-hosted runner policy. All five archive CycloneDX
+attestations were verified separately. Every SBOM records Go 1.27.4.</p>
+<h2 id="public-registries">Public registries</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Published digest</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GHCR Docker image</td>
+<td><code>sha256:727c21fd5e547d53e88a0761c0c663e7bf6b2706326b58171abd046610701323</code></td>
+</tr>
+<tr>
+<td>Docker Hub mirror</td>
+<td><code>sha256:3b0804ad350a0585df68ef1d79baf7defd18b0c77b574340c93da691d810ddcc</code></td>
+</tr>
+<tr>
+<td>Helm OCI chart</td>
+<td><code>sha256:1bd0de74199a87671825d246b4dd70b3e7f24b45d08c62e0de2ae2fccb1aebe2</code></td>
+</tr>
+<tr>
+<td>OCI binary bundle</td>
+<td><code>sha256:b2779501258b3944be1238cb64e32ec198d942082fb153c8a62d46a754e4c782</code></td>
+</tr>
+</tbody>
+</table>
+<p>GHCR anonymous manifest/config access established Linux AMD64/ARM64, the exact
+source revision and software version. Chart and binary-bundle manifests,
+metadata and every asset blob were downloaded anonymously and verified against
+signed release hashes. All three GHCR package provenance attestations were
+independently verified against the immutable source tag and workflow.
+Anonymous Docker Hub manifests confirmed both platforms and filesystem/runtime equality with GHCR.</p>
+<p>PyPI wheel/source bytes and npm tarball bytes match the signed GitHub assets;
+registry digests/integrity match. Both PyPI trusted-publisher attestations were
+verified against the publishing repository. npm registry signature/provenance
+audit passed with npm 11. The public SDKs and CLI all identify 0.22.1.
+GitHub Latest, PyPI, npm
+<code>latest</code>, and both images' <code>latest</code>/<code>v0</code> aliases resolve to this release.</p>
+<h2 id="runtime-evidence-and-limits">Runtime evidence and limits</h2>
+<p>The public Linux AMD64 archive passed version/help/tool-error smoke and the
+positive/negative conformance examples: valid evidence exits 0; inconsistent
+status exits 6. The public container passed version, non-root/runtime metadata
+and real HTTP health smoke; its native executable matches the signed archive.
+Fresh public Python/npm installations passed SDK checks against that CLI.</p>
+<p>The downloaded chart and public image passed disposable Kubernetes 1.32.2
+runtime scenarios, including init outage/recovery, probes, sidecar, Secrets,
+Jobs, CronJobs, chart modes and readiness recovery. The disposable cluster was
+removed. A Helm release was also installed from the downloaded chart in job
+mode and uninstalled. Other operating systems/architectures rely on exact-tag CI;
+they were not
+executed locally during this follow-up. DEB/RPM assets were verified as downloads;
+no local package-manager installation was performed. OS-native executable
+signing/notarization remains planned.</p>
+<p>Go 1.27.4 replaces the affected Go 1.27.3 build toolchain for GO-2026-6859;
+it does not modify v0.22.0 binaries. This is a patched reference release,
+not a security audit or independent product certification. Phase 24 remains
+bounded offline AHS result validation plus reference behavioral conformance.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>
