@@ -31,6 +31,9 @@
     <loc>https://theagenthealth.github.io/docs/cli.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/conformance.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/database-adapter.html</loc>
   </url>
   <url>
@@ -53,6 +56,9 @@
   </url>
   <url>
     <loc>https://theagenthealth.github.io/docs/examples/ci.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/examples/conformance.html</loc>
   </url>
   <url>
     <loc>https://theagenthealth.github.io/docs/examples/database-check.html</loc>
@@ -151,6 +157,9 @@
     <loc>https://theagenthealth.github.io/docs/phase-23-alignment.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/phase-24-alignment.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/phase-status.html</loc>
   </url>
   <url>
@@ -181,6 +190,12 @@
     <loc>https://theagenthealth.github.io/docs/release-v0-21-0.html</loc>
   </url>
   <url>
+    <loc>https://theagenthealth.github.io/docs/release-v0-22-0.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/release-v0-22-1.html</loc>
+  </url>
+  <url>
     <loc>https://theagenthealth.github.io/docs/vector-store-adapter.html</loc>
   </url>
   <url>
@@ -206,6 +221,9 @@
   </url>
   <url>
     <loc>https://theagenthealth.github.io/docs/verification-v0-21-0.html</loc>
+  </url>
+  <url>
+    <loc>https://theagenthealth.github.io/docs/verification-v0-22-0.html</loc>
   </url>
   <url>
     <loc>https://theagenthealth.github.io/</loc>

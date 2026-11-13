@@ -31,15 +31,17 @@ local maintenance tool and a required deployment step. Its output (`site/docs/`)
 Edit `scripts/build_docs.py`'s `DOCS`/`EXAMPLES` lists to update the main navigation.
 Use `ARCHIVED_DOCS` for historical pages that should retain their URLs without
 appearing in the sidebar.
-The build also refreshes the sitemap. Current guides cover verified v0.21.0:
-local executable adapters, the v1 transport, runnable fixture and all-phase alignment;
+The build also refreshes the sitemap. Current guides cover published v0.22.0:
+offline AHS conformance, the reference behavioral suite, runnable positive/negative
+fixtures, all-phase alignment and publication verification with explicit limits;
+Phase 23 local executable adapters and the v1 transport;
 Phase 22 redacted observability exports and explicit delivery examples;
 Phase 21 CI/CD deployment gates, JUnit/GitHub reports and provider templates;
 Phase 20 LangGraph/FastAPI runtime integration; plus vector/database/model
 adapters, both SDKs, Kubernetes, release notes and publication verification.
 The CI examples embed the shell, GitHub, GitLab, Jenkins and Azure templates.
 The landing page credits Sharath K (@sharath568) for his initial Phase 17 contribution.
-Historical Phase 16–22 alignment and v0.14.0–v0.20.0 release/verification pages
+Historical Phase 16–23 alignment and v0.14.0–v0.21.0 release/verification pages
 retain their original scope.
 When syncing a new release, update the landing page's release and registry links too.
 
