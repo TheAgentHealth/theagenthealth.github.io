@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgentHealth conformance — TheAgentHealth docs</title>
+<meta name="description" content="Bounded offline result validation and mandatory reference behavioral evidence.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/conformance.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-24-alignment.html">Phase 24 impact and alignment review</a><a href="release-v0-22-0.html">v0.22.0 release notes</a><a href="verification-v0-22-0.html">v0.22.0 verification</a><a href="conformance.html" class="current">Conformance</a><a href="plugins.html">Executable adapters</a><a href="adapter-protocol-v1.html">Adapter protocol v1</a><a href="observability.html">Observability export</a><a href="ci-cd.html">CI/CD deployment gates</a><a href="framework-integrations.html">Runtime integrations</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/conformance.html">conformance</a><a href="examples/plugin-check.html">plugin check</a><a href="examples/observability.html">observability</a><a href="examples/ci.html">CI/CD deployment gates</a><a href="examples/runtime-check.html">Runtime integration</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>AgentHealth conformance</h1>
+<p>Released in v0.22.0, Phase 24 provides offline AHS v1 result validation and a reference behavioral
+suite. These are two distinct forms of evidence. Neither awards certification,
+a compatibility badge, a security audit, or independently measured product
+interoperability. See the <a href="phase-24-alignment.html">all-phase impact review</a>.</p>
+<h2 id="validate-a-result-document">Validate a result document</h2>
+<pre><code class="language-bash">agenthealth conformance test examples/conformance/healthy.json
+agenthealth conformance test examples/conformance/dependency.json
+</code></pre>
+<p>The argument is a regular local UTF-8 JSON file containing a single result or a
+nonempty batch. The command does not contact endpoints, execute adapters, load
+credentials, or run configurations. It accepts at most 4 MiB and 64 dependency
+levels, rejects duplicate keys and trailing documents, and tolerates extension
+fields permitted by the v1 schema. Only <code>spec_version: v1</code> and the current AHS
+dimensions are supported. Unknown versions or dimensions need a future profile.
+YAML, configuration files, AHP envelopes and observability exports are not inputs
+to this result profile.</p>
+<p>Validation covers required fields, types, health states, target types, graph IDs,
+relationships, diagnostic codes, transport steps, latency and dependency shape.
+It also recomputes status aggregation: dependency diagnostic entries do not
+contribute to own health, critical failures contribute <code>UNHEALTHY</code>, optional
+failures contribute <code>DEGRADED</code>, and omitted criticality defaults to true.
+An empty-check <code>MISCONFIGURED</code> result represents a pre-check configuration failure.</p>
+<p>Output is a JSON report with <code>conformance_version</code>, <code>profile</code>, <code>passed</code>, <code>results</code>
+(top-level result count on success), and a stable <code>code</code>: <code>conformant</code>,
+<code>invalid_document</code>, <code>document_too_large</code>, <code>unsupported_spec_version</code>,
+<code>invalid_result</code>, or <code>inconsistent_status</code>. Reports omit input names, paths,
+messages and parser errors. Read/open/write errors produce a generic stderr
+diagnostic instead. Exit 0 means the evidence passed; exit 6 means invalid
+evidence, invocation or tool failure. A conformant <code>UNHEALTHY</code> or <code>UNREACHABLE</code>
+document still exits 0. Health commands retain their existing exits 0–5.</p>
+<p>A document cannot prove that its producer actually performed a check, honored
+active opt-in, verified TLS, or removed every secret. Do not treat a passing
+document as evidence of those runtime properties or of current service health.</p>
+<h2 id="reference-behavioral-suite">Reference behavioral suite</h2>
+<p>From a trusted source checkout with Go 1.26+ and Python installed:</p>
+<pre><code class="language-bash">python3 scripts/test_conformance.py --report conformance-report.json
+</code></pre>
+<p>The runner executes the reference engine, CLI and adapter Go tests with the race
+detector, a fresh test run and a 15-minute limit. A C compiler is needed for race
+testing. It requires explicit passing evidence for every case in its versioned
+catalog; missing, failed or skipped mandatory cases, including skipped subcases,
+fail the run. Other test skips are counted in the report and do not imply tested
+external services. Raw subprocess output is not included in the report; run
+<code>go test -race ./...</code> for local diagnostics when the suite fails.</p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Mandatory evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Result contract and semantics</td>
+<td>Offline positive/negative cases, required fields, bounded parsing, severity and dependency aggregation</td>
+</tr>
+<tr>
+<td>Safety and error behavior</td>
+<td>Prerequisite gates, passive defaults, active no-retry, timeout/partial-response distinction, panic normalization, secret suppression and bounded calls</td>
+</tr>
+<tr>
+<td>HTTP, MCP and A2A</td>
+<td>Passive readiness, header/body separation, credential controls, protocol versions, OAuth redaction, no credential forwarding on redirects</td>
+</tr>
+<tr>
+<td>Direct/composite agents</td>
+<td>Declared health, bounded safe tasks, separate peer/path evidence, actual first-runtime peer callback in controlled fixtures</td>
+</tr>
+<tr>
+<td>Gateway/router</td>
+<td>Separate signal, backend and path evidence</td>
+</tr>
+<tr>
+<td>Dependency graph</td>
+<td>Invalid graphs, shared execution, edge policies, concurrency, independent budgets and topology redaction</td>
+</tr>
+<tr>
+<td>AHP</td>
+<td>HTTP binding, authorization, status mapping and graph evidence</td>
+</tr>
+<tr>
+<td>Model/database/vector</td>
+<td>Transport controls, endpoint safety, cancellation and functional opt-in/no-retry</td>
+</tr>
+<tr>
+<td>CI/observability</td>
+<td>Safe report projections, redaction, status mapping, one-hot gauges and duplicate-edge uniqueness</td>
+</tr>
+<tr>
+<td>Executable adapters</td>
+<td>Versioned manifest, hash pin, bounded streams, response markers, normalized output and cancellation</td>
+</tr>
+</tbody>
+</table>
+<p>The catalog reuses tests in their owning packages so fixes remain coupled to
+the implementation. This is reference-implementation evidence, not a portable
+black-box certification of arbitrary third-party software. Independent products,
+real database/provider matrices and deployed Kubernetes configurations require
+their separate test suites. Framework/SDK and distribution checks remain in CI;
+their results are not silently inferred from the Go catalog. Phase 25 records
+exact product versions and interoperability; Phase 26 adds remaining hardening.</p>
+<p>The <a href="examples/conformance.html">examples</a> include a schema-valid document
+with deliberately inconsistent status, showing why shape validation alone is
+insufficient. CI runs the catalog, retains its JSON evidence, and separately runs
+schema, SDK, framework, packaging and deployment gates.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>

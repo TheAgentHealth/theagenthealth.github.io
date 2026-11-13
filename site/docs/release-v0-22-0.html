@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgentHealth v0.22.0 — TheAgentHealth docs</title>
+<meta name="description" content="Offline AHS validation, reference conformance and synchronized distribution.">
+<meta name="theme-color" content="#0b1110"><link rel="canonical" href="https://theagenthealth.github.io/docs/release-v0-22-0.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="brand" href="../index.html" aria-label="TheAgentHealth home"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><nav aria-label="Main navigation"><a href="index.html">Docs</a><a href="examples/index.html">Examples</a><a class="nav-github" href="https://github.com/TheAgentHealth/agenthealth">GitHub ↗</a></nav></header>
+<main id="main">
+<div class="doc-shell wrap">
+<aside class="doc-sidebar" aria-label="Documentation menu"><div class="doc-sidebar-group"><span class="doc-sidebar-title">GUIDES</span><nav><a href="index.html">Overview</a><a href="phase-24-alignment.html">Phase 24 impact and alignment review</a><a href="release-v0-22-0.html" class="current">v0.22.0 release notes</a><a href="verification-v0-22-0.html">v0.22.0 verification</a><a href="conformance.html">Conformance</a><a href="plugins.html">Executable adapters</a><a href="adapter-protocol-v1.html">Adapter protocol v1</a><a href="observability.html">Observability export</a><a href="ci-cd.html">CI/CD deployment gates</a><a href="framework-integrations.html">Runtime integrations</a><a href="javascript-sdk.html">JavaScript/TypeScript (npm)</a><a href="python-sdk.html">Python SDK (PyPi)</a><a href="architecture.html">Architecture</a><a href="cli.html">CLI</a><a href="installation.html">Installation</a><a href="docker.html">Docker</a><a href="kubernetes.html">Kubernetes</a><a href="distribution.html">Distribution</a><a href="vector-store-adapter.html">Vector-store adapter</a><a href="database-adapter.html">Database adapter</a><a href="model-adapter.html">Model / LLM adapter</a><a href="http-adapter.html">HTTP adapter</a><a href="mcp-adapter.html">MCP adapter</a><a href="a2a-adapter.html">A2A adapter</a><a href="agent-adapter.html">Agent adapter</a><a href="agent-router.html">Agent Router</a><a href="agentgateway.html">Agentgateway</a><a href="dependency-graph.html">Dependency graph</a><a href="ahp.html">AHP (experimental)</a><a href="interoperability.html">Interoperability</a><a href="phase-status.html">Phase status</a></nav></div><div class="doc-sidebar-group"><span class="doc-sidebar-title">EXAMPLES</span><nav><a href="examples/index.html">Overview</a><a href="examples/conformance.html">conformance</a><a href="examples/plugin-check.html">plugin check</a><a href="examples/observability.html">observability</a><a href="examples/ci.html">CI/CD deployment gates</a><a href="examples/runtime-check.html">Runtime integration</a><a href="examples/vector-check.html">vector check</a><a href="examples/database-check.html">database check</a><a href="examples/model-check.html">model check</a><a href="examples/javascript-sdk.html">javascript sdk</a><a href="examples/python-sdk.html">python sdk</a><a href="examples/a2a-check.html">a2a check</a><a href="examples/agent-check.html">agent check</a><a href="examples/ahp-check.html">ahp check</a><a href="examples/distribution.html">distribution</a><a href="examples/gateway-check.html">gateway check</a><a href="examples/graph-check.html">graph check</a><a href="examples/kubernetes.html">kubernetes</a><a href="examples/router-check.html">router check</a></nav></div></aside>
+<article class="doc-content">
+<p class="doc-back"><a href="index.html">← All documentation</a></p>
+<h1>AgentHealth v0.22.0</h1>
+<p>Phase 24 adds <code>agenthealth conformance test &lt;result.json&gt;</code> for bounded offline
+AHS v1 evidence validation and a mandatory reference behavioral suite. It checks
+shape, required fields and status/dependency semantics without executing input
+or echoing its contents. The source suite records required engine, adapter,
+agent/path, graph, AHP, export and executable-transport regressions in JSON.
+See the <a href="conformance.html">guide</a>, <a href="examples/conformance.html">examples</a>
+and <a href="phase-24-alignment.html">all-phase alignment</a>.</p>
+<p>The existing MongoDB compression dependency <code>github.com/klauspost/compress</code>
+advances to v1.20.2 to address GO-2026-6865, detected by the required vulnerability
+scan. Native database CI revalidates the dependency update.</p>
+<h2 id="installation-and-distributions">Installation and distributions</h2>
+<p>Published November 9, 2026. See the <a href="verification-v0-22-0.html">publication verification</a>
+for checked artifacts, CI evidence and remaining validation limits.
+All implemented distributions use v0.22.0: five platform CLI archives,
+five CycloneDX SBOMs, four DEB/RPM packages, channel manifests, Docker image,
+Helm chart, OCI binary bundle, Python wheel/source archive and npm tarball.
+CLI and SDK versions must match. See <a href="installation.html#verify-provenance-and-sboms">installation verification</a>
+and <a href="distribution.html">distribution policy</a>.</p>
+<pre><code class="language-bash">docker run --rm ghcr.io/theagenthealth/agenthealth:v0.22.0 version
+pip install agenthealth==0.22.0
+npm install @theagenthealth/agenthealth@0.22.0
+helm install agenthealth oci://ghcr.io/theagenthealth/charts/agenthealth --version 0.22.0
+helm install agenthealth https://github.com/TheAgentHealth/agenthealth/releases/download/v0.22.0/agenthealth-0.22.0.tgz
+oras pull ghcr.io/theagenthealth/agenthealth-binaries:v0.22.0
+</code></pre>
+<p>OCI binary retrieval uses an artifact client. Helm uses chart version <code>0.22.0</code>,
+app version <code>v0.22.0</code> and image <code>ghcr.io/theagenthealth/agenthealth:v0.22.0</code>.
+Tagged <a href="https://github.com/TheAgentHealth/agenthealth/tree/v0.22.0/deploy/kubernetes">manifests</a>,
+<a href="https://github.com/TheAgentHealth/agenthealth/tree/v0.22.0/deploy/helm/agenthealth">chart</a>
+and <a href="https://github.com/TheAgentHealth/agenthealth/tree/v0.22.0/examples/kubernetes">examples</a>
+share that source. CI requires Kubernetes 1.31.9 and 1.33.1 interoperability
+jobs and the disposable Helm/runtime gate; actual outcomes belong in the
+publication verification record.</p>
+<h2 id="compatibility-and-migration">Compatibility and migration</h2>
+<p>No AHS/AHP v1 fields, health states, adapter interfaces or existing health exits
+change. Existing configurations require no migration. Conformance returns 0 for
+valid evidence and 6 for invalid evidence/tool failure, independently of target
+health. SDK wrappers retain their existing APIs and adopt the shared version.</p>
+<h2 id="limitations">Limitations</h2>
+<p>The offline command accepts regular UTF-8 JSON result files only, up to 4 MiB and
+64 dependency levels. Only v1 and current AHS dimensions are supported; it does
+not validate AHP envelopes, YAML, configurations or export payloads. Static
+evidence cannot establish runtime safety, truthfulness, current health or complete
+secret removal. The behavioral suite exercises reference source with controlled
+fixtures; independent product matrices, audit, OS isolation, native executable
+signing and certification remain separate work. Local Windows Application Control
+prevented Go formatting/vet during implementation; the exact-source pre-release
+CI and Release workflow subsequently passed. The November 13 follow-up found
+a Go standard-library vulnerability in the release toolchain; see the
+verification record for the required patch-release follow-up.</p>
+
+</article>
+</div>
+</main>
+<footer class="wrap"><a class="brand" href="../index.html"><span class="logo" aria-hidden="true">⌁</span>TheAgentHealth</a><p>Universal health & readiness for agentic systems.</p><div><a href="https://github.com/TheAgentHealth/agenthealth">Source</a><a href="https://github.com/TheAgentHealth/theagenthealth.github.io">Website source</a><a href="https://github.com/TheAgentHealth/agenthealth/blob/main/LICENSE">Apache 2.0</a></div></footer>
+</body></html>
